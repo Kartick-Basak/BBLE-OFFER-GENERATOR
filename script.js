@@ -6,7 +6,7 @@
 // 1. BACKEND API URL
 // Replace with your Google Apps Script Web App URL (deployed as 'Anyone')
 // =========================================================================
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwPzN3lK0x1f74pQO_bS4eG1J-y2u9_example/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx3ACLdCnExvTRszjypfwujTvQtb75ll7MmaJ1yaCRUlTKMZ3NmuuqBRm1i3ZW7n50g/exec";
 
 // =========================================================================
 // 2. SALESPERSON EMAIL DIRECTORY
