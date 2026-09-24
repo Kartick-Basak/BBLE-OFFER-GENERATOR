@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BLT Brilliant Lifts — Proposal Request Portal</title>
+  
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="py-4">
+  <div class="container portal-container">
+    
+    <!-- Top Header -->
+    <header class="header-banner text-white p-4 rounded-3 shadow-sm mb-4">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h4 class="fw-bold mb-1">BLT Brilliant Lifts & Escalators</h4>
+          <p class="mb-0 text-white-50 small">Elevator Proposal & Quotation Request Portal</p>
+        </div>
+        <span class="badge bg-warning text-dark px-3 py-2 fw-bold">BLT Automation</span>
+      </div>
+    </header>
+
+    <form id="bltProposalForm">
+
+      <!-- SECTION 1: Customer & Project Details -->
+      <section class="section-card">
+        <div class="section-header">1. Customer & Project Details</div>
+        <div class="p-3 p-md-4">
+          <div class="row g-3">
+            <div class="col-md-12">
+              <label class="form-label">Customer / Company Name <span class="text-danger">*</span></label>
+              <input type="text" name="Customer / Company Name" class="form-control" placeholder="e.g. M/S Yashraj Construction" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Address Line 1 <span class="text-danger">*</span></label>
+              <input type="text" name="Address Line 1" class="form-control" placeholder="Building, Street, Landmark" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Address Line 2</label>
+              <input type="text" name="Address Line 2" class="form-control" placeholder="Area, City">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">State <span class="text-danger">*</span></label>
+              <select name="State" class="form-select" required>
+                <option value="West Bengal" selected>West Bengal</option>
+                <option value="Odisha">Odisha</option>
+                <option value="Jharkhand">Jharkhand</option>
+                <option value="Maharashtra">Maharashtra</option>
+                <option value="Bihar">Bihar</option>
+                <option value="Assam">Assam</option>
+                <option value="Delhi">Delhi</option>
+                <option value="Uttar Pradesh">Uttar Pradesh</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Office PIN Code <span class="text-danger">*</span></label>
+              <input type="text" name="Office PIN Code" class="form-control" maxlength="6" pattern="[1-9][0-9]{5}" placeholder="e.g. 700019" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Contact Person Name</label>
+              <input type="text" name="Contact Person Name" class="form-control" placeholder="e.g. Mr. Arman Ali">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Contact Person Phone Number</label>
+              <input type="tel" name="Contact Person Phone Number" class="form-control" placeholder="e.g. 9831100000">
+            </div>
+            <div class="col-md-8">
+              <label class="form-label">Site Address (Installation Location)</label>
+              <input type="text" name="Site Address" id="siteAddress" class="form-control" placeholder="e.g. Plot 14, Newtown Action Area II">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Site PIN Code</label>
+              <input type="text" name="Site Pin Code" class="form-control" maxlength="6" pattern="[1-9][0-9]{5}" placeholder="e.g. 700156">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 2: Sales Executive Details -->
+      <section class="section-card">
+        <div class="section-header">2. Sales Executive Details</div>
+        <div class="p-3 p-md-4">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Sales Person Name <span class="text-danger">*</span></label>
+              <select name="Sales Person Name" id="salesPersonName" class="form-select" required>
+                <option value="">Choose Executive...</option>
+                <option value="SANJEEV KUMAR SINGH">SANJEEV KUMAR SINGH</option>
+                <option value="ARNAB DUTTA">ARNAB DUTTA</option>
+                <option value="SOURAV BASAK">SOURAV BASAK</option>
+                <option value="KALYAN CHATTERJEE">KALYAN CHATTERJEE</option>
+                <option value="BIJAYA KUMAR PRADHAN">BIJAYA KUMAR PRADHAN</option>
+                <option value="BIKASH NAYAK">BIKASH NAYAK</option>
+                <option value="KANCHAN DASGUPTA">KANCHAN DASGUPTA</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Email Address (Sales Representative Email)</label>
+              <input type="email" name="Email Address" id="repEmail" class="form-control" placeholder="executive@bltbrilliant.com">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 3: Technical Specifications -->
+      <section class="section-card">
+        <div class="section-header d-flex justify-content-between align-items-center">
+          <span>3. Elevator Technical Specifications</span>
+          <span class="badge-rule">Dynamic Speed & Sizing Active</span>
+        </div>
+        <div class="p-3 p-md-4">
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label class="form-label">Lift Type <span class="text-danger">*</span></label>
+              <select name="Lift Type" id="liftType" class="form-select" required>
+                <option value="PASSENGER" selected>PASSENGER</option>
+                <option value="HOME LIFT">HOME LIFT</option>
+                <option value="GOODS">GOODS</option>
+                <option value="STRETCHER">STRETCHER</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Machine Room Configuration <span class="text-danger">*</span></label>
+              <select name="Machine Room Configuration" id="machineConfig" class="form-select" required>
+                <option value="MRL (Machine Room Less)" selected>MRL (Machine Room Less)</option>
+                <option value="MR (Machine Room)">MR (Machine Room)</option>
+              </select>
+            </div>
+            <div class="col-md-4" id="tractionDiv">
+              <label class="form-label">Traction Unit Type</label>
+              <select name="Traction Unit Type" id="tractionType" class="form-select">
+                <option value="Permanent Magnet Synchronous Gearless Traction Machine" selected>Permanent Magnet Synchronous Gearless (PMSM)</option>
+                <option value="Geared Traction Machine">Geared Traction Machine</option>
+              </select>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Capacity (Persons) <span class="text-danger">*</span></label>
+              <select name="Capacity (Persons)" id="capacitySelect" class="form-select" required>
+                <option value="4 Passengers">4 Passengers (272 Kg)</option>
+                <option value="5 Passengers">5 Passengers (340 Kg)</option>
+                <option value="6 Passengers" selected>6 Passengers (408 Kg)</option>
+                <option value="8 Passengers">8 Passengers (544 Kg)</option>
+                <option value="10 Passengers">10 Passengers (680 Kg)</option>
+                <option value="13 Passengers">13 Passengers (884 Kg)</option>
+                <option value="15 Passengers">15 Passengers (1020 Kg)</option>
+              </select>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Speed (Mtr/sec) <span class="text-danger">*</span></label>
+              <select name="Speed (Mtr/sec)" id="speedSelect" class="form-select" required>
+                <!-- Populated dynamically via script.js -->
+              </select>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Number of Elevators (Units) <span class="text-danger">*</span></label>
+              <input type="number" name="Number of Elevators (Units)" class="form-control" value="1" min="1" max="20" required>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Number of Stops <span class="text-danger">*</span></label>
+              <input type="number" name="Number of Stops" id="stopsInput" class="form-control" value="5" min="2" max="60" required>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Serving Floors (e.g. G+4 or B+G+7) <span class="text-danger">*</span></label>
+              <input type="text" name="Serving Floors (e.g. G+4 or B+G+7)" id="floorsInput" class="form-control" value="G+4" required>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Travel Distance</label>
+              <select name="Travel" id="travelSelect" class="form-select">
+                <option value="Usual" selected>Usual (3m / floor)</option>
+                <option value="Other - Please specify">Other - Custom Travel</option>
+              </select>
+            </div>
+
+            <div class="col-md-12" id="customTravelDiv" style="display:none;">
+              <label class="form-label">Custom Travel Distance (Mtrs / MM)</label>
+              <input type="text" name="Other - Please specify" id="customTravelInput" class="form-control" placeholder="e.g. 14.5 Mtrs or 14500 MM">
+            </div>
+
+            <!-- Shaft Sizing with Real-time Validation -->
+            <div class="col-md-6">
+              <label class="form-label">Shaft Width (W) in MM <span class="text-danger">*</span></label>
+              <input type="number" name="Shaft Width (W)" id="shaftWidth" class="form-control" placeholder="e.g. 1650" required>
+              <div id="shaftFeedback" class="validation-msg text-danger mt-1"></div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Shaft Depth (D) in MM <span class="text-danger">*</span></label>
+              <input type="number" name="Shaft Depth (D)" id="shaftDepth" class="form-control" placeholder="e.g. 1500" required>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 4: Cabin Enclosure & Door Specifications -->
+      <section class="section-card">
+        <div class="section-header">4. Cabin Enclosure & Door Finishes</div>
+        <div class="p-3 p-md-4">
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label class="form-label">Car Ceiling</label>
+              <select name="Car Ceiling" class="form-select">
+                <option value="SS Hairline Finish" selected>SS Hairline Finish</option>
+                <option value="SS Mirror Finish">SS Mirror Finish</option>
+                <option value="MS Powder Coated Finish">MS Powder Coated Finish</option>
+              </select>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Car Panels</label>
+              <select name="Car Panels" class="form-select">
+                <option value="SS Hairline Finish" selected>SS Hairline Finish</option>
+                <option value="SS Hairline Finish - Back Side Middle Panel SS Mirror Finish">SS Hairline - Middle Panel Mirror</option>
+                <option value="SS Mirror Finish">SS Mirror Finish</option>
+                <option value="MS Powder Coated Finish">MS Powder Coated Finish</option>
+              </select>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Car Flooring</label>
+              <select name="Car Flooring" class="form-select">
+                <option value="PVC Flooring" selected>PVC Flooring</option>
+                <option value="PVC Flooring – Wooden Type">PVC Flooring – Wooden Type</option>
+                <option value="Granite Flooring – By Customer">Granite Flooring – By Customer</option>
+              </select>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Door Opening Type <span class="text-danger">*</span></label>
+              <select name="Door Opening Type" id="doorType" class="form-select" required>
+                <option value="Center Opening" selected>Center Opening</option>
+                <option value="Telescopic Opening">Telescopic Opening</option>
+              </select>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Door Finish <span class="text-danger">*</span></label>
+              <select name="Door Finish" class="form-select" required>
+                <option value="SS Hairline Finish" selected>SS Hairline Finish</option>
+                <option value="SS Mirror Finish">SS Mirror Finish</option>
+                <option value="MS Powder Coated Finish">MS Powder Coated Finish</option>
+              </select>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label">Clear Door Opening Width (MM) <span class="text-danger">*</span></label>
+              <select name="Clear Door Opening Width (MM)" id="doorWidth" class="form-select" required>
+                <option value="600">600 MM</option>
+                <option value="650">650 MM</option>
+                <option value="700" selected>700 MM</option>
+                <option value="800">800 MM</option>
+                <option value="900">900 MM</option>
+                <option value="1000">1000 MM</option>
+              </select>
+            </div>
+
+            <div class="col-md-12">
+              <label class="form-label">Vision Type</label>
+              <select name="Vision Type" class="form-select">
+                <option value="No Vision" selected>No Vision (Solid Door)</option>
+                <option value="Small Vision Panel">Small Vision Panel</option>
+                <option value="Half Glass">Half Glass</option>
+                <option value="Full Glass">Full Glass</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 5: Optional Features & Commercials -->
+      <section class="section-card">
+        <div class="section-header">5. Optional Features & Commercials</div>
+        <div class="p-3 p-md-4">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Optional Feature 1 (or leave blank)</label>
+              <input type="text" name="Optional Feature 1 (or leave blank)" class="form-control" placeholder="e.g. Access Control / Overload Sensor">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Optional Feature 2 (or leave blank)</label>
+              <input type="text" name="Optional Feature 2 (or leave blank)" class="form-control" placeholder="e.g. Intercom / Fire Alarm Integration">
+            </div>
+            <div class="col-md-12">
+              <label class="form-label">Basic Unit Price in INR (Excl. GST)</label>
+              <input type="number" name="Basic Unit Price in INR (Excl. GST)" class="form-control" placeholder="e.g. 1150000 (Optional)">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Submit Button -->
+      <div class="d-grid gap-2 mb-4">
+        <button type="submit" id="submitBtn" class="btn btn-warning text-dark fw-bold py-3 shadow-sm">
+          🚀 Submit & Generate Proposal Document
+        </button>
+      </div>
+    </form>
+
+    <!-- Result / Status Box -->
+    <div id="resultBox" class="mt-4 p-4 rounded text-center" style="display:none;"></div>
+  </div>
+
+  <!-- Custom JavaScript Logic -->
+  <script src="script.js"></script>
+</body>
+</html>
