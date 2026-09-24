@@ -1,5 +1,5 @@
 // Paste your newly copied Web App URL (ending in /exec):
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzxdK90tndC8gL02OZpDfpg7upLnJpLit81MRJbdRqYRDq_kjkuhDcmvtfldxDZ-x1m/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxrRH0s1ioalQ-sL03kz35st3b4F3Fnu07eec_hcwGEctIZPrXind7_1QvAmDxCiFwv/exec";
 
 document.getElementById('bltProposalForm').addEventListener('submit', function(e) {
   e.preventDefault();
