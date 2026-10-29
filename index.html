@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>BLT Brilliant Lifts & Escalators - Proposal Generator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="container">
+    
+    <!-- Top Header with Upper-Right Sales Person Profile Section -->
+    <header class="app-header">
+      <div class="header-layout">
+        
+        <!-- Left: Brand Info -->
+        <div class="brand-section">
+          <h1 class="brand-title">BLT Brilliant Lifts & Escalators</h1>
+        </div>
+
+        <!-- Upper Right: Sales Representative Profile Section -->
+        <div class="sales-profile-card">
+          <div class="profile-card-header">
+            <span class="profile-title">👤 Sales Representative Profile</span>
+          </div>
+
+          <!-- Sales Person Selector -->
+          <select id="salesPersonSelect" class="sales-select" title="Select Sales Person">
+            <!-- It will be populated dynamically from Sales Team sheet -->
+          </select>
+
+          <!-- Live Details from Database Sheet -->
+          <div class="profile-details-grid">
+            <div class="profile-detail-row">
+              <span class="label">Designation:</span>
+              <span class="val" id="salesDesignation">ENGINEER – SALES</span>
+            </div>
+            <div class="profile-detail-row">
+              <span class="label">Mobile No.:</span>
+              <span class="val" id="salesPhone">+91 98321 40598</span>
+            </div>
+            <div class="profile-detail-row">
+              <span class="label">Email:</span>
+              <span class="val" id="salesEmail">sales@bltbrilliant.com</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </header>
+
+    <form id="proposalForm" novalidate>
+
+      <!-- Customer / Company Information Card -->
+      <section class="form-card">
+        <h2 class="card-title">Customer & Project Information</h2>
+        
+        <!-- Row 1: Customer Name & Contact Person -->
+        <div class="grid-2">
+          <div class="form-group">
+            <label for="customerName">Customer / Company Name <span class="req">*</span></label>
+            <input type="text" id="customerName" class="form-control" placeholder="e.g. XYZ Developers" required autocomplete="organization">
+          </div>
+          
+          <div class="form-group">
+            <div class="label-with-checkpoint">
+              <label for="contactPerson">Contact Person Name <span class="req">*</span></label>
+              <label class="checkpoint-badge" title="Copy from Customer / Company Name">
+                <input type="checkbox" id="chkSameCustomer"> Same as Customer Name
+              </label>
+            </div>
+            <input type="text" id="contactPerson" class="form-control" placeholder="Mr. Sharma" required autocomplete="name">
+          </div>
+        </div>
+
+        <!-- Row 2: Contact Phone & State Dropdown -->
+        <div class="grid-2">
+          <div class="form-group">
+            <label for="contactPhone">Contact Person Phone Number (10 Digits) <span class="req">*</span></label>
+            <input type="tel" id="contactPhone" class="form-control" placeholder="e.g. 1234567890" maxlength="10" inputmode="numeric" pattern="[0-9]{10}" required autocomplete="tel">
+          </div>
+          
+          <div class="form-group">
+            <label for="state">State <span class="req">*</span></label>
+            <select id="state" class="form-control" required>
+              <option value="West Bengal">West Bengal</option>
+              <option value="Odisha">Odisha</option>
+              <option value="Bihar">Bihar</option>
+              <option value="Jharkhand">Jharkhand</option>
+              <option value="Assam">Assam</option>
+              <option value="Sikkim">Sikkim</option>
+              <option value="Tripura">Tripura</option>
+              <option value="Meghalaya">Meghalaya</option>
+              <option value="Andhra Pradesh">Andhra Pradesh</option>
+              <option value="Chhattisgarh">Chhattisgarh</option>
+              <option value="Delhi">Delhi</option>
+              <option value="Maharashtra">Maharashtra</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Row 3: Office Address Line 1 & Line 2 -->
+        <div class="grid-2">
+          <div class="form-group">
+            <label for="address1">Office Address Line 1 <span class="req">*</span></label>
+            <input type="text" id="address1" class="form-control" placeholder="e.g. EASTERN BYPASS, SILIGURI" required autocomplete="street-address">
+          </div>
+          
+          <div class="form-group">
+            <label for="address2">Office Address Line 2</label>
+            <input type="text" id="address2" class="form-control" placeholder="Landmark, Suite, Ward">
+          </div>
+        </div>
+
+        <!-- Row 4: Office PIN Code -->
+        <div class="form-group">
+          <label for="pinCode">Office PIN Code <span class="req">*</span></label>
+          <input type="text" id="pinCode" class="form-control" placeholder="e.g. 734004" maxlength="6" inputmode="numeric" required autocomplete="postal-code">
+        </div>
+
+        <!-- Row 5: Site Address (with checkpoint to copy from office address & PIN) -->
+        <div class="form-group">
+          <div class="label-with-checkpoint">
+            <label for="siteAddress">Site Address (Project Site Location) <span class="req">*</span></label>
+            <label class="checkpoint-badge" title="Copy from Office Address & PIN">
+              <input type="checkbox" id="chkSameAddress"> Same as Office Address & PIN
+            </label>
+          </div>
+          <input type="text" id="siteAddress" class="form-control" placeholder="e.g. Eastern Bypass, Siliguri" required>
+        </div>
+
+        <!-- Row 6: Site PIN Code (Placed AFTER Site Address as requested) -->
+        <div class="form-group">
+          <label for="sitePinCode">Site PIN Code <span class="req">*</span></label>
+          <input type="text" id="sitePinCode" class="form-control" placeholder="e.g. 734004" maxlength="6" inputmode="numeric" required>
+        </div>
+      </section>
+
+      <!-- Multi-Lift Specifications Container -->
+      <section>
+        <h2 class="card-title" style="margin-bottom: 14px;">Elevator Specifications (Multi-Unit Configuration)</h2>
+        
+        <div id="liftsContainer">
+          <!-- Dynamic Lift Cards appended here by script.js -->
+        </div>
+
+        <!-- Add Elevator Button -->
+        <button type="button" id="btnAddLift" class="btn-add-lift">
+          <span style="font-size: 18px;">+</span> Add Another Elevator Type
+        </button>
+      </section>
+
+      <!-- Live Technical Summary Card -->
+      <section class="tech-summary-card">
+        <div class="tech-summary-title">Technical Configuration Overview</div>
+        <div class="tech-summary-grid">
+          <div class="tech-stat-item">
+            <span class="stat-label">Total Elevators Configured</span>
+            <span class="stat-val" id="sumUnits">0 Units</span>
+          </div>
+          <div class="tech-stat-item" style="flex: 2;">
+            <span class="stat-label">Configuration Breakdown</span>
+            <span class="stat-val" id="sumTypes" style="font-size: 15px; font-weight: 600; color: #cbd5e1;">-</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Submit Action -->
+      <button type="submit" id="btnSubmit" class="btn-submit">
+        🚀 Generate Complete Multi-Lift Proposal Document
+      </button>
+
+    </form>
+  </div>
+
+  <!-- Modal Feedback Overlay -->
+  <div id="modalOverlay" class="modal-overlay">
+    <div class="modal-box">
+      <div id="modalBody">
+        <!-- Dynamic Content from JS -->
+      </div>
+      <button type="button" id="btnModalClose" class="btn-modal-close">Close</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
