@@ -11,7 +11,7 @@
  */
 
 // Replace this with your Google Apps Script Web App Deployment URL
-const APPS_SCRIPT_WEB_APP_URL = "YOUR_APPS_SCRIPT_WEB_APP_URL_HERE";
+const APPS_SCRIPT_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxhzFCEKqeoNM82wCQJvcDNjxgOypCXSeZqVX1AipCQ15DJx_Q_rgxvPE6VtOMaFRDX/exec";
 
 // Comprehensive list of sales team members from the database sheet
 let salesTeamData = [
