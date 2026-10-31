@@ -596,3 +596,14 @@ body {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+/* Car Ceiling & Finish Controls */
+.lift-ceiling {
+  background-color: #ffffff;
+  border: 1px solid var(--border-color);
+  font-weight: 500;
+}
+
+.lift-ceiling:focus {
+  border-color: var(--border-focus);
+}
