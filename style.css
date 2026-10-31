@@ -607,3 +607,22 @@ body {
 .lift-ceiling:focus {
   border-color: var(--border-focus);
 }
+
+/* Grey Read-only and Locked Fields */
+.field-readonly-grey {
+  background-color: #f1f5f9 !important;
+  color: #475569 !important;
+  border-color: #cbd5e1 !important;
+  cursor: pointer !important;
+}
+
+.field-readonly-grey:hover {
+  border-color: var(--primary) !important;
+}
+
+.field-locked {
+  background-color: #f1f5f9 !important;
+  color: #64748b !important;
+  border-color: #e2e8f0 !important;
+  cursor: not-allowed !important;
+}
