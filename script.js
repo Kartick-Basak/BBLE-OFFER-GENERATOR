@@ -170,15 +170,30 @@ function setupFormCheckpointsAndValidation() {
   chkSameAddress.addEventListener("change", syncSiteAddressAndPin);
   address1.addEventListener("input", syncSiteAddressAndPin);
   address2.addEventListener("input", syncSiteAddressAndPin);
-  pinCode.addEventListener("input", () => {
-    pinCode.value = pinCode.value.replace(/\D/g, "").slice(0, 6);
+  function handlePinAutoState(inputElem) {
+    const cleanPin = inputElem.value.replace(/\D/g, "").slice(0, 6);
+    inputElem.value = cleanPin;
+
+    if (cleanPin.length >= 2) {
+      const detected = getStateFromPinCode(cleanPin);
+      if (detected) setMatchingState(detected);
+    }
+    if (cleanPin.length === 6) {
+      fetchStateFromPinApi(cleanPin).then(apiState => {
+        if (apiState) setMatchingState(apiState);
+      });
+    }
+  }
+
+  pinCode.addEventListener("input", function() {
+    handlePinAutoState(this);
     if (chkSameAddress.checked) {
-      sitePinCode.value = pinCode.value;
+      sitePinCode.value = this.value;
     }
   });
 
-  sitePinCode.addEventListener("input", () => {
-    sitePinCode.value = sitePinCode.value.replace(/\D/g, "").slice(0, 6);
+  sitePinCode.addEventListener("input", function() {
+    handlePinAutoState(this);
   });
 
   // --- Phone Number: 10 Digits Only ---
@@ -286,8 +301,8 @@ function addLiftCard() {
       </div>
     </div>
 
-    <!-- Floors, Travel, Headroom -->
-    <div class="grid-3">
+    <!-- Floors, Travel, Pit Depth, Headroom -->
+    <div class="grid-4">
       <div class="form-group">
         <label>Serving Floors <span class="req">*</span></label>
         <input type="text" class="form-control lift-floors" value="" placeholder="e.g. G+5 or B+G+4" required>
@@ -299,8 +314,13 @@ function addLiftCard() {
       </div>
 
       <div class="form-group">
+        <label>Pit Depth (MM) <span class="req">*</span></label>
+        <input type="text" class="form-control lift-pit field-locked" value="1600 MM" placeholder="1600 MM" required readonly oninput="validateHomePit(this)" onblur="handlePitBlur(this)" title="Standard Pit Depth (1600 MM)">
+      </div>
+
+      <div class="form-group">
         <label>Head Room (MM) <span class="req">*</span></label>
-        <input type="text" class="form-control lift-headroom" value="" placeholder="e.g. 4800 MM" required>
+        <input type="text" class="form-control lift-headroom field-readonly-grey" value="" placeholder="e.g. 4800 MM" required readonly onclick="unlockHeadroom(this)" onblur="handleHeadroomBlur(this)" title="Click to edit Head Room">
       </div>
     </div>
 
@@ -472,10 +492,29 @@ function handleLiftTypeChange(element) {
     capacitySelect.value = "";
   } else {
     capacitySelect.disabled = false;
-
   }
 
-  // No fields are autofilled when choosing Lift Type; all remain empty for user input
+  // Pit Depth rule: Always grey/locked (1600 MM) except for Home elevator (Min 500 MM)
+  const pitInput = card.querySelector(".lift-pit");
+  if (pitInput) {
+    if (type === "HOME LIFT") {
+      pitInput.readOnly = false;
+      pitInput.classList.remove("field-locked", "field-readonly-grey");
+      if (!pitInput.value || pitInput.value === "1600 MM") {
+        pitInput.value = "500 MM";
+      }
+      pitInput.placeholder = "Min 500 MM (e.g. 500 MM)";
+      pitInput.title = "Home Elevator Pit Depth (Min 500 MM)";
+    } else {
+      pitInput.readOnly = true;
+      pitInput.classList.add("field-locked");
+      pitInput.classList.remove("field-readonly-grey");
+      pitInput.value = "1600 MM";
+      pitInput.placeholder = "1600 MM";
+      pitInput.title = "Standard Pit Depth (1600 MM)";
+    }
+  }
+
   updateTechnicalSummary();
 }
 /**
@@ -488,13 +527,32 @@ function handleMachineAndTractionChange(element) {
   const mr = card.querySelector(".lift-mr").value;
   const traction = card.querySelector(".lift-traction");
 
-
   if (mr === "MRL") {
     traction.value = "Gearless";
     traction.disabled = true;
   } else if (mr === "MR") {
-  } else if (mr === "MR") {
     traction.disabled = false;
+  }
+
+  // Headroom rules:
+  // if MRL (Gearless) -> 4800 MM
+  // if MR Gearless -> 4500 MM
+  // if MR Geared -> 4200 MM
+  const headroomInput = card.querySelector(".lift-headroom");
+  if (headroomInput) {
+    const curTraction = traction.value;
+    let autoHeadroom = "";
+    if (mr === "MRL") {
+      autoHeadroom = "4800 MM";
+    } else if (mr === "MR" && curTraction === "Gearless") {
+      autoHeadroom = "4500 MM";
+    } else if (mr === "MR" && curTraction === "Geared") {
+      autoHeadroom = "4200 MM";
+    }
+
+    if (autoHeadroom && headroomInput.dataset.manualEdited !== "true") {
+      headroomInput.value = autoHeadroom;
+    }
   }
 
   updateSpeedOptions(card);
@@ -680,6 +738,29 @@ async function handleFormSubmit(e) {
       return;
     }
 
+    const pitInput = card.querySelector(".lift-pit");
+    const pitVal = pitInput ? pitInput.value.trim() : "";
+    if (!pitVal) {
+      alert(`Please specify the Pit Depth for Elevator #${liftNum}.`);
+      pitInput.focus();
+      return;
+    }
+    if (typeVal === "HOME LIFT") {
+      const pitNum = parseInt(pitVal.replace(/\D/g, ""), 10) || 0;
+      if (pitNum < 500) {
+        alert(`Elevator #${liftNum} (Home Lift): Pit Depth cannot be less than 500 MM (Current: ${pitVal}).`);
+        pitInput.focus();
+        return;
+      }
+    }
+
+    const headroomInput = card.querySelector(".lift-headroom");
+    if (headroomInput && !headroomInput.value.trim()) {
+      alert(`Please specify the Head Room for Elevator #${liftNum}.`);
+      headroomInput.focus();
+      return;
+    }
+
     const ceilingSelect = card.querySelector(".lift-ceiling");
     if (ceilingSelect && !ceilingSelect.value) {
       alert(`Please select the Car Ceiling for Elevator #${liftNum}.`);
@@ -743,6 +824,7 @@ async function handleFormSubmit(e) {
       numStops: parseInt(card.querySelector(".lift-stops").value) || 2,
       servingFloors: card.querySelector(".lift-floors").value.trim() || "G+1",
       travel: card.querySelector(".lift-travel").value.trim() || "3.0 Mtrs.",
+      pitDepth: (card.querySelector(".lift-pit") && card.querySelector(".lift-pit").value.trim()) ? card.querySelector(".lift-pit").value.trim() : "1600 MM",
       headRoom: card.querySelector(".lift-headroom").value.trim() || "4800 MM",
       shaftWidth: shaftW,
       shaftDepth: parseFloat(card.querySelector(".lift-shaft-d").value) || 0,
@@ -828,5 +910,170 @@ function showErrorModal(error) {
 
 function closeModal() {
   document.getElementById("modalOverlay").style.display = "none";
+}
+/**
+ * Auto-detects Indian State / Union Territory from 6-digit PIN code prefixes
+ */
+function getStateFromPinCode(pin) {
+  if (!pin) return null;
+  const s = String(pin).trim();
+  if (s.length < 2) return null;
+
+  const p2 = parseInt(s.slice(0, 2), 10);
+  const p3 = s.length >= 3 ? parseInt(s.slice(0, 3), 10) : 0;
+
+  // Specific 3-digit prefixes
+  if (p3 === 737) return "Sikkim";
+  if (p3 === 744) return "Andaman and Nicobar Islands";
+  if (p3 === 403) return "Goa";
+  if (p3 === 160) return "Chandigarh";
+  if (p3 === 682) return "Lakshadweep";
+  if (p3 === 605) return "Puducherry";
+
+  // Telangana vs Andhra Pradesh (500-509: Telangana, 515-535: Andhra Pradesh)
+  if (p3 >= 500 && p3 <= 509) return "Telangana";
+  if (p3 >= 515 && p3 <= 535) return "Andhra Pradesh";
+
+  // Uttarakhand vs UP (246, 248, 249, 263 are Uttarakhand)
+  if (p3 === 246 || p3 === 248 || p3 === 249 || p3 === 263) return "Uttarakhand";
+
+  // Jharkhand vs Bihar (814-816, 825-835 are Jharkhand)
+  if ((p3 >= 825 && p3 <= 835) || p3 === 814 || p3 === 815 || p3 === 816) return "Jharkhand";
+  if ((p3 >= 800 && p3 <= 813) || (p3 >= 841 && p3 <= 855)) return "Bihar";
+
+  // North East (79x)
+  if (p2 === 79) {
+    if (p3 >= 790 && p3 <= 792) return "Arunachal Pradesh";
+    if (p3 === 793 || p3 === 794) return "Meghalaya";
+    if (p3 === 795) return "Manipur";
+    if (p3 === 796) return "Mizoram";
+    if (p3 === 797 || p3 === 798) return "Nagaland";
+    if (p3 === 799) return "Tripura";
+    return "Assam";
+  }
+
+  // 2-digit major postal circles
+  if (p2 === 11) return "Delhi";
+  if (p2 === 12 || p2 === 13) return "Haryana";
+  if (p2 === 14 || p2 === 15) return "Punjab";
+  if (p2 === 16) return "Chandigarh";
+  if (p2 === 17) return "Himachal Pradesh";
+  if (p2 === 18 || p2 === 19) {
+    if (p3 === 194) return "Ladakh";
+    return "Jammu and Kashmir";
+  }
+  if (p2 >= 20 && p2 <= 28) return "Uttar Pradesh";
+  if (p2 >= 30 && p2 <= 34) return "Rajasthan";
+  if (p2 >= 36 && p2 <= 39) {
+    if (p3 === 396 && (s.startsWith("3961") || s.startsWith("3962"))) return "Dadra and Nagar Haveli and Daman and Diu";
+    return "Gujarat";
+  }
+  if (p2 >= 40 && p2 <= 44) return "Maharashtra";
+  if (p2 >= 45 && p2 <= 48) return "Madhya Pradesh";
+  if (p2 === 49) return "Chhattisgarh";
+  if (p2 >= 50 && p2 <= 53) return "Andhra Pradesh";
+  if (p2 >= 56 && p2 <= 59) return "Karnataka";
+  if (p2 >= 60 && p2 <= 64) return "Tamil Nadu";
+  if (p2 >= 67 && p2 <= 69) return "Kerala";
+  if (p2 >= 70 && p2 <= 74) return "West Bengal";
+  if (p2 >= 75 && p2 <= 77) return "Odisha";
+  if (p2 === 78) return "Assam";
+  if (p2 >= 80 && p2 <= 85) return "Bihar";
+
+  return null;
+}
+
+/**
+ * Sets the matching state in the state dropdown
+ */
+function setMatchingState(stateName) {
+  if (!stateName) return;
+  const stateSelect = document.getElementById("state");
+  if (!stateSelect) return;
+
+  const target = stateName.trim().toLowerCase();
+  for (let i = 0; i < stateSelect.options.length; i++) {
+    const opt = stateSelect.options[i];
+    if (opt.value && opt.value.trim().toLowerCase() === target) {
+      stateSelect.selectedIndex = i;
+      return;
+    }
+  }
+
+  // Substring fallback
+  for (let i = 0; i < stateSelect.options.length; i++) {
+    const opt = stateSelect.options[i];
+    if (opt.value && (opt.value.toLowerCase().includes(target) || target.includes(opt.value.toLowerCase()))) {
+      stateSelect.selectedIndex = i;
+      return;
+    }
+  }
+}
+
+/**
+ * Asynchronously verifies exact state from India Post PIN code API
+ */
+async function fetchStateFromPinApi(pin) {
+  if (!pin || pin.length !== 6) return null;
+  try {
+    const res = await fetch(`https://api.postalpincode.in/pincode/${pin}`);
+    const data = await res.json();
+    if (data && data[0] && data[0].Status === "Success" && Array.isArray(data[0].PostOffice) && data[0].PostOffice.length > 0) {
+      const apiState = data[0].PostOffice[0].State;
+      if (apiState) return apiState;
+    }
+  } catch (e) {
+    // Fallback to offline lookup
+  }
+  return null;
+}
+
+/**
+ * Headroom click-to-edit logic: grey until clicked, then becomes editable
+ */
+function unlockHeadroom(input) {
+  input.readOnly = false;
+  input.classList.remove("field-readonly-grey");
+  input.dataset.manualEdited = "true";
+  input.focus();
+}
+
+function handleHeadroomBlur(input) {
+  let val = input.value.trim();
+  if (val && !val.toUpperCase().includes("MM")) {
+    input.value = `${val} MM`;
+  }
+}
+
+/**
+ * Home Elevator Pit validation: cannot be less than 500 MM
+ */
+function validateHomePit(input) {
+  const card = input.closest(".lift-card");
+  if (!card) return;
+  const type = card.querySelector(".lift-type").value;
+  const alertBox = card.querySelector(".dim-alert");
+
+  if (type === "HOME LIFT") {
+    const num = parseInt(input.value.replace(/\D/g, ""), 10);
+    if (!isNaN(num) && num < 500 && num > 0) {
+      if (alertBox) {
+        alertBox.style.display = "block";
+        alertBox.innerHTML = `⚠️ <strong>Pit Depth Warning:</strong> Home elevator pit depth cannot be less than <strong>500 MM</strong> (Entered: ${num} MM).`;
+      }
+    } else {
+      if (alertBox && alertBox.innerHTML.includes("Pit Depth Warning")) {
+        alertBox.style.display = "none";
+        alertBox.innerHTML = "";
+      }
+    }
+  }
+}
+
+function handlePitBlur(input) {
+  let val = input.value.trim();
+  if (val && !val.toUpperCase().includes("MM")) {
+    input.value = `${val} MM`;
+  }
 }
 
