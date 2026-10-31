@@ -11,7 +11,7 @@
  */
 
 // Replace this with your Google Apps Script Web App Deployment URL
-const APPS_SCRIPT_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxhzFCEKqeoNM82wCQJvcDNjxgOypCXSeZqVX1AipCQ15DJx_Q_rgxvPE6VtOMaFRDX/exec";
+const APPS_SCRIPT_WEB_APP_URL = "YOUR_APPS_SCRIPT_WEB_APP_URL_HERE";
 
 // Comprehensive list of sales team members from the database sheet
 let salesTeamData = [
@@ -22,8 +22,8 @@ let salesTeamData = [
   { name: "BIKASH NAYAK", designation: "ENGINEER – SALES & SERVICE", phone: "+91 63620 09323", email: "bikash@bltbrilliant.com" },
   { name: "BIJAYA KUMAR PRADHAN", designation: "BRANCH MANAGER – ODISHA", phone: "+91 96925 80228", email: "bijaya@bltbrilliant.com" },
   { name: "KALYAN CHATTERJEE", designation: "MANAGER – SALES", phone: "+91 99030 71732", email: "kalyan@bltbrilliant.com" },
-  //{ name: "JOY MUKHERJEE", designation: "MANAGER – SALES", phone: "+91 97694 35113", email: "joy@bltbrilliant.com" },
-  //{ name: "KARTICK BASAK", designation: "ASST. MANAGER – SALES & SERVICE", phone: "+91 70015 64906", email: "sales@bltbrilliant.com" }
+  { name: "JOY MUKHERJEE", designation: "MANAGER – SALES", phone: "+91 97694 35113", email: "joy@bltbrilliant.com" },
+  { name: "KARTICK BASAK", designation: "ASST. MANAGER – SALES & SERVICE", phone: "+91 70015 64906", email: "sales@bltbrilliant.com" }
 ];
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -33,8 +33,12 @@ document.addEventListener("DOMContentLoaded", () => {
   // 2. Setup Checkpoints & Phone Number Restrictions
   setupFormCheckpointsAndValidation();
 
-  // 3. Add first lift card on page load
-  addLiftCard();
+  // 3. Add first lift card on page load if not already in HTML
+  if (document.querySelectorAll(".lift-card").length === 0) {
+    addLiftCard();
+  } else {
+    renumberAllLifts();
+  }
 
   // 4. Attach button listeners
   document.getElementById("btnAddLift").addEventListener("click", () => {
@@ -330,8 +334,8 @@ function addLiftCard() {
     <!-- Live Dimension Warning Alert -->
     <div class="dim-alert"></div>
 
-    <!-- Finishes & Cabin Options -->
-    <div class="grid-4">
+    <!-- Door Finishes & Vision -->
+    <div class="grid-2">
       <div class="form-group">
         <label>Door Finish <span class="req">*</span></label>
         <select class="form-control lift-door-finish" required>
@@ -352,6 +356,7 @@ function addLiftCard() {
           <option value="Full Glass Vision">Full Glass Vision</option>
         </select>
       </div>
+    </div>
 
       <div class="form-group">
         <label>Car Panels <span class="req">*</span></label>
@@ -360,6 +365,16 @@ function addLiftCard() {
           <option value="SS Hairline Finish">SS Hairline Finish</option>
           <option value="MS Powder Coated">MS Powder Coated</option>
           <option value="SS Mirror Gold">SS Mirror Gold</option>
+        </select>
+      </div>
+    <!-- Cabin Finishes & Design -->
+    <div class="grid-3">
+      <div class="form-group">
+        <label>Car Ceiling <span class="req">*</span></label>
+        <select class="form-control lift-ceiling" required>
+          <option value="" disabled selected>-- Select Car Ceiling --</option>
+          <option value="SS Hairline Finish">SS Hairline Finish</option>
+          <option value="MS Powder Coated Finish">MS Powder Coated Finish</option>
         </select>
       </div>
 
@@ -371,6 +386,7 @@ function addLiftCard() {
           <option value="MS Chequered Plate">MS Chequered Plate</option>
           <option value="Granite Stone Flooring">Granite Stone Flooring</option>
         </select>
+      </div>
       </div>
     </div>
 
@@ -476,9 +492,8 @@ function handleMachineAndTractionChange(element) {
   if (mr === "MRL") {
     traction.value = "Gearless";
     traction.disabled = true;
-  } 
- 
-  else if (mr === "MR") {
+  } else if (mr === "MR") {
+  } else if (mr === "MR") {
     traction.disabled = false;
   }
 
@@ -664,6 +679,13 @@ async function handleFormSubmit(e) {
       card.querySelector(".lift-load").focus();
       return;
     }
+
+    const ceilingSelect = card.querySelector(".lift-ceiling");
+    if (ceilingSelect && !ceilingSelect.value) {
+      alert(`Please select the Car Ceiling for Elevator #${liftNum}.`);
+      ceilingSelect.focus();
+      return;
+    }
   }
 
   if (!APPS_SCRIPT_WEB_APP_URL || APPS_SCRIPT_WEB_APP_URL.includes("YOUR_APPS_SCRIPT")) {
@@ -731,7 +753,7 @@ async function handleFormSubmit(e) {
       visionType: card.querySelector(".lift-vision").value || "No Vision",
       carPanels: card.querySelector(".lift-panels").value || "SS Hairline Finish",
       carFlooring: card.querySelector(".lift-flooring").value || "PVC Flooring",
-      carCeiling: "SS Hairline Finish",
+      carCeiling: (card.querySelector(".lift-ceiling") && card.querySelector(".lift-ceiling").value) ? card.querySelector(".lift-ceiling").value : "SS Hairline Finish",
       optionalFeature1: card.querySelector(".lift-feature1").value.trim(),
       optionalFeature2: card.querySelector(".lift-feature2").value.trim(),
       unitPrice: 0 // Non-priced edition
