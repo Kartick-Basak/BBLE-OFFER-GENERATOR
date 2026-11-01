@@ -626,3 +626,34 @@ body {
   border-color: #e2e8f0 !important;
   cursor: not-allowed !important;
 }
+
+/* Checkbox Feature Card */
+.checkbox-feature-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--primary);
+  background: #f1f5f9;
+  padding: 10px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: var(--transition);
+  width: 100%;
+  min-height: 42px;
+  box-sizing: border-box;
+}
+
+.checkbox-feature-label:hover {
+  background: #e2e8f0;
+  border-color: var(--primary);
+}
+
+.checkbox-feature-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
