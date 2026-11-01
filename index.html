@@ -61,7 +61,7 @@
         <div class="grid-2">
           <div class="form-group">
             <label for="customerName">Customer / Company Name <span class="req">*</span></label>
-            <input type="text" id="customerName" class="form-control" placeholder="e.g. VRINDAVAN DEVELOPERS" required autocomplete="organization">
+            <input type="text" id="customerName" class="form-control" placeholder="VRINDAVAN DEVELOPERS" required autocomplete="organization">
           </div>
           
           <div class="form-group">
@@ -71,7 +71,7 @@
                 <input type="checkbox" id="chkSameCustomer"> Same as Customer Name
               </label>
             </div>
-            <input type="text" id="contactPerson" class="form-control" placeholder="e.g. Authorized Signatory / Mr. Sharma" required autocomplete="name">
+            <input type="text" id="contactPerson" class="form-control" placeholder="Authorized Signatory / Mr. Sharma" required autocomplete="name">
           </div>
         </div>
 
@@ -79,7 +79,7 @@
         <div class="grid-2">
           <div class="form-group">
             <label for="contactPhone">Contact Person Phone Number (10 Digits) <span class="req">*</span></label>
-            <input type="tel" id="contactPhone" class="form-control" placeholder="e.g. 9832140598" maxlength="10" inputmode="numeric" pattern="[0-9]{10}" required autocomplete="tel">
+            <input type="tel" id="contactPhone" class="form-control" placeholder="9832140598" maxlength="10" inputmode="numeric" pattern="[0-9]{10}" required autocomplete="tel">
           </div>
           
           <div class="form-group">
@@ -141,7 +141,7 @@
         <div class="grid-2">
           <div class="form-group">
             <label for="address1">Office Address Line 1 <span class="req">*</span></label>
-            <input type="text" id="address1" class="form-control" placeholder="e.g. EASTERN BYPASS, SILIGURI" required autocomplete="street-address">
+            <input type="text" id="address1" class="form-control" placeholder="EASTERN BYPASS, SILIGURI" required autocomplete="street-address">
           </div>
           
           <div class="form-group">
@@ -153,7 +153,7 @@
         <!-- Row 4: Office PIN Code -->
         <div class="form-group">
           <label for="pinCode">Office PIN Code <span class="req">*</span></label>
-          <input type="text" id="pinCode" class="form-control" placeholder="e.g. 734004" maxlength="6" inputmode="numeric" required autocomplete="postal-code">
+          <input type="text" id="pinCode" class="form-control" placeholder="734004" maxlength="6" inputmode="numeric" required autocomplete="postal-code">
         </div>
 
         <!-- Row 5: Site Address (with checkpoint to copy from office address & PIN) -->
@@ -164,13 +164,13 @@
               <input type="checkbox" id="chkSameAddress"> Same as Office Address & PIN
             </label>
           </div>
-          <input type="text" id="siteAddress" class="form-control" placeholder="e.g. Eastern Bypass, Siliguri" required>
+          <input type="text" id="siteAddress" class="form-control" placeholder="Eastern Bypass, Siliguri" required>
         </div>
 
         <!-- Row 6: Site PIN Code (Placed AFTER Site Address as requested) -->
         <div class="form-group">
           <label for="sitePinCode">Site PIN Code <span class="req">*</span></label>
-          <input type="text" id="sitePinCode" class="form-control" placeholder="e.g. 734004" maxlength="6" inputmode="numeric" required>
+          <input type="text" id="sitePinCode" class="form-control" placeholder="734004" maxlength="6" inputmode="numeric" required>
         </div>
       </section>
 
@@ -192,16 +192,16 @@
                 <label>Lift Type <span class="req">*</span></label>
                 <select class="form-control lift-type" required onchange="handleLiftTypeChange(this)">
                   <option value="" disabled selected>-- Select Lift Type --</option>
-                  <option value="PASSENGER">Passenger Elevator</option>
-                  <option value="HOME LIFT">Home Lift / Villa</option>
-                  <option value="STRETCHER">Stretcher / Hospital Lift</option>
-                  <option value="GOODS">Goods / Freight Lift</option>
+                  <option value="PASSENGER">Passenger</option>
+                  <option value="HOME LIFT">Home</option>
+                  <option value="STRETCHER">Stretcher</option>
+                  <option value="GOODS">Goods</option>
                 </select>
               </div>
 
               <div class="form-group">
                 <label>No. of Units <span class="req">*</span></label>
-                <input type="number" class="form-control lift-qty" value="" placeholder="e.g. 1" min="1" max="50" inputmode="numeric" required oninput="updateTechnicalSummary()">
+                <input type="number" class="form-control lift-qty" value="" placeholder="1" min="1" max="50" inputmode="numeric" required oninput="updateTechnicalSummary()">
               </div>
 
               <div class="form-group">
@@ -244,15 +244,15 @@
               </div>
               <div class="form-group">
                 <label>No. of Stops <span class="req">*</span></label>
-                <input type="number" class="form-control lift-stops" value="" placeholder="e.g. 6" min="2" max="60" inputmode="numeric" required oninput="handleStopsChange(this)">
+                <input type="number" class="form-control lift-stops" value="" placeholder="6" min="2" max="60" inputmode="numeric" required oninput="handleStopsChange(this)">
               <div class="form-group">
                 <label>Serving Floors <span class="req">*</span></label>
-                <input type="text" class="form-control lift-floors" value="" placeholder="e.g. G+5 or B+G+4" required>
+                <input type="text" class="form-control lift-floors" value="" placeholder="G+5 or B+G+4" required>
               </div>
 
               <div class="form-group">
                 <label>Travel Distance (Mtrs) <span class="req">*</span></label>
-                <input type="text" class="form-control lift-travel" value="" placeholder="e.g. 15.0 Mtrs." required>
+                <input type="text" class="form-control lift-travel" value="" placeholder="15.0 Mtrs." required>
               </div>
             </div>
 
@@ -266,12 +266,12 @@
             <div class="grid-4">
               <div class="form-group">
                 <label>Shaft Width (W in MM) <span class="req">*</span></label>
-                <input type="number" class="form-control lift-shaft-w" value="" placeholder="e.g. 2050" inputmode="numeric" required oninput="validateShaftDimensions(this)">
+                <input type="number" class="form-control lift-shaft-w" value="" placeholder="2050" inputmode="numeric" required oninput="validateShaftDimensions(this)">
               </div>
 
               <div class="form-group">
                 <label>Shaft Depth (D in MM) <span class="req">*</span></label>
-                <input type="number" class="form-control lift-shaft-d" value="" placeholder="e.g. 2050" inputmode="numeric" required>
+                <input type="number" class="form-control lift-shaft-d" value="" placeholder="2050" inputmode="numeric" required>
               </div>
 
               <div class="form-group">
@@ -285,7 +285,7 @@
 
               <div class="form-group">
                 <label>Clear Door Width (MM) <span class="req">*</span></label>
-                <input type="number" class="form-control lift-door-w" value="" placeholder="e.g. 900" inputmode="numeric" required oninput="validateShaftDimensions(this)">
+                <input type="number" class="form-control lift-door-w" value="" placeholder="900" inputmode="numeric" required oninput="validateShaftDimensions(this)">
               </div>
             </div>
 
@@ -305,13 +305,13 @@
               </div>
 
               <div class="form-group">
-                <label>Vision Type</label>
-                <select class="form-control lift-vision">
+                <label>Vision Type <span class="req">*</span></label>
+                <select class="form-control lift-vision" required>
                   <option value="" disabled selected>-- Select Vision Type --</option>
                   <option value="No Vision">No Vision</option>
-                  <option value="Small Glass Vision">Small Glass Vision</option>
-                  <option value="Half Glass Vision">Half Glass Vision</option>
-                  <option value="Full Glass Vision">Full Glass Vision</option>
+                  <option value="Small Vision">Small Vision</option>
+                  <option value="Half Glass">Half Glass</option>
+                  <option value="Full Glass">Full Glass</option>
                 </select>
               </div>
             </div>
@@ -324,6 +324,7 @@
                   <option value="" disabled selected>-- Select Car Ceiling --</option>
                   <option value="SS Hairline Finish">SS Hairline Finish</option>
                   <option value="MS Powder Coated Finish">MS Powder Coated Finish</option>
+                  <option value="SS Mirror Finish">SS Mirror Finish</option>
                 </select>
               </div>
 
@@ -333,7 +334,8 @@
                   <option value="" disabled selected>-- Select Car Panels --</option>
                   <option value="SS Hairline Finish">SS Hairline Finish</option>
                   <option value="MS Powder Coated">MS Powder Coated</option>
-                  <option value="SS Mirror Gold">SS Mirror Gold</option>
+                  <option value="SS Mirror Finish">SS Mirror Finish</option>
+                  <option value="SS Hairline Finish - Back Side Middle Panel SS Mirror Finish">SS Hairline Finish - Back Side Middle Panel SS Mirror Finish</option>
                 </select>
               </div>
 
@@ -342,27 +344,26 @@
                 <select class="form-control lift-flooring" required>
                   <option value="" disabled selected>-- Select Car Flooring --</option>
                   <option value="PVC Flooring">PVC Flooring</option>
-                  <option value="MS Chequered Plate">MS Chequered Plate</option>
-                  <option value="Granite Stone Flooring">Granite Stone Flooring</option>
+                  <option value="PVC Flooring - Wooden Type">PVC Flooring - Wooden Type</option>
+                  <option value="Granite Flooring - By Customer">Granite Flooring - By Customer</option>
                 </select>
               </div>
             </div>
 
-            <!-- Car Dimensions & Optional Features -->
-            <div class="grid-3">
-              <div class="form-group">
-                <label>Car Dimension (W x D) MM</label>
-                <input type="text" class="form-control lift-cardim" placeholder="e.g. 1580 x 1300 or as per GA Drawing">
-              </div>
-
-              <div class="form-group">
-                <label>Optional Feature 1</label>
-                <input type="text" class="form-control lift-feature1" placeholder="e.g. Voice Announcement System">
+            <!-- Optional Features -->
+            <input type="hidden" class="lift-cardim" value="">
+            <div class="grid-2">
+              <div class="form-group" style="display: flex; flex-direction: column; justify-content: flex-end;">
+                <label class="checkbox-feature-label" title="Tick to include Overload Sensor &amp; Indicator in Optional Feature 1">
+                  <input type="checkbox" class="lift-feature1-check" onchange="handleFeature1Check(this)">
+                  <span>Overload Sensor &amp; Indicator</span>
+                </label>
+                <input type="hidden" class="lift-feature1" value="">
               </div>
 
               <div class="form-group">
                 <label>Optional Feature 2</label>
-                <input type="text" class="form-control lift-feature2" placeholder="e.g. Overload Sensor & Indicator">
+                <input type="text" class="form-control lift-feature2" placeholder="Voice Announcement System">
               </div>
             </div>
           </div>
