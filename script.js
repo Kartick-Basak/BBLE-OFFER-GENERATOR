@@ -275,13 +275,14 @@ function addLiftCard() {
       </div>
     </div>
 
-    <!-- Capacity, Speed, Stops -->
+    <!-- Capacity, Stops, Floors, Travel -->
     <div class="grid-4">
       <div class="form-group grp-capacity">
         <label>Capacity (Persons) <span class="req">*</span></label>
         <select class="form-control lift-capacity" required onchange="handleCapacityChange(this)">
           <option value="" disabled selected>-- Select Capacity --</option>
           <option value="4">4 Persons</option>
+          <option value="5">5 Persons</option>
           <option value="6">6 Persons</option>
           <option value="8">8 Persons</option>
           <option value="10">10 Persons</option>
@@ -292,30 +293,10 @@ function addLiftCard() {
       </div>
 
       <div class="form-group">
-        <label>Rated Load (Kg) <span class="req">*</span></label>
-        <input type="text" class="form-control lift-load" value="" placeholder="e.g. 884 Kg" required>
-      </div>
-
-      <div class="form-group">
-        <label>Speed (Mtr/sec) <span class="req">*</span></label>
-        <select class="form-control lift-speed" required>
-          <option value="" disabled selected>-- Select Speed --</option>
-          <option value="0.5 Mtr/sec">0.5 Mtr/sec</option>
-          <option value="0.63 Mtr/sec">0.63 Mtr/sec</option>
-          <option value="1.0 Mtr/sec">1.0 Mtr/sec</option>
-          <option value="1.5 Mtr/sec">1.5 Mtr/sec</option>
-          <option value="1.75 Mtr/sec">1.75 Mtr/sec</option>
-        </select>
-      </div>
-
-      <div class="form-group">
         <label>No. of Stops <span class="req">*</span></label>
         <input type="number" class="form-control lift-stops" value="" placeholder="e.g. 6" min="2" max="60" inputmode="numeric" required oninput="handleStopsChange(this)">
       </div>
-    </div>
 
-    <!-- Floors, Travel, Pit Depth, Headroom -->
-    <div class="grid-4">
       <div class="form-group">
         <label>Serving Floors <span class="req">*</span></label>
         <input type="text" class="form-control lift-floors" value="" placeholder="e.g. G+5 or B+G+4" required>
@@ -325,17 +306,13 @@ function addLiftCard() {
         <label>Travel Distance (Mtrs) <span class="req">*</span></label>
         <input type="text" class="form-control lift-travel" value="" placeholder="e.g. 15.0 Mtrs." required>
       </div>
-
-      <div class="form-group">
-        <label>Pit Depth (MM) <span class="req">*</span></label>
-        <input type="text" class="form-control lift-pit field-locked" value="1600 MM" placeholder="1600 MM" required readonly oninput="validateHomePit(this)" onblur="handlePitBlur(this)" title="Standard Pit Depth (1600 MM)">
-      </div>
-
-      <div class="form-group">
-        <label>Head Room (MM) <span class="req">*</span></label>
-        <input type="text" class="form-control lift-headroom field-readonly-grey" value="" placeholder="e.g. 4800 MM" required readonly onclick="unlockHeadroom(this)" onblur="handleHeadroomBlur(this)" title="Click to edit Head Room">
-      </div>
     </div>
+
+    <!-- Hidden Technical Parameters (Auto-Calculated by Engine) -->
+    <input type="hidden" class="lift-load" value="408 Kg">
+    <input type="hidden" class="lift-speed" value="1.0 Mtr/sec">
+    <input type="hidden" class="lift-pit" value="1600 MM">
+    <input type="hidden" class="lift-headroom" value="4800 MM">
 
     <!-- Shaft Dimensions & Door Specs -->
     <div class="grid-4">
@@ -490,116 +467,127 @@ function updateRemoveButtonsVisibility() {
   });
 }
 
-/**
- * Handles Lift Type selection
- */
 function handleLiftTypeChange(element) {
   const card = element.closest(".lift-card");
   if (!card) return;
 
   const type = card.querySelector(".lift-type").value;
   const capacitySelect = card.querySelector(".lift-capacity");
-  // If GOODS is selected, passenger capacity is not applicable
-  if (type === "GOODS") {
+  const mrSelect = card.querySelector(".lift-mr");
+  const tractionSelect = card.querySelector(".lift-traction");
+
+  if (type === "HOME LIFT") {
+    // For Home Lift it always should be MRL, Gearless and speed 0.3 Mtr/sec
+    mrSelect.value = "MRL";
+    mrSelect.disabled = true;
+    tractionSelect.value = "Gearless";
+    tractionSelect.disabled = true;
+    capacitySelect.disabled = false;
+  } else if (type === "GOODS") {
+    // Goods Lift: no passenger capacity, speed always 0.5 Mtr/sec
     capacitySelect.disabled = true;
     capacitySelect.value = "";
-  } else {
-    capacitySelect.disabled = false;
-  }
-
-  // Pit Depth rule: Always grey/locked (1600 MM) except for Home elevator (Min 500 MM)
-  const pitInput = card.querySelector(".lift-pit");
-  if (pitInput) {
-    if (type === "HOME LIFT") {
-      pitInput.readOnly = false;
-      pitInput.classList.remove("field-locked", "field-readonly-grey");
-      if (!pitInput.value || pitInput.value === "1600 MM") {
-        pitInput.value = "500 MM";
-      }
-      pitInput.placeholder = "Min 500 MM (e.g. 500 MM)";
-      pitInput.title = "Home Elevator Pit Depth (Min 500 MM)";
+    mrSelect.disabled = false;
+    if (mrSelect.value === "MRL") {
+      tractionSelect.value = "Gearless";
+      tractionSelect.disabled = true;
     } else {
-      pitInput.readOnly = true;
-      pitInput.classList.add("field-locked");
-      pitInput.classList.remove("field-readonly-grey");
-      pitInput.value = "1600 MM";
-      pitInput.placeholder = "1600 MM";
-      pitInput.title = "Standard Pit Depth (1600 MM)";
+      tractionSelect.disabled = false;
+    }
+  } else {
+    // PASSENGER or STRETCHER
+    capacitySelect.disabled = false;
+    mrSelect.disabled = false;
+    if (mrSelect.value === "MRL") {
+      tractionSelect.value = "Gearless";
+      tractionSelect.disabled = true;
+    } else {
+      tractionSelect.disabled = false;
     }
   }
 
+  updateHiddenLiftFields(card);
   updateTechnicalSummary();
 }
-/**
- * Handles Machine Room (MR/MRL) and Traction (Gearless/Geared) transitions
- */
+
 function handleMachineAndTractionChange(element) {
   const card = element.closest(".lift-card");
   if (!card) return;
 
-  const mr = card.querySelector(".lift-mr").value;
-  const traction = card.querySelector(".lift-traction");
+  const type = card.querySelector(".lift-type").value;
+  const mrSelect = card.querySelector(".lift-mr");
+  const tractionSelect = card.querySelector(".lift-traction");
 
-  if (mr === "MRL") {
-    traction.value = "Gearless";
-    traction.disabled = true;
-  } else if (mr === "MR") {
-    traction.disabled = false;
+  if (type === "HOME LIFT") {
+    mrSelect.value = "MRL";
+    mrSelect.disabled = true;
+    tractionSelect.value = "Gearless";
+    tractionSelect.disabled = true;
+  } else if (mrSelect.value === "MRL") {
+    tractionSelect.value = "Gearless";
+    tractionSelect.disabled = true;
+  } else if (mrSelect.value === "MR") {
+    tractionSelect.disabled = false;
   }
 
-  // Headroom rules:
-  // if MRL (Gearless) -> 4800 MM
-  // if MR Gearless -> 4500 MM
-  // if MR Geared -> 4200 MM
-  const headroomInput = card.querySelector(".lift-headroom");
-  if (headroomInput) {
-    const curTraction = traction.value;
-    let autoHeadroom = "";
-    if (mr === "MRL") {
-      autoHeadroom = "4800 MM";
-    } else if (mr === "MR" && curTraction === "Gearless") {
-      autoHeadroom = "4500 MM";
-    } else if (mr === "MR" && curTraction === "Geared") {
-      autoHeadroom = "4200 MM";
-    }
-
-    if (autoHeadroom && headroomInput.dataset.manualEdited !== "true") {
-      headroomInput.value = autoHeadroom;
-    }
-  }
-
-  updateSpeedOptions(card);
+  updateHiddenLiftFields(card);
 }
 
-/**
- * Dynamic Speed management:
- * Machine Room (MR) + Geared restricts speed to: 0.63, 0.7, 1.0 Mtr/sec ONLY
- */
-function updateSpeedOptions(card) {
+function updateHiddenLiftFields(card) {
   if (!card) return;
 
+  const type = card.querySelector(".lift-type").value;
   const mr = card.querySelector(".lift-mr").value;
   const traction = card.querySelector(".lift-traction").value;
-  const speedSelect = card.querySelector(".lift-speed");
-  const currentSpeed = speedSelect.value;
+  const capacitySelect = card.querySelector(".lift-capacity");
+  const pax = parseInt(capacitySelect ? capacitySelect.value : "") || 6;
 
-  let allowedSpeeds = [];
-  if (mr === "MR" && traction === "Geared") {
-    allowedSpeeds = ["0.63 Mtr/sec", "0.7 Mtr/sec", "1.0 Mtr/sec"];
-  } else {
-    allowedSpeeds = ["0.5 Mtr/sec", "0.63 Mtr/sec", "1.0 Mtr/sec", "1.5 Mtr/sec", "1.75 Mtr/sec"];
+  // 1. Rated Load
+  const loadInput = card.querySelector(".lift-load");
+  if (loadInput) {
+    loadInput.value = (type === "GOODS") ? "1500 Kg" : `${pax * 68} Kg`;
   }
 
-  speedSelect.innerHTML = `<option value="" disabled ${!currentSpeed ? "selected" : ""}>-- Select Speed --</option>`;
-  allowedSpeeds.forEach(s => {
-    const opt = document.createElement("option");
-    opt.value = s;
-    opt.text = s;
-    if (s === currentSpeed) {
-      opt.selected = true;
+  // 2. Speed Rules:
+  // - Home Lift: always 0.3 Mtr/sec
+  // - Goods Lift: always 0.5 Mtr/sec
+  // - Passenger/Stretcher MR Geared: 0.63 Mtr/sec
+  // - Passenger/Stretcher MR Gearless or MRL Gearless: 1.0 Mtr/sec
+  const speedInput = card.querySelector(".lift-speed");
+  if (speedInput) {
+    if (type === "HOME LIFT") {
+      speedInput.value = "0.3 Mtr/sec";
+    } else if (type === "GOODS") {
+      speedInput.value = "0.5 Mtr/sec";
+    } else if (mr === "MR" && traction === "Geared") {
+      speedInput.value = "0.63 Mtr/sec";
+    } else {
+      speedInput.value = "1.0 Mtr/sec";
     }
-    speedSelect.appendChild(opt);
-  });
+  }
+
+  // 3. Pit Depth Rules:
+  // - Home Lift: default 1000 MM
+  // - Standard (Passenger/Stretcher/Goods): 1600 MM
+  const pitInput = card.querySelector(".lift-pit");
+  if (pitInput) {
+    pitInput.value = (type === "HOME LIFT") ? "1000 MM" : "1600 MM";
+  }
+
+  // 4. Headroom Rules:
+  // - MR Geared: 4200 MM
+  // - MR Gearless: 4500 MM
+  // - MRL: 4800 MM
+  const headroomInput = card.querySelector(".lift-headroom");
+  if (headroomInput) {
+    if (mr === "MR" && traction === "Geared") {
+      headroomInput.value = "4200 MM";
+    } else if (mr === "MR" && traction === "Gearless") {
+      headroomInput.value = "4500 MM";
+    } else {
+      headroomInput.value = "4800 MM";
+    }
+  }
 }
 
 /**
@@ -728,8 +716,6 @@ async function handleFormSubmit(e) {
     const typeVal = card.querySelector(".lift-type").value;
     const qtyVal = card.querySelector(".lift-qty").value;
     const mrVal = card.querySelector(".lift-mr").value;
-    const loadVal = card.querySelector(".lift-load").value.trim();
-
     if (!typeVal) {
       alert(`Please select the Lift Type for Elevator #${liftNum}.`);
       card.querySelector(".lift-type").focus();
@@ -743,34 +729,6 @@ async function handleFormSubmit(e) {
     if (!mrVal) {
       alert(`Please select Machine Room Configuration for Elevator #${liftNum}.`);
       card.querySelector(".lift-mr").focus();
-      return;
-    }
-    if (!loadVal) {
-      alert(`Please specify the Rated Load for Elevator #${liftNum}.`);
-      card.querySelector(".lift-load").focus();
-      return;
-    }
-
-    const pitInput = card.querySelector(".lift-pit");
-    const pitVal = pitInput ? pitInput.value.trim() : "";
-    if (!pitVal) {
-      alert(`Please specify the Pit Depth for Elevator #${liftNum}.`);
-      pitInput.focus();
-      return;
-    }
-    if (typeVal === "HOME LIFT") {
-      const pitNum = parseInt(pitVal.replace(/\D/g, ""), 10) || 0;
-      if (pitNum < 500) {
-        alert(`Elevator #${liftNum} (Home Lift): Pit Depth cannot be less than 500 MM (Current: ${pitVal}).`);
-        pitInput.focus();
-        return;
-      }
-    }
-
-    const headroomInput = card.querySelector(".lift-headroom");
-    if (headroomInput && !headroomInput.value.trim()) {
-      alert(`Please specify the Head Room for Elevator #${liftNum}.`);
-      headroomInput.focus();
       return;
     }
 
@@ -826,19 +784,49 @@ async function handleFormSubmit(e) {
     const typeVal = card.querySelector(".lift-type").value || "PASSENGER";
     const isGoods = typeVal === "GOODS";
 
+    const isHome = typeVal === "HOME LIFT";
+    const mrVal = card.querySelector(".lift-mr").value || (isHome ? "MRL" : "MRL");
+    const tractionVal = card.querySelector(".lift-traction").value || (mrVal === "MRL" ? "Gearless" : "Gearless");
+    const paxVal = card.querySelector(".lift-capacity").value;
+    const pax = parseInt(paxVal) || 6;
+
+    let computedSpeed = "1.0 Mtr/sec";
+    if (isHome) {
+      computedSpeed = "0.3 Mtr/sec";
+    } else if (isGoods) {
+      computedSpeed = "0.5 Mtr/sec";
+    } else if (mrVal === "MR" && tractionVal === "Geared") {
+      computedSpeed = "0.63 Mtr/sec";
+    } else {
+      computedSpeed = "1.0 Mtr/sec";
+    }
+
+    const computedPit = isHome ? "1000 MM" : "1600 MM";
+
+    let computedHeadroom = "4800 MM";
+    if (mrVal === "MR" && tractionVal === "Geared") {
+      computedHeadroom = "4200 MM";
+    } else if (mrVal === "MR" && tractionVal === "Gearless") {
+      computedHeadroom = "4500 MM";
+    } else {
+      computedHeadroom = "4800 MM";
+    }
+
+    const computedLoad = isGoods ? "1500 Kg" : `${pax * 68} Kg`;
+
     const liftObj = {
       liftType: typeVal,
       numElevators: parseInt(card.querySelector(".lift-qty").value) || 1,
-      mrConfig: card.querySelector(".lift-mr").value || "MRL",
-      tractionUnit: card.querySelector(".lift-traction").value || "Gearless",
-      capacity: isGoods ? "-" : (card.querySelector(".lift-capacity").value || "6"),
-      ratedLoad: card.querySelector(".lift-load").value.trim() || "408 Kg",
-      speed: card.querySelector(".lift-speed").value || "1.0 Mtr/sec",
+      mrConfig: mrVal,
+      tractionUnit: tractionVal,
+      capacity: isGoods ? "-" : (paxVal || "6"),
+      ratedLoad: computedLoad,
+      speed: computedSpeed,
       numStops: parseInt(card.querySelector(".lift-stops").value) || 2,
       servingFloors: card.querySelector(".lift-floors").value.trim() || "G+1",
       travel: card.querySelector(".lift-travel").value.trim() || "3.0 Mtrs.",
-      pitDepth: (card.querySelector(".lift-pit") && card.querySelector(".lift-pit").value.trim()) ? card.querySelector(".lift-pit").value.trim() : "1600 MM",
-      headRoom: card.querySelector(".lift-headroom").value.trim() || "4800 MM",
+      pitDepth: computedPit,
+      headRoom: computedHeadroom,
       shaftWidth: shaftW,
       shaftDepth: parseFloat(card.querySelector(".lift-shaft-d").value) || 0,
       carDimensions: card.querySelector(".lift-cardim").value.trim(),
