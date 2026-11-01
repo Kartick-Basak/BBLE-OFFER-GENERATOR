@@ -45,7 +45,6 @@ body {
   margin: 0 auto;
 }
 
-/* Header & Sales Profile Section */
 .app-header {
   background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
   color: #ffffff;
@@ -96,13 +95,6 @@ body {
   }
 }
 
-.brand-subtitle {
-  color: #94a3b8;
-  font-size: 13px;
-  margin-top: 4px;
-}
-
-/* Upper Right Sales Person Profile Card */
 .sales-profile-card {
   background: rgba(255, 255, 255, 0.09);
   border: 1px solid rgba(255, 255, 255, 0.22);
@@ -182,7 +174,6 @@ body {
   text-align: right;
 }
 
-/* Form Cards */
 .form-card {
   background: var(--card-bg);
   border-radius: var(--radius);
@@ -212,7 +203,6 @@ body {
   padding-bottom: 10px;
 }
 
-/* Checkpoint / Checkbox Badges */
 .label-with-checkpoint {
   display: flex;
   justify-content: space-between;
@@ -248,7 +238,6 @@ body {
   cursor: pointer;
 }
 
-/* Grids */
 .grid-2 {
   display: grid;
   grid-template-columns: 1fr;
@@ -323,14 +312,6 @@ body {
   box-shadow: 0 0 0 3px rgba(11, 25, 44, 0.12);
 }
 
-.form-control:disabled, .form-control[readonly] {
-  background-color: #f1f5f9;
-  color: #475569;
-  border-color: #e2e8f0;
-  cursor: not-allowed;
-}
-
-/* Lift Specification Card */
 .lift-card {
   background: #ffffff;
   border: 2px solid #e2e8f0;
@@ -346,10 +327,6 @@ body {
   .lift-card {
     padding: 22px 24px;
   }
-}
-
-.lift-card:hover {
-  border-color: #cbd5e1;
 }
 
 .lift-card-header {
@@ -388,7 +365,6 @@ body {
   border-color: var(--danger);
 }
 
-/* Dimension Warning Box */
 .dim-alert {
   display: none;
   background-color: #fff7ed;
@@ -401,7 +377,6 @@ body {
   color: #9a3412;
 }
 
-/* Add Lift Button */
 .btn-add-lift {
   width: 100%;
   background-color: #ffffff;
@@ -421,13 +396,11 @@ body {
   min-height: 48px;
 }
 
-.btn-add-lift:hover, .btn-add-lift:active {
+.btn-add-lift:hover {
   background-color: #f1f5f9;
   border-color: var(--primary);
-  color: var(--primary-light);
 }
 
-/* Technical Summary Card */
 .tech-summary-card {
   background: linear-gradient(135deg, #0b192c 0%, #1e3e62 100%);
   color: #ffffff;
@@ -470,7 +443,6 @@ body {
   color: #ffffff;
 }
 
-/* Submit Actions */
 .btn-submit {
   width: 100%;
   background-color: var(--accent);
@@ -489,21 +461,13 @@ body {
 
 .btn-submit:hover {
   background-color: var(--accent-hover);
-  transform: translateY(-1px);
-}
-
-.btn-submit:active {
-  transform: translateY(0);
 }
 
 .btn-submit:disabled {
   background-color: #94a3b8;
   cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
 }
 
-/* Modal Feedback */
 .modal-overlay {
   display: none;
   position: fixed;
@@ -597,37 +561,6 @@ body {
   100% { transform: rotate(360deg); }
 }
 
-/* Car Ceiling & Finish Controls */
-.lift-ceiling {
-  background-color: #ffffff;
-  border: 1px solid var(--border-color);
-  font-weight: 500;
-}
-
-.lift-ceiling:focus {
-  border-color: var(--border-focus);
-}
-
-/* Grey Read-only and Locked Fields */
-.field-readonly-grey {
-  background-color: #f1f5f9 !important;
-  color: #475569 !important;
-  border-color: #cbd5e1 !important;
-  cursor: pointer !important;
-}
-
-.field-readonly-grey:hover {
-  border-color: var(--primary) !important;
-}
-
-.field-locked {
-  background-color: #f1f5f9 !important;
-  color: #64748b !important;
-  border-color: #e2e8f0 !important;
-  cursor: not-allowed !important;
-}
-
-/* Checkbox Feature Card */
 .checkbox-feature-label {
   display: inline-flex;
   align-items: center;
