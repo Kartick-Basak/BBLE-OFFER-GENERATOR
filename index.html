@@ -3,91 +3,98 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>BLT Brilliant - Proposal Generator & Technical Form</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <title>BLT Brilliant Lifts & Escalators - Proposal Generator</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
   <div class="container">
     
-    <!-- Top Corporate Branding Bar with Theme Toggle -->
-    <header class="top-navbar">
-      <div class="brand-container">
-        <img 
-          src="logo.png" 
-          alt="BLT BRILLIANT - Technology Leads Market ♦ Service Creates Value" 
-          class="company-logo-img"
-          onerror="this.onerror=null; this.src='https://placehold.co/460x115/ffffff/005696?text=BLT+BRILLIANT';"
-        />
-      </div>
-
-      <!-- Light / Dark Mode Toggle -->
-      <button type="button" id="btnThemeToggle" class="theme-toggle-btn" aria-label="Toggle Theme">
-        <span class="theme-icon" id="themeIcon">🌙</span>
-        <span id="themeText">Dark Mode</span>
-      </button>
-    </header>
-
-    <!-- Sales Representative Bar: Only Name Visible (Auto-Updates from Database Sheet) -->
-    <div class="sales-strip">
-      <div class="sales-strip-label">
-        <span>👤 Sales Representative</span>
-      </div>
-      <select id="salesPersonSelect" class="sales-strip-select" title="Assigned Sales Representative" required>
-        <option value="" disabled selected>Loading sales team...</option>
-      </select>
-    </div>
-
-    <!-- Main Proposal Form -->
-    <form id="proposalForm" novalidate>
-
-      <!-- Customer & Project Information Card -->
-      <section class="form-card">
-        <h2 class="card-title">
-          <span class="card-title-icon">📋</span> Customer &amp; Project Information
-        </h2>
+    <!-- Top Header with Upper-Right Sales Person Profile Section -->
+    <header class="app-header">
+      <div class="header-layout">
         
-        <!-- Customer & Contact Person -->
-        <div class="grid-2">
-          <div class="form-group">
-            <label for="customerName">Customer / Company Name <span class="req">*</span></label>
-            <input type="text" id="customerName" class="form-control" placeholder="" required autocomplete="organization">
+        <!-- Left: Brand Info -->
+        <div class="brand-section">
+          <h1 class="brand-title">BLT Brilliant Lifts & Escalators</h1>
+          <p class="brand-subtitle">Commercial Offer & Multi-Specification Proposal Automation Engine</p>
+        </div>
+
+        <!-- Upper Right: Sales Representative Profile Section -->
+        <div class="sales-profile-card">
+          <div class="profile-card-header">
+            <span class="profile-title">👤 Sales Representative Profile</span>
           </div>
-          
-          <div class="form-group">
-            <label for="contactPerson">
-              <span>Contact Person Name <span class="req">*</span></span>
-              <span class="label-checkpoint" title="Copy from Customer / Company Name">
-                <input type="checkbox" id="chkSameCustomer"> Same as Customer
-              </span>
-            </label>
-            <input type="text" id="contactPerson" class="form-control" placeholder="" required autocomplete="name">
+
+          <!-- Sales Person Selector -->
+          <select id="salesPersonSelect" class="sales-select" title="Select Sales Person">
+            <!-- Populated dynamically from Sales Team sheet -->
+          </select>
+
+          <!-- Live Details from Database Sheet -->
+          <div class="profile-details-grid">
+            <div class="profile-detail-row">
+              <span class="label">Designation:</span>
+              <span class="val" id="salesDesignation">ENGINEER – SALES</span>
+            </div>
+            <div class="profile-detail-row">
+              <span class="label">Mobile No.:</span>
+              <span class="val" id="salesPhone">+91 98321 40598</span>
+            </div>
+            <div class="profile-detail-row">
+              <span class="label">Email:</span>
+              <span class="val" id="salesEmail">sales@bltbrilliant.com</span>
+            </div>
           </div>
         </div>
 
-        <!-- Phone & State -->
+      </div>
+    </header>
+
+    <form id="proposalForm" novalidate>
+
+      <!-- Customer / Company Information Card -->
+      <section class="form-card">
+        <h2 class="card-title">🏢 Customer & Project Information</h2>
+        
+        <!-- Row 1: Customer Name & Contact Person -->
         <div class="grid-2">
           <div class="form-group">
-            <label for="contactPhone">Contact Phone Number (10 Digits) <span class="req">*</span></label>
-            <input type="tel" id="contactPhone" class="form-control" placeholder="" maxlength="10" inputmode="numeric" pattern="[0-9]{10}" required autocomplete="tel">
+            <label for="customerName">Customer / Company Name <span class="req">*</span></label>
+            <input type="text" id="customerName" class="form-control" placeholder="VRINDAVAN DEVELOPERS" required autocomplete="organization">
           </div>
           
           <div class="form-group">
-            <label for="state">State / Territory <span class="req">*</span></label>
+            <div class="label-with-checkpoint">
+              <label for="contactPerson">Contact Person Name <span class="req">*</span></label>
+              <label class="checkpoint-badge" title="Copy from Customer / Company Name">
+                <input type="checkbox" id="chkSameCustomer"> Same as Customer Name
+              </label>
+            </div>
+            <input type="text" id="contactPerson" class="form-control" placeholder="Authorized Signatory / Mr. Sharma" required autocomplete="name">
+          </div>
+        </div>
+
+        <!-- Row 2: Contact Phone & State Dropdown -->
+        <div class="grid-2">
+          <div class="form-group">
+            <label for="contactPhone">Contact Person Phone Number (10 Digits) <span class="req">*</span></label>
+            <input type="tel" id="contactPhone" class="form-control" placeholder="9832140598" maxlength="10" inputmode="numeric" pattern="[0-9]{10}" required autocomplete="tel">
+          </div>
+          
+          <div class="form-group">
+            <label for="state">State <span class="req">*</span></label>
             <select id="state" class="form-control" required>
-              <option value="" disabled selected>Select State / UT</option>
+              <option value="" disabled>-- Select State / UT --</option>
               <optgroup label="Popular States">
-                <option value="West Bengal">West Bengal</option>
+                <option value="West Bengal" selected>West Bengal</option>
                 <option value="Odisha">Odisha</option>
                 <option value="Bihar">Bihar</option>
                 <option value="Jharkhand">Jharkhand</option>
                 <option value="Assam">Assam</option>
                 <option value="Delhi">Delhi</option>
               </optgroup>
-              <optgroup label="All States & Union Territories">
+              <optgroup label="All States &amp; Union Territories">
                 <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
                 <option value="Andhra Pradesh">Andhra Pradesh</option>
                 <option value="Arunachal Pradesh">Arunachal Pradesh</option>
@@ -130,54 +137,245 @@
           </div>
         </div>
 
-        <!-- Office Address -->
+        <!-- Row 3: Office Address Line 1 & Line 2 -->
         <div class="grid-2">
           <div class="form-group">
             <label for="address1">Office Address Line 1 <span class="req">*</span></label>
-            <input type="text" id="address1" class="form-control" placeholder="" required autocomplete="street-address">
+            <input type="text" id="address1" class="form-control" placeholder="EASTERN BYPASS, SILIGURI" required autocomplete="street-address">
           </div>
           
           <div class="form-group">
             <label for="address2">Office Address Line 2</label>
-            <input type="text" id="address2" class="form-control" placeholder="">
+            <input type="text" id="address2" class="form-control" placeholder="Landmark, Suite, Ward">
           </div>
         </div>
 
+        <!-- Row 4: Office PIN Code -->
         <div class="form-group">
           <label for="pinCode">Office PIN Code <span class="req">*</span></label>
-          <input type="text" id="pinCode" class="form-control" placeholder="" maxlength="6" inputmode="numeric" required autocomplete="postal-code">
+          <input type="text" id="pinCode" class="form-control" placeholder="734004" maxlength="6" inputmode="numeric" required autocomplete="postal-code">
         </div>
 
-        <!-- Site Address -->
+        <!-- Row 5: Site Address (with checkpoint to copy from office address & PIN) -->
         <div class="form-group">
-          <label for="siteAddress">
-            <span>Site Address (Project Site Location) <span class="req">*</span></span>
-            <span class="label-checkpoint" title="Copy from Office Address & PIN">
+          <div class="label-with-checkpoint">
+            <label for="siteAddress">Site Address (Project Site Location) <span class="req">*</span></label>
+            <label class="checkpoint-badge" title="Copy from Office Address & PIN">
               <input type="checkbox" id="chkSameAddress"> Same as Office Address & PIN
-            </span>
-          </label>
-          <input type="text" id="siteAddress" class="form-control" placeholder="" required>
+            </label>
+          </div>
+          <input type="text" id="siteAddress" class="form-control" placeholder="Eastern Bypass, Siliguri" required>
         </div>
 
+        <!-- Row 6: Site PIN Code (Placed AFTER Site Address as requested) -->
         <div class="form-group">
           <label for="sitePinCode">Site PIN Code <span class="req">*</span></label>
-          <input type="text" id="sitePinCode" class="form-control" placeholder="" maxlength="6" inputmode="numeric" required>
+          <input type="text" id="sitePinCode" class="form-control" placeholder="734004" maxlength="6" inputmode="numeric" required>
         </div>
       </section>
 
       <!-- Multi-Lift Specifications Container -->
       <section>
+        <h2 class="card-title" style="margin-bottom: 14px;">🛗 Elevator Specifications (Multi-Unit Configuration)</h2>
+        
         <div id="liftsContainer">
-          <!-- Initial Elevator Card will be inserted cleanly here -->
+          <!-- Elevator Specification Card -->
+          <div class="lift-card" id="liftCard_1" data-lift-index="1">
+            <div class="lift-card-header">
+              <div class="lift-badge">Elevator #1 Specification</div>
+              <button type="button" class="btn-remove-lift" onclick="removeLiftCard(this)" style="display: none;">✕ Remove Elevator</button>
+            </div>
+
+            <!-- Basic Configuration -->
+            <div class="grid-4">
+              <div class="form-group">
+                <label>Lift Type <span class="req">*</span></label>
+                <select class="form-control lift-type" required onchange="handleLiftTypeChange(this)">
+                  <option value="" disabled selected>-- Select Lift Type --</option>
+                  <option value="PASSENGER">Passenger</option>
+                  <option value="HOME LIFT">Home</option>
+                  <option value="STRETCHER">Stretcher</option>
+                  <option value="GOODS">Goods</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label>No. of Units <span class="req">*</span></label>
+                <input type="number" class="form-control lift-qty" value="" placeholder="1" min="1" max="50" inputmode="numeric" required oninput="updateTechnicalSummary()">
+              </div>
+
+              <div class="form-group">
+                <label>Machine Room Config <span class="req">*</span></label>
+                <select class="form-control lift-mr" required onchange="handleMachineAndTractionChange(this)">
+                  <option value="" disabled selected>-- Select MR / MRL --</option>
+                  <option value="MRL">MRL (Machine Room Less)</option>
+                  <option value="MR">MR (Machine Room)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label>Traction Unit <span class="req">*</span></label>
+                <select class="form-control lift-traction" required onchange="handleMachineAndTractionChange(this)">
+                  <option value="" disabled selected>-- Select Traction --</option>
+                  <option value="Gearless">Gearless</option>
+                  <option value="Geared">Geared</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Capacity, Stops, Floors, Travel -->
+            <div class="grid-4">
+              <div class="form-group grp-capacity">
+                <label>Capacity (Persons) <span class="req">*</span></label>
+                <select class="form-control lift-capacity" required onchange="handleCapacityChange(this)">
+                  <option value="" disabled selected>-- Select Capacity --</option>
+                  <option value="4">4 Persons</option>
+                  <option value="5">5 Persons</option>
+                  <option value="6">6 Persons</option>
+                  <option value="8">8 Persons</option>
+                  <option value="10">10 Persons</option>
+                  <option value="13">13 Persons (Stretcher)</option>
+                  <option value="15">15 Persons</option>
+                </select>
+              </div>
+
+                  <option value="5">5 Persons</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>No. of Stops <span class="req">*</span></label>
+                <input type="number" class="form-control lift-stops" value="" placeholder="6" min="2" max="60" inputmode="numeric" required oninput="handleStopsChange(this)">
+              <div class="form-group">
+                <label>Serving Floors <span class="req">*</span></label>
+                <input type="text" class="form-control lift-floors" value="" placeholder="G+5 or B+G+4" required>
+              </div>
+
+              <div class="form-group">
+                <label>Travel Distance (Mtrs) <span class="req">*</span></label>
+                <input type="text" class="form-control lift-travel" value="" placeholder="15.0 Mtrs." required>
+              </div>
+            </div>
+
+            <!-- Hidden Technical Parameters (Auto-Calculated by Engine) -->
+            <input type="hidden" class="lift-load" value="408 Kg">
+            <input type="hidden" class="lift-speed" value="1.0 Mtr/sec">
+            <input type="hidden" class="lift-pit" value="1600 MM">
+            <input type="hidden" class="lift-headroom" value="4800 MM">
+
+            <!-- Shaft Dimensions & Door Specs -->
+            <div class="grid-4">
+              <div class="form-group">
+                <label>Shaft Width (W in MM) <span class="req">*</span></label>
+                <input type="number" class="form-control lift-shaft-w" value="" placeholder="2050" inputmode="numeric" required oninput="validateShaftDimensions(this)">
+              </div>
+
+              <div class="form-group">
+                <label>Shaft Depth (D in MM) <span class="req">*</span></label>
+                <input type="number" class="form-control lift-shaft-d" value="" placeholder="2050" inputmode="numeric" required>
+              </div>
+
+              <div class="form-group">
+                <label>Door Opening Type <span class="req">*</span></label>
+                <select class="form-control lift-door-type" required onchange="validateShaftDimensions(this)">
+                  <option value="" disabled selected>-- Select Door Opening --</option>
+                  <option value="Automatic Center Opening Door">Center Opening Door</option>
+                  <option value="Automatic Telescopic Opening Door">Telescopic Opening Door</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label>Clear Door Width (MM) <span class="req">*</span></label>
+                <input type="number" class="form-control lift-door-w" value="" placeholder="900" inputmode="numeric" required oninput="validateShaftDimensions(this)">
+              </div>
+            </div>
+
+            <!-- Live Dimension Warning Alert -->
+            <div class="dim-alert"></div>
+
+            <!-- Door Finishes & Vision -->
+            <div class="grid-2">
+              <div class="form-group">
+                <label>Door Finish <span class="req">*</span></label>
+                <select class="form-control lift-door-finish" required>
+                  <option value="" disabled selected>-- Select Door Finish --</option>
+                  <option value="SS Hairline Finish">SS Hairline Finish</option>
+                  <option value="MS Powder Coated">MS Powder Coated</option>
+                  <option value="SS Mirror Finish">SS Mirror Finish</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label>Vision Type <span class="req">*</span></label>
+                <select class="form-control lift-vision" required>
+                  <option value="" disabled selected>-- Select Vision Type --</option>
+                  <option value="No Vision">No Vision</option>
+                  <option value="Small Vision">Small Vision</option>
+                  <option value="Half Glass">Half Glass</option>
+                  <option value="Full Glass">Full Glass</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Cabin Finishes & Design -->
+            <div class="grid-3">
+              <div class="form-group">
+                <label>Car Ceiling <span class="req">*</span></label>
+                <select class="form-control lift-ceiling" required>
+                  <option value="" disabled selected>-- Select Car Ceiling --</option>
+                  <option value="SS Hairline Finish">SS Hairline Finish</option>
+                  <option value="MS Powder Coated Finish">MS Powder Coated Finish</option>
+                  <option value="SS Mirror Finish">SS Mirror Finish</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label>Car Panels <span class="req">*</span></label>
+                <select class="form-control lift-panels" required>
+                  <option value="" disabled selected>-- Select Car Panels --</option>
+                  <option value="SS Hairline Finish">SS Hairline Finish</option>
+                  <option value="MS Powder Coated">MS Powder Coated</option>
+                  <option value="SS Mirror Finish">SS Mirror Finish</option>
+                  <option value="SS Hairline Finish - Back Side Middle Panel SS Mirror Finish">SS Hairline Finish - Back Side Middle Panel SS Mirror Finish</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label>Car Flooring <span class="req">*</span></label>
+                <select class="form-control lift-flooring" required>
+                  <option value="" disabled selected>-- Select Car Flooring --</option>
+                  <option value="PVC Flooring">PVC Flooring</option>
+                  <option value="PVC Flooring - Wooden Type">PVC Flooring - Wooden Type</option>
+                  <option value="Granite Flooring - By Customer">Granite Flooring - By Customer</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Optional Features -->
+            <input type="hidden" class="lift-cardim" value="">
+            <div class="grid-2">
+              <div class="form-group" style="display: flex; flex-direction: column; justify-content: flex-end;">
+                <label class="checkbox-feature-label" title="Tick to include Overload Sensor &amp; Indicator in Optional Feature 1">
+                  <input type="checkbox" class="lift-feature1-check" onchange="handleFeature1Check(this)">
+                  <span>Overload Sensor &amp; Indicator</span>
+                </label>
+                <input type="hidden" class="lift-feature1" value="">
+              </div>
+
+              <div class="form-group">
+                <label>Optional Feature 2</label>
+                <input type="text" class="form-control lift-feature2" placeholder="Voice Announcement System">
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Add Elevator Button -->
         <button type="button" id="btnAddLift" class="btn-add-lift">
-          <span style="font-size: 18px; font-weight: 800;">+</span> Add Another Elevator Specification
+          <span style="font-size: 18px;">+</span> Add Another Elevator Type
         </button>
       </section>
 
-      <!-- Technical Summary Card -->
+      <!-- Live Technical Summary Card -->
       <section class="tech-summary-card">
         <div class="tech-summary-title">Technical Configuration Overview</div>
         <div class="tech-summary-grid">
@@ -187,24 +385,24 @@
           </div>
           <div class="tech-stat-item" style="flex: 2;">
             <span class="stat-label">Configuration Breakdown</span>
-            <span class="stat-val" id="sumTypes" style="font-size: 14.5px; font-weight: 600; color: #f1f5f9;">-</span>
+            <span class="stat-val" id="sumTypes" style="font-size: 15px; font-weight: 600; color: #cbd5e1;">-</span>
           </div>
         </div>
       </section>
 
       <!-- Submit Action -->
       <button type="submit" id="btnSubmit" class="btn-submit">
-        <span>🚀 Submit &amp; Generate Technical Proposal</span>
+        🚀 Generate Complete Multi-Lift Proposal Document
       </button>
 
     </form>
   </div>
 
-  <!-- Thank You Feedback Modal (No Direct File Access Given) -->
+  <!-- Modal Feedback Overlay -->
   <div id="modalOverlay" class="modal-overlay">
     <div class="modal-box">
       <div id="modalBody">
-        <!-- Injected via JavaScript -->
+        <!-- Dynamic Content from JS -->
       </div>
       <button type="button" id="btnModalClose" class="btn-modal-close">Close</button>
     </div>
@@ -213,3 +411,4 @@
   <script src="script.js"></script>
 </body>
 </html>
+
