@@ -57,10 +57,21 @@ async function initSalesTeamProfile() {
 
   if (APPS_SCRIPT_WEB_APP_URL && !APPS_SCRIPT_WEB_APP_URL.includes("YOUR_APPS_SCRIPT")) {
     try {
-      const response = await fetch(`${APPS_SCRIPT_WEB_APP_URL}?action=getSalesTeam`);
+      const url = `${APPS_SCRIPT_WEB_APP_URL}?action=getSalesTeam&spreadsheetId=1b2EA4neAIaPhMEoeQV61sAHhVsKN1hOVntvas0uz1j8`;
+      const response = await fetch(url);
       const resData = await response.json();
       if (resData.status === "success" && Array.isArray(resData.salesTeam) && resData.salesTeam.length > 0) {
-        salesTeamData = resData.salesTeam;
+        // Merge incoming list with salesTeamData so members like CHAYAN MUKHERJEE are never dropped
+        const map = new Map();
+        resData.salesTeam.forEach(rep => {
+          if (rep && rep.name) map.set(rep.name.trim().toUpperCase(), rep);
+        });
+        salesTeamData.forEach(rep => {
+          if (rep && rep.name && !map.has(rep.name.trim().toUpperCase())) {
+            map.set(rep.name.trim().toUpperCase(), rep);
+          }
+        });
+        salesTeamData = Array.from(map.values());
         populateSalesDropdown(salesTeamData);
       }
     } catch (e) {
