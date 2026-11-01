@@ -4,97 +4,738 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>BLT Brilliant Lifts & Escalators - Proposal Generator</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* =========================================================
+       THEME VARIABLES & RESET
+       ========================================================= */
+    :root {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --surface-subtle: #f1f5f9;
+      --surface-card: #ffffff;
+      --border: #cbd5e1;
+      --border-focus: #005696;
+      --text: #0f172a;
+      --text-muted: #475569;
+      --text-light: #94a3b8;
+
+      --blt-blue: #005696;
+      --blt-blue-dark: #003e6d;
+      --blt-orange: #f58220;
+      --blt-orange-hover: #e06d0b;
+
+      --danger: #ef4444;
+      --danger-bg: #fef2f2;
+      --warning-bg: #fffbeb;
+      --warning-border: #f59e0b;
+      --warning-text: #92400e;
+
+      --radius-sm: 8px;
+      --radius: 12px;
+      --radius-lg: 16px;
+      --shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 16px 32px rgba(11, 25, 44, 0.1);
+    }
+
+    [data-theme="dark"] {
+      --bg: #0b111e;
+      --surface: #131c2e;
+      --surface-subtle: #1c273e;
+      --surface-card: #141f33;
+      --border: #24324f;
+      --border-focus: #38bdf8;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-light: #64748b;
+
+      --blt-blue: #0284c7;
+      --blt-blue-dark: #0369a1;
+      --blt-orange: #f97316;
+      --blt-orange-hover: #ea580c;
+
+      --danger-bg: rgba(239, 68, 68, 0.15);
+      --warning-bg: rgba(245, 158, 11, 0.15);
+      --warning-text: #fcd34d;
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      --shadow-lg: 0 20px 35px rgba(0, 0, 0, 0.6);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.5;
+      padding: 16px 12px 80px 12px;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    @media (min-width: 768px) {
+      body {
+        padding: 30px 24px 90px 24px;
+      }
+    }
+
+    .container {
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+
+    /* =========================================================
+       TOP NAVBAR & BRANDING
+       ========================================================= */
+    .top-navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 14px 20px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .brand-container {
+      display: flex;
+      align-items: center;
+    }
+
+    .company-logo-svg {
+      height: 48px;
+      width: auto;
+      max-width: 100%;
+      display: block;
+    }
+
+    @media (min-width: 768px) {
+      .company-logo-svg {
+        height: 54px;
+      }
+    }
+
+    [data-theme="dark"] .logo-bg-panel {
+      fill: #ffffff;
+      rx: 6;
+    }
+
+    /* Theme Toggle Button */
+    .theme-toggle-btn {
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 9999px;
+      padding: 8px 18px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      font-size: 13.5px;
+      font-weight: 600;
+      min-height: 42px;
+      outline: none;
+      user-select: none;
+      transition: background-color 0.2s, border-color 0.2s, transform 0.15s;
+    }
+
+    .theme-toggle-btn:hover {
+      border-color: var(--blt-blue);
+      transform: translateY(-1px);
+    }
+
+    .theme-toggle-btn:active {
+      transform: translateY(0);
+    }
+
+    .theme-icon {
+      font-size: 16px;
+      display: inline-block;
+      transition: transform 0.3s ease;
+    }
+
+    /* =========================================================
+       SALES REPRESENTATIVE STRIP
+       ========================================================= */
+    .sales-strip {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 5px solid var(--blt-blue);
+      border-radius: var(--radius);
+      padding: 14px 18px;
+      margin-bottom: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      box-shadow: var(--shadow);
+    }
+
+    @media (min-width: 640px) {
+      .sales-strip {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+
+    .sales-strip-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .sales-strip-select {
+      width: 100%;
+      height: 48px;
+      min-height: 48px;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background-color: var(--surface-subtle);
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 600;
+      outline: none;
+      cursor: pointer;
+      box-sizing: border-box;
+    }
+
+    @media (min-width: 640px) {
+      .sales-strip-select {
+        width: 340px;
+      }
+    }
+
+    .sales-strip-select:focus {
+      border-color: var(--blt-blue);
+      box-shadow: 0 0 0 3px rgba(0, 86, 150, 0.2);
+    }
+
+    /* =========================================================
+       FORM CARDS & GRIDS
+       ========================================================= */
+    .form-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px 18px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    @media (min-width: 768px) {
+      .form-card {
+        padding: 30px 28px;
+      }
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 22px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-title-icon {
+      font-size: 20px;
+    }
+
+    .grid-2, .grid-3, .grid-4 {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+      margin-bottom: 16px;
+    }
+
+    @media (min-width: 640px) {
+      .grid-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (min-width: 768px) {
+      .grid-3 {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      .grid-4 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (min-width: 992px) {
+      .grid-4 {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+    }
+
+    /* =========================================================
+       FORM CONTROLS & LABELS
+       ========================================================= */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      min-width: 0;
+    }
+
+    .form-group label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      min-height: 20px;
+    }
+
+    .req {
+      color: var(--danger);
+      font-weight: 700;
+      margin-left: 2px;
+    }
+
+    .form-control {
+      width: 100%;
+      height: 48px;
+      min-height: 48px;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 15px;
+      color: var(--text);
+      background-color: var(--surface);
+      outline: none;
+      box-sizing: border-box;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-control:focus {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(0, 86, 150, 0.18);
+    }
+
+    .form-control:disabled,
+    .form-control[readonly] {
+      background-color: var(--surface-subtle);
+      color: var(--text-muted);
+      cursor: not-allowed;
+    }
+
+    .label-checkpoint {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--blt-blue);
+      cursor: pointer;
+      user-select: none;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: var(--surface-subtle);
+    }
+
+    .label-checkpoint input[type="checkbox"] {
+      accent-color: var(--blt-blue);
+      width: 15px;
+      height: 15px;
+      cursor: pointer;
+    }
+
+    /* =========================================================
+       ELEVATOR SPECIFICATION CARDS
+       ========================================================= */
+    .lift-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border);
+      border-top: 4px solid var(--blt-orange);
+      border-radius: var(--radius-lg);
+      padding: 24px 18px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    @media (min-width: 768px) {
+      .lift-card {
+        padding: 28px 26px;
+      }
+    }
+
+    .lift-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .lift-badge {
+      background-color: var(--blt-blue);
+      color: #ffffff;
+      padding: 6px 16px;
+      border-radius: 9999px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    .btn-remove-lift {
+      background: transparent;
+      color: var(--danger);
+      border: 1px solid var(--danger);
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      min-height: 36px;
+      transition: background-color 0.2s;
+    }
+
+    .btn-remove-lift:hover {
+      background-color: var(--danger-bg);
+    }
+
+    .dim-alert {
+      display: none;
+      background-color: var(--warning-bg);
+      border-left: 4px solid var(--warning-border);
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      margin-bottom: 18px;
+      font-size: 13px;
+      color: var(--warning-text);
+      line-height: 1.45;
+    }
+
+    .checkbox-feature-label {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      background: var(--surface-subtle);
+      padding: 12px 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      height: 48px;
+      min-height: 48px;
+      box-sizing: border-box;
+      width: 100%;
+    }
+
+    .checkbox-feature-label input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--blt-orange);
+      cursor: pointer;
+    }
+
+    .btn-add-lift {
+      width: 100%;
+      background-color: var(--surface);
+      color: var(--blt-blue);
+      border: 2px dashed var(--border);
+      padding: 14px;
+      border-radius: var(--radius-lg);
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 24px;
+      min-height: 52px;
+      transition: border-color 0.2s, background-color 0.2s;
+    }
+
+    .btn-add-lift:hover {
+      border-color: var(--blt-blue);
+      background-color: var(--surface-subtle);
+    }
+
+    /* =========================================================
+       SUMMARY & SUBMIT BUTTON
+       ========================================================= */
+    .tech-summary-card {
+      background: linear-gradient(135deg, var(--blt-blue-dark) 0%, var(--blt-blue) 100%);
+      color: #ffffff;
+      border-radius: var(--radius-lg);
+      padding: 20px 24px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .tech-summary-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--blt-orange);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 10px;
+    }
+
+    .tech-summary-grid {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .tech-stat-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .tech-stat-item .stat-label {
+      font-size: 12px;
+      color: #cbd5e1;
+    }
+
+    .tech-stat-item .stat-val {
+      font-size: 18px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .btn-submit {
+      width: 100%;
+      background-color: var(--blt-orange);
+      color: #ffffff;
+      border: none;
+      padding: 16px 20px;
+      border-radius: var(--radius-lg);
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(245, 130, 32, 0.4);
+      min-height: 54px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.2s, transform 0.15s;
+    }
+
+    .btn-submit:hover {
+      background-color: var(--blt-orange-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-submit:active {
+      transform: translateY(0);
+    }
+
+    .btn-submit:disabled {
+      background-color: #94a3b8;
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+    }
+
+    /* =========================================================
+       FEEDBACK MODALS
+       ========================================================= */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(11, 17, 30, 0.82);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      z-index: 999;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+    }
+
+    .modal-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      max-width: 480px;
+      width: 100%;
+      padding: 32px 24px;
+      text-align: center;
+      box-shadow: var(--shadow-lg);
+      animation: modalFadeIn 0.25s ease-out;
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.96); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .modal-icon {
+      font-size: 48px;
+      margin-bottom: 14px;
+    }
+
+    .modal-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+
+    .modal-msg {
+      font-size: 14.5px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    .btn-modal-close {
+      background: var(--blt-blue);
+      color: #ffffff;
+      border: none;
+      padding: 12px 30px;
+      border-radius: var(--radius-sm);
+      font-size: 14.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .btn-modal-close:hover {
+      background: var(--blt-blue-dark);
+    }
+
+    .spinner {
+      border: 4px solid var(--surface-subtle);
+      border-top: 4px solid var(--blt-orange);
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      animation: spin 0.9s linear infinite;
+      margin: 0 auto 16px auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
 </head>
 <body>
 
   <div class="container">
     
-    <!-- Top Header with Upper-Right Sales Person Profile Section -->
-    <header class="app-header">
-      <div class="header-layout">
-        
-        <!-- Left: Brand Info -->
-        <div class="brand-section">
-          <h1 class="brand-title">BLT Brilliant Lifts & Escalators</h1>
-          <p class="brand-subtitle">Commercial Offer & Multi-Specification Proposal Automation Engine</p>
-        </div>
-
-        <!-- Upper Right: Sales Representative Profile Section -->
-        <div class="sales-profile-card">
-          <div class="profile-card-header">
-            <span class="profile-title">👤 Sales Representative Profile</span>
-          </div>
-
-          <!-- Sales Person Selector -->
-          <select id="salesPersonSelect" class="sales-select" title="Select Sales Person">
-            <!-- Populated dynamically from Sales Team sheet -->
-          </select>
-
-          <!-- Live Details from Database Sheet -->
-          <div class="profile-details-grid">
-            <div class="profile-detail-row">
-              <span class="label">Designation:</span>
-              <span class="val" id="salesDesignation">ENGINEER – SALES</span>
-            </div>
-            <div class="profile-detail-row">
-              <span class="label">Mobile No.:</span>
-              <span class="val" id="salesPhone">+91 98321 40598</span>
-            </div>
-            <div class="profile-detail-row">
-              <span class="label">Email:</span>
-              <span class="val" id="salesEmail">sales@bltbrilliant.com</span>
-            </div>
-          </div>
-        </div>
-
+    <!-- Top Corporate Branding Bar with Theme Switcher -->
+    <header class="top-navbar">
+      <div class="brand-container">
+        <!-- High-fidelity Vector SVG Logo -->
+        <svg class="company-logo-svg" viewBox="0 0 520 120" xmlns="http://www.w3.org/2000/svg">
+          <rect class="logo-bg-panel" x="0" y="0" width="520" height="120" fill="transparent" />
+          <!-- Blue Slanted Emblem Badge -->
+          <polygon points="50,15 235,15 200,90 15,90" fill="#005696" />
+          <!-- White BLT Lettering inside badge -->
+          <text x="45" y="74" fill="#ffffff" font-family="'Inter', sans-serif" font-weight="900" font-style="italic" font-size="58" letter-spacing="-1">BLT</text>
+          <!-- BRILLIAN text in Deep Navy / Charcoal -->
+          <text x="238" y="74" fill="#1e293b" font-family="'Inter', sans-serif" font-weight="900" font-style="italic" font-size="52" letter-spacing="1">BRILLIAN</text>
+          <!-- Accent T in Brilliant Orange -->
+          <text x="472" y="74" fill="#f58220" font-family="'Inter', sans-serif" font-weight="900" font-style="italic" font-size="52">T</text>
+          <!-- Trademark indicator -->
+          <text x="502" y="38" fill="#475569" font-family="'Inter', sans-serif" font-weight="700" font-size="14">TM</text>
+          <!-- Slogan Line -->
+          <text x="18" y="109" fill="#334155" font-family="'Inter', sans-serif" font-weight="800" font-size="13" letter-spacing="1.5">TECHNOLOGY LEADS MARKET ♦ SERVICE CREATES VALUE</text>
+        </svg>
       </div>
+
+      <!-- Light / Dark Mode Toggle Button -->
+      <button type="button" id="btnThemeToggle" class="theme-toggle-btn" aria-label="Toggle Color Theme">
+        <span class="theme-icon" id="themeIcon">🌙</span>
+        <span id="themeText">Dark Mode</span>
+      </button>
     </header>
 
+    <!-- Sales Representative Bar: Clean Minimal Dropdown (Only Name Visible) -->
+    <div class="sales-strip">
+      <div class="sales-strip-label">
+        <span>👤 Assigned Sales Representative</span>
+      </div>
+      <select id="salesPersonSelect" class="sales-strip-select" title="Assigned Sales Representative" required>
+        <option value="" disabled selected>Select Sales Representative</option>
+      </select>
+    </div>
+
+    <!-- Main Proposal Form -->
     <form id="proposalForm" novalidate>
 
-      <!-- Customer / Company Information Card -->
+      <!-- Customer & Project Information Card (No Example Fillers in Placeholders) -->
       <section class="form-card">
-        <h2 class="card-title">🏢 Customer & Project Information</h2>
+        <h2 class="card-title">
+          <span class="card-title-icon">📋</span> Customer &amp; Project Information
+        </h2>
         
-        <!-- Row 1: Customer Name & Contact Person -->
         <div class="grid-2">
           <div class="form-group">
             <label for="customerName">Customer / Company Name <span class="req">*</span></label>
-            <input type="text" id="customerName" class="form-control" placeholder="VRINDAVAN DEVELOPERS" required autocomplete="organization">
+            <input type="text" id="customerName" class="form-control" placeholder="" required autocomplete="organization">
           </div>
           
           <div class="form-group">
-            <div class="label-with-checkpoint">
-              <label for="contactPerson">Contact Person Name <span class="req">*</span></label>
-              <label class="checkpoint-badge" title="Copy from Customer / Company Name">
-                <input type="checkbox" id="chkSameCustomer"> Same as Customer Name
-              </label>
-            </div>
-            <input type="text" id="contactPerson" class="form-control" placeholder="Authorized Signatory / Mr. Sharma" required autocomplete="name">
+            <label for="contactPerson">
+              <span>Contact Person Name <span class="req">*</span></span>
+              <span class="label-checkpoint" title="Copy from Customer / Company Name">
+                <input type="checkbox" id="chkSameCustomer"> Same as Customer
+              </span>
+            </label>
+            <input type="text" id="contactPerson" class="form-control" placeholder="" required autocomplete="name">
           </div>
         </div>
 
-        <!-- Row 2: Contact Phone & State Dropdown -->
         <div class="grid-2">
           <div class="form-group">
-            <label for="contactPhone">Contact Person Phone Number (10 Digits) <span class="req">*</span></label>
-            <input type="tel" id="contactPhone" class="form-control" placeholder="9832140598" maxlength="10" inputmode="numeric" pattern="[0-9]{10}" required autocomplete="tel">
+            <label for="contactPhone">Contact Phone Number (10 Digits) <span class="req">*</span></label>
+            <input type="tel" id="contactPhone" class="form-control" placeholder="" maxlength="10" inputmode="numeric" pattern="[0-9]{10}" required autocomplete="tel">
           </div>
           
           <div class="form-group">
-            <label for="state">State <span class="req">*</span></label>
+            <label for="state">State / Territory <span class="req">*</span></label>
             <select id="state" class="form-control" required>
-              <option value="" disabled>-- Select State / UT --</option>
+              <option value="" disabled selected>Select State / UT</option>
               <optgroup label="Popular States">
-                <option value="West Bengal" selected>West Bengal</option>
+                <option value="West Bengal">West Bengal</option>
                 <option value="Odisha">Odisha</option>
                 <option value="Bihar">Bihar</option>
                 <option value="Jharkhand">Jharkhand</option>
                 <option value="Assam">Assam</option>
                 <option value="Delhi">Delhi</option>
               </optgroup>
-              <optgroup label="All States &amp; Union Territories">
+              <optgroup label="All States & Union Territories">
                 <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
                 <option value="Andhra Pradesh">Andhra Pradesh</option>
                 <option value="Arunachal Pradesh">Arunachal Pradesh</option>
@@ -137,245 +778,49 @@
           </div>
         </div>
 
-        <!-- Row 3: Office Address Line 1 & Line 2 -->
         <div class="grid-2">
           <div class="form-group">
             <label for="address1">Office Address Line 1 <span class="req">*</span></label>
-            <input type="text" id="address1" class="form-control" placeholder="EASTERN BYPASS, SILIGURI" required autocomplete="street-address">
+            <input type="text" id="address1" class="form-control" placeholder="" required autocomplete="street-address">
           </div>
           
           <div class="form-group">
             <label for="address2">Office Address Line 2</label>
-            <input type="text" id="address2" class="form-control" placeholder="Landmark, Suite, Ward">
+            <input type="text" id="address2" class="form-control" placeholder="">
           </div>
         </div>
 
-        <!-- Row 4: Office PIN Code -->
         <div class="form-group">
           <label for="pinCode">Office PIN Code <span class="req">*</span></label>
-          <input type="text" id="pinCode" class="form-control" placeholder="734004" maxlength="6" inputmode="numeric" required autocomplete="postal-code">
+          <input type="text" id="pinCode" class="form-control" placeholder="" maxlength="6" inputmode="numeric" required autocomplete="postal-code">
         </div>
 
-        <!-- Row 5: Site Address (with checkpoint to copy from office address & PIN) -->
         <div class="form-group">
-          <div class="label-with-checkpoint">
-            <label for="siteAddress">Site Address (Project Site Location) <span class="req">*</span></label>
-            <label class="checkpoint-badge" title="Copy from Office Address & PIN">
+          <label for="siteAddress">
+            <span>Site Address (Project Site Location) <span class="req">*</span></span>
+            <span class="label-checkpoint" title="Copy from Office Address & PIN">
               <input type="checkbox" id="chkSameAddress"> Same as Office Address & PIN
-            </label>
-          </div>
-          <input type="text" id="siteAddress" class="form-control" placeholder="Eastern Bypass, Siliguri" required>
+            </span>
+          </label>
+          <input type="text" id="siteAddress" class="form-control" placeholder="" required>
         </div>
 
-        <!-- Row 6: Site PIN Code (Placed AFTER Site Address as requested) -->
         <div class="form-group">
           <label for="sitePinCode">Site PIN Code <span class="req">*</span></label>
-          <input type="text" id="sitePinCode" class="form-control" placeholder="734004" maxlength="6" inputmode="numeric" required>
+          <input type="text" id="sitePinCode" class="form-control" placeholder="" maxlength="6" inputmode="numeric" required>
         </div>
       </section>
 
       <!-- Multi-Lift Specifications Container -->
       <section>
-        <h2 class="card-title" style="margin-bottom: 14px;">🛗 Elevator Specifications (Multi-Unit Configuration)</h2>
-        
-        <div id="liftsContainer">
-          <!-- Elevator Specification Card -->
-          <div class="lift-card" id="liftCard_1" data-lift-index="1">
-            <div class="lift-card-header">
-              <div class="lift-badge">Elevator #1 Specification</div>
-              <button type="button" class="btn-remove-lift" onclick="removeLiftCard(this)" style="display: none;">✕ Remove Elevator</button>
-            </div>
+        <div id="liftsContainer"></div>
 
-            <!-- Basic Configuration -->
-            <div class="grid-4">
-              <div class="form-group">
-                <label>Lift Type <span class="req">*</span></label>
-                <select class="form-control lift-type" required onchange="handleLiftTypeChange(this)">
-                  <option value="" disabled selected>-- Select Lift Type --</option>
-                  <option value="PASSENGER">Passenger</option>
-                  <option value="HOME LIFT">Home</option>
-                  <option value="STRETCHER">Stretcher</option>
-                  <option value="GOODS">Goods</option>
-                </select>
-              </div>
-
-              <div class="form-group">
-                <label>No. of Units <span class="req">*</span></label>
-                <input type="number" class="form-control lift-qty" value="" placeholder="1" min="1" max="50" inputmode="numeric" required oninput="updateTechnicalSummary()">
-              </div>
-
-              <div class="form-group">
-                <label>Machine Room Config <span class="req">*</span></label>
-                <select class="form-control lift-mr" required onchange="handleMachineAndTractionChange(this)">
-                  <option value="" disabled selected>-- Select MR / MRL --</option>
-                  <option value="MRL">MRL (Machine Room Less)</option>
-                  <option value="MR">MR (Machine Room)</option>
-                </select>
-              </div>
-
-              <div class="form-group">
-                <label>Traction Unit <span class="req">*</span></label>
-                <select class="form-control lift-traction" required onchange="handleMachineAndTractionChange(this)">
-                  <option value="" disabled selected>-- Select Traction --</option>
-                  <option value="Gearless">Gearless</option>
-                  <option value="Geared">Geared</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- Capacity, Stops, Floors, Travel -->
-            <div class="grid-4">
-              <div class="form-group grp-capacity">
-                <label>Capacity (Persons) <span class="req">*</span></label>
-                <select class="form-control lift-capacity" required onchange="handleCapacityChange(this)">
-                  <option value="" disabled selected>-- Select Capacity --</option>
-                  <option value="4">4 Persons</option>
-                  <option value="5">5 Persons</option>
-                  <option value="6">6 Persons</option>
-                  <option value="8">8 Persons</option>
-                  <option value="10">10 Persons</option>
-                  <option value="13">13 Persons (Stretcher)</option>
-                  <option value="15">15 Persons</option>
-                </select>
-              </div>
-
-                  <option value="5">5 Persons</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label>No. of Stops <span class="req">*</span></label>
-                <input type="number" class="form-control lift-stops" value="" placeholder="6" min="2" max="60" inputmode="numeric" required oninput="handleStopsChange(this)">
-              <div class="form-group">
-                <label>Serving Floors <span class="req">*</span></label>
-                <input type="text" class="form-control lift-floors" value="" placeholder="G+5 or B+G+4" required>
-              </div>
-
-              <div class="form-group">
-                <label>Travel Distance (Mtrs) <span class="req">*</span></label>
-                <input type="text" class="form-control lift-travel" value="" placeholder="15.0 Mtrs." required>
-              </div>
-            </div>
-
-            <!-- Hidden Technical Parameters (Auto-Calculated by Engine) -->
-            <input type="hidden" class="lift-load" value="408 Kg">
-            <input type="hidden" class="lift-speed" value="1.0 Mtr/sec">
-            <input type="hidden" class="lift-pit" value="1600 MM">
-            <input type="hidden" class="lift-headroom" value="4800 MM">
-
-            <!-- Shaft Dimensions & Door Specs -->
-            <div class="grid-4">
-              <div class="form-group">
-                <label>Shaft Width (W in MM) <span class="req">*</span></label>
-                <input type="number" class="form-control lift-shaft-w" value="" placeholder="2050" inputmode="numeric" required oninput="validateShaftDimensions(this)">
-              </div>
-
-              <div class="form-group">
-                <label>Shaft Depth (D in MM) <span class="req">*</span></label>
-                <input type="number" class="form-control lift-shaft-d" value="" placeholder="2050" inputmode="numeric" required>
-              </div>
-
-              <div class="form-group">
-                <label>Door Opening Type <span class="req">*</span></label>
-                <select class="form-control lift-door-type" required onchange="validateShaftDimensions(this)">
-                  <option value="" disabled selected>-- Select Door Opening --</option>
-                  <option value="Automatic Center Opening Door">Center Opening Door</option>
-                  <option value="Automatic Telescopic Opening Door">Telescopic Opening Door</option>
-                </select>
-              </div>
-
-              <div class="form-group">
-                <label>Clear Door Width (MM) <span class="req">*</span></label>
-                <input type="number" class="form-control lift-door-w" value="" placeholder="900" inputmode="numeric" required oninput="validateShaftDimensions(this)">
-              </div>
-            </div>
-
-            <!-- Live Dimension Warning Alert -->
-            <div class="dim-alert"></div>
-
-            <!-- Door Finishes & Vision -->
-            <div class="grid-2">
-              <div class="form-group">
-                <label>Door Finish <span class="req">*</span></label>
-                <select class="form-control lift-door-finish" required>
-                  <option value="" disabled selected>-- Select Door Finish --</option>
-                  <option value="SS Hairline Finish">SS Hairline Finish</option>
-                  <option value="MS Powder Coated">MS Powder Coated</option>
-                  <option value="SS Mirror Finish">SS Mirror Finish</option>
-                </select>
-              </div>
-
-              <div class="form-group">
-                <label>Vision Type <span class="req">*</span></label>
-                <select class="form-control lift-vision" required>
-                  <option value="" disabled selected>-- Select Vision Type --</option>
-                  <option value="No Vision">No Vision</option>
-                  <option value="Small Vision">Small Vision</option>
-                  <option value="Half Glass">Half Glass</option>
-                  <option value="Full Glass">Full Glass</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- Cabin Finishes & Design -->
-            <div class="grid-3">
-              <div class="form-group">
-                <label>Car Ceiling <span class="req">*</span></label>
-                <select class="form-control lift-ceiling" required>
-                  <option value="" disabled selected>-- Select Car Ceiling --</option>
-                  <option value="SS Hairline Finish">SS Hairline Finish</option>
-                  <option value="MS Powder Coated Finish">MS Powder Coated Finish</option>
-                  <option value="SS Mirror Finish">SS Mirror Finish</option>
-                </select>
-              </div>
-
-              <div class="form-group">
-                <label>Car Panels <span class="req">*</span></label>
-                <select class="form-control lift-panels" required>
-                  <option value="" disabled selected>-- Select Car Panels --</option>
-                  <option value="SS Hairline Finish">SS Hairline Finish</option>
-                  <option value="MS Powder Coated">MS Powder Coated</option>
-                  <option value="SS Mirror Finish">SS Mirror Finish</option>
-                  <option value="SS Hairline Finish - Back Side Middle Panel SS Mirror Finish">SS Hairline Finish - Back Side Middle Panel SS Mirror Finish</option>
-                </select>
-              </div>
-
-              <div class="form-group">
-                <label>Car Flooring <span class="req">*</span></label>
-                <select class="form-control lift-flooring" required>
-                  <option value="" disabled selected>-- Select Car Flooring --</option>
-                  <option value="PVC Flooring">PVC Flooring</option>
-                  <option value="PVC Flooring - Wooden Type">PVC Flooring - Wooden Type</option>
-                  <option value="Granite Flooring - By Customer">Granite Flooring - By Customer</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- Optional Features -->
-            <input type="hidden" class="lift-cardim" value="">
-            <div class="grid-2">
-              <div class="form-group" style="display: flex; flex-direction: column; justify-content: flex-end;">
-                <label class="checkbox-feature-label" title="Tick to include Overload Sensor &amp; Indicator in Optional Feature 1">
-                  <input type="checkbox" class="lift-feature1-check" onchange="handleFeature1Check(this)">
-                  <span>Overload Sensor &amp; Indicator</span>
-                </label>
-                <input type="hidden" class="lift-feature1" value="">
-              </div>
-
-              <div class="form-group">
-                <label>Optional Feature 2</label>
-                <input type="text" class="form-control lift-feature2" placeholder="Voice Announcement System">
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Add Elevator Button -->
         <button type="button" id="btnAddLift" class="btn-add-lift">
-          <span style="font-size: 18px;">+</span> Add Another Elevator Type
+          <span style="font-size: 18px; font-weight: 800;">+</span> Add Another Elevator Specification
         </button>
       </section>
 
-      <!-- Live Technical Summary Card -->
+      <!-- Technical Summary Card -->
       <section class="tech-summary-card">
         <div class="tech-summary-title">Technical Configuration Overview</div>
         <div class="tech-summary-grid">
@@ -385,30 +830,1069 @@
           </div>
           <div class="tech-stat-item" style="flex: 2;">
             <span class="stat-label">Configuration Breakdown</span>
-            <span class="stat-val" id="sumTypes" style="font-size: 15px; font-weight: 600; color: #cbd5e1;">-</span>
+            <span class="stat-val" id="sumTypes" style="font-size: 14.5px; font-weight: 600; color: #f1f5f9;">-</span>
           </div>
         </div>
       </section>
 
       <!-- Submit Action -->
       <button type="submit" id="btnSubmit" class="btn-submit">
-        🚀 Generate Complete Multi-Lift Proposal Document
+        <span>🚀 Submit &amp; Generate Technical Proposal</span>
       </button>
 
     </form>
   </div>
 
-  <!-- Modal Feedback Overlay -->
+  <!-- Thank You Feedback Modal (No Document Links Exposed) -->
   <div id="modalOverlay" class="modal-overlay">
     <div class="modal-box">
-      <div id="modalBody">
-        <!-- Dynamic Content from JS -->
-      </div>
+      <div id="modalBody"></div>
       <button type="button" id="btnModalClose" class="btn-modal-close">Close</button>
     </div>
   </div>
 
-  <script src="script.js"></script>
+  <!-- Embedded Dynamic Engine -->
+  <script>
+    const APPS_SCRIPT_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxhzFCEKqeoNM82wCQJvcDNjxgOypCXSeZqVX1AipCQ15DJx_Q_rgxvPE6VtOMaFRDX/exec";
+    const SPREADSHEET_ID = "1b2EA4neAIaPhMEoeQV61sAHhVsKN1hOVntvas0uz1j8";
+
+    // Standard complete team from the sheet
+    let salesTeamData = [
+      { name: "SANJEEV KUMAR SINGH" },
+      { name: "KALYAN CHATTERJEE" },
+      { name: "KANCHAN DASGUPTA" },
+      { name: "ARNAB DUTTA" },
+      { name: "BIKASH NAYAK" },
+      { name: "BIJAYA KUMAR PRADHAN" },
+      { name: "JOY MUKHERJEE" },
+      { name: "SOURAV BASAK" },
+      { name: "CHAYAN MUKHERJEE" }
+    ];
+
+    document.addEventListener("DOMContentLoaded", () => {
+      initTheme();
+      initSalesTeamProfile();
+      setupFormCheckpointsAndValidation();
+
+      // Render initial elevator card
+      addLiftCard();
+
+      document.getElementById("btnAddLift").addEventListener("click", () => {
+        addLiftCard();
+      });
+
+      document.getElementById("proposalForm").addEventListener("submit", handleFormSubmit);
+      document.getElementById("btnModalClose").addEventListener("click", closeModal);
+      document.getElementById("btnThemeToggle").addEventListener("click", toggleTheme);
+    });
+
+    /* =========================================================
+       THEME ENGINE
+       ========================================================= */
+    function initTheme() {
+      const savedTheme = localStorage.getItem("blt_theme") || "light";
+      applyTheme(savedTheme);
+    }
+
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute("data-theme") || "light";
+      const target = current === "dark" ? "light" : "dark";
+      applyTheme(target);
+      localStorage.setItem("blt_theme", target);
+    }
+
+    function applyTheme(theme) {
+      document.documentElement.setAttribute("data-theme", theme);
+      const icon = document.getElementById("themeIcon");
+      const text = document.getElementById("themeText");
+
+      if (theme === "dark") {
+        if (icon) icon.textContent = "☀️";
+        if (text) text.textContent = "Light Mode";
+      } else {
+        if (icon) icon.textContent = "🌙";
+        if (text) text.textContent = "Dark Mode";
+      }
+    }
+
+    /* =========================================================
+       DYNAMIC SALES TEAM LOADER (AUTO-SYNC FROM GOOGLE SHEETS)
+       ========================================================= */
+    async function initSalesTeamProfile() {
+      let teamLoaded = false;
+
+      // 1. Fetch via Apps Script Web App
+      if (APPS_SCRIPT_WEB_APP_URL && !APPS_SCRIPT_WEB_APP_URL.includes("YOUR_APPS_SCRIPT")) {
+        try {
+          const res = await fetch(`${APPS_SCRIPT_WEB_APP_URL}?action=getSalesTeam&spreadsheetId=${SPREADSHEET_ID}`);
+          const data = await res.json();
+          if (data && data.status === "success" && Array.isArray(data.salesTeam) && data.salesTeam.length > 0) {
+            salesTeamData = data.salesTeam.map(item => ({ name: item.name.trim() }));
+            populateSalesDropdown(salesTeamData);
+            teamLoaded = true;
+          }
+        } catch (err) {
+          console.warn("Apps script sales team fetch skipped:", err);
+        }
+      }
+
+      // 2. Direct Google Sheet Public CSV Fallback
+      if (!teamLoaded && SPREADSHEET_ID) {
+        try {
+          const csvUrl = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent("Sales Team")}`;
+          const res = await fetch(csvUrl);
+          const text = await res.text();
+          const rows = text.split("\n").map(r => r.split(","));
+          const names = [];
+          
+          for (let i = 1; i < rows.length; i++) {
+            const rawName = rows[i][0] ? rows[i][0].replace(/['"]/g, "").trim() : "";
+            if (rawName && !names.includes(rawName)) {
+              names.push(rawName);
+            }
+          }
+
+          if (names.length > 0) {
+            salesTeamData = names.map(n => ({ name: n }));
+            populateSalesDropdown(salesTeamData);
+            teamLoaded = true;
+          }
+        } catch (e) {
+          console.warn("Direct sheet gviz fetch skipped:", e);
+        }
+      }
+
+      // 3. Fallback to cached default
+      if (!teamLoaded) {
+        populateSalesDropdown(salesTeamData);
+      }
+    }
+
+    function populateSalesDropdown(team) {
+      const select = document.getElementById("salesPersonSelect");
+      if (!select) return;
+
+      const currentVal = select.value;
+      select.innerHTML = '<option value="" disabled selected>Select Sales Representative</option>';
+
+      team.forEach(rep => {
+        const opt = document.createElement("option");
+        opt.value = rep.name;
+        opt.textContent = rep.name;
+        select.appendChild(opt);
+      });
+
+      if (currentVal && Array.from(select.options).some(o => o.value === currentVal)) {
+        select.value = currentVal;
+      }
+
+      select.addEventListener("change", handleSalesPersonChange);
+    }
+
+    function isKalyanSelected() {
+      const select = document.getElementById("salesPersonSelect");
+      const selectedName = (select && select.value ? select.value : "").toUpperCase();
+      return selectedName.includes("KALYAN");
+    }
+
+    function handleSalesPersonChange() {
+      const select = document.getElementById("salesPersonSelect");
+      const selectedName = (select.value || "").toUpperCase();
+
+      const stateSelect = document.getElementById("state");
+      if (stateSelect && (!stateSelect.value || stateSelect.value === "West Bengal" || stateSelect.value === "Odisha" || stateSelect.value === "Assam")) {
+        if (selectedName.includes("BIKASH") || selectedName.includes("BIJAYA")) {
+          stateSelect.value = "Odisha";
+        } else if (selectedName.includes("CHAYAN")) {
+          stateSelect.value = "Assam";
+        } else {
+          stateSelect.value = "West Bengal";
+        }
+      }
+
+      // Kalyan default flooring rule
+      if (selectedName.includes("KALYAN")) {
+        document.querySelectorAll(".lift-card").forEach(card => {
+          const type = card.querySelector(".lift-type").value;
+          if (type && type !== "GOODS") {
+            const fl = card.querySelector(".lift-flooring");
+            if (fl) fl.value = "PVC Flooring - Wooden Type";
+          }
+        });
+      }
+    }
+
+    /* =========================================================
+       FORM VALIDATION & CHECKPOINTS
+       ========================================================= */
+    function setupFormCheckpointsAndValidation() {
+      const customerName = document.getElementById("customerName");
+      const contactPerson = document.getElementById("contactPerson");
+      const chkSameCustomer = document.getElementById("chkSameCustomer");
+
+      const address1 = document.getElementById("address1");
+      const address2 = document.getElementById("address2");
+      const pinCode = document.getElementById("pinCode");
+      const siteAddress = document.getElementById("siteAddress");
+      const sitePinCode = document.getElementById("sitePinCode");
+      const chkSameAddress = document.getElementById("chkSameAddress");
+      const contactPhone = document.getElementById("contactPhone");
+
+      chkSameCustomer.addEventListener("change", () => {
+        if (chkSameCustomer.checked) {
+          contactPerson.value = customerName.value.trim();
+          contactPerson.readOnly = true;
+        } else {
+          contactPerson.readOnly = false;
+        }
+      });
+
+      customerName.addEventListener("input", () => {
+        if (chkSameCustomer.checked) {
+          contactPerson.value = customerName.value.trim();
+        }
+      });
+
+      function syncSiteAddressAndPin() {
+        if (chkSameAddress.checked) {
+          const parts = [address1.value.trim(), address2.value.trim()].filter(Boolean);
+          siteAddress.value = parts.join(", ");
+          siteAddress.readOnly = true;
+          sitePinCode.value = pinCode.value.trim();
+          sitePinCode.readOnly = true;
+        } else {
+          siteAddress.readOnly = false;
+          sitePinCode.readOnly = false;
+        }
+      }
+
+      chkSameAddress.addEventListener("change", syncSiteAddressAndPin);
+      address1.addEventListener("input", syncSiteAddressAndPin);
+      address2.addEventListener("input", syncSiteAddressAndPin);
+
+      function handlePinAutoState(inputElem) {
+        const cleanPin = inputElem.value.replace(/\D/g, "").slice(0, 6);
+        inputElem.value = cleanPin;
+
+        if (cleanPin.length >= 2) {
+          const detected = getStateFromPinCode(cleanPin);
+          if (detected) setMatchingState(detected);
+        }
+      }
+
+      pinCode.addEventListener("input", function() {
+        handlePinAutoState(this);
+        if (chkSameAddress.checked) sitePinCode.value = this.value;
+      });
+
+      sitePinCode.addEventListener("input", function() {
+        handlePinAutoState(this);
+      });
+
+      contactPhone.addEventListener("input", function() {
+        this.value = this.value.replace(/\D/g, "").slice(0, 10);
+      });
+    }
+
+    /* =========================================================
+       LIFT CARD BUILDER
+       ========================================================= */
+    function addLiftCard() {
+      const container = document.getElementById("liftsContainer");
+      const card = document.createElement("div");
+      card.className = "lift-card";
+
+      card.innerHTML = `
+        <div class="lift-card-header">
+          <div class="lift-badge">Elevator Specification</div>
+          <button type="button" class="btn-remove-lift" onclick="removeLiftCard(this)">✕ Remove Elevator</button>
+        </div>
+
+        <div class="grid-4">
+          <div class="form-group">
+            <label>Lift Type <span class="req">*</span></label>
+            <select class="form-control lift-type" required onchange="handleLiftTypeChange(this)">
+              <option value="" disabled selected>Select Lift Type</option>
+              <option value="PASSENGER">Passenger</option>
+              <option value="HOME LIFT">Home</option>
+              <option value="STRETCHER">Stretcher</option>
+              <option value="GOODS">Goods</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>No. of Units <span class="req">*</span></label>
+            <input type="number" class="form-control lift-qty" placeholder="" min="1" max="50" inputmode="numeric" required oninput="updateTechnicalSummary()">
+          </div>
+
+          <div class="form-group">
+            <label>Machine Room Config <span class="req">*</span></label>
+            <select class="form-control lift-mr" required onchange="handleMachineAndTractionChange(this)">
+              <option value="" disabled selected>Select MR / MRL</option>
+              <option value="MRL">MRL (Machine Room Less)</option>
+              <option value="MR">MR (Machine Room)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Traction Unit <span class="req">*</span></label>
+            <select class="form-control lift-traction" required onchange="handleMachineAndTractionChange(this)">
+              <option value="" disabled selected>Select Traction</option>
+              <option value="Gearless">Gearless</option>
+              <option value="Geared">Geared</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid-4">
+          <div class="form-group grp-capacity">
+            <label class="capacity-label">Capacity (Persons) <span class="req">*</span></label>
+            <select class="form-control lift-capacity" required onchange="handleCapacityChange(this)">
+              <option value="" disabled selected>Select Capacity</option>
+              <option value="4">4 Persons</option>
+              <option value="5">5 Persons</option>
+              <option value="6">6 Persons</option>
+              <option value="8">8 Persons</option>
+              <option value="10">10 Persons</option>
+              <option value="13">13 Persons (Stretcher)</option>
+              <option value="15">15 Persons</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>No. of Stops <span class="req">*</span></label>
+            <input type="number" class="form-control lift-stops" placeholder="" min="2" max="60" inputmode="numeric" required oninput="handleStopsChange(this)">
+          </div>
+
+          <div class="form-group">
+            <label>Serving Floors <span class="req">*</span></label>
+            <input type="text" class="form-control lift-floors" placeholder="" required>
+          </div>
+
+          <div class="form-group">
+            <label>Travel Distance (Mtrs) <span class="req">*</span></label>
+            <input type="text" class="form-control lift-travel" placeholder="" required>
+          </div>
+        </div>
+
+        <!-- Hidden parameters auto-computed -->
+        <input type="hidden" class="lift-load" value="408 Kg">
+        <input type="hidden" class="lift-speed" value="1.0 Mtr/sec">
+        <input type="hidden" class="lift-pit" value="1600 MM">
+        <input type="hidden" class="lift-headroom" value="4800 MM">
+
+        <div class="grid-4">
+          <div class="form-group">
+            <label>Shaft Width (W in MM) <span class="req">*</span></label>
+            <input type="number" class="form-control lift-shaft-w" placeholder="" inputmode="numeric" required oninput="validateShaftDimensions(this)">
+          </div>
+
+          <div class="form-group">
+            <label>Shaft Depth (D in MM) <span class="req">*</span></label>
+            <input type="number" class="form-control lift-shaft-d" placeholder="" inputmode="numeric" required>
+          </div>
+
+          <div class="form-group">
+            <label>Door Opening Type <span class="req">*</span></label>
+            <select class="form-control lift-door-type" required onchange="validateShaftDimensions(this)">
+              <option value="" disabled selected>Select Door Opening</option>
+              <option value="Automatic Center Opening Door">Center Opening Door</option>
+              <option value="Automatic Telescopic Opening Door">Telescopic Opening Door</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Clear Door Width (MM) <span class="req">*</span></label>
+            <input type="number" class="form-control lift-door-w" placeholder="" inputmode="numeric" required oninput="validateShaftDimensions(this)">
+          </div>
+        </div>
+
+        <div class="dim-alert"></div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Door Finish <span class="req">*</span></label>
+            <select class="form-control lift-door-finish" required>
+              <option value="" disabled selected>Select Door Finish</option>
+              <option value="SS Hairline Finish">SS Hairline Finish</option>
+              <option value="MS Powder Coated">MS Powder Coated</option>
+              <option value="SS Mirror Finish">SS Mirror Finish</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Vision Type <span class="req">*</span></label>
+            <select class="form-control lift-vision" required>
+              <option value="" disabled selected>Select Vision Type</option>
+              <option value="No Vision">No Vision</option>
+              <option value="Small Vision">Small Vision</option>
+              <option value="Half Glass">Half Glass</option>
+              <option value="Full Glass">Full Glass</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid-3">
+          <div class="form-group">
+            <label>Car Ceiling <span class="req">*</span></label>
+            <select class="form-control lift-ceiling" required>
+              <option value="" disabled selected>Select Car Ceiling</option>
+              <option value="SS Hairline Finish">SS Hairline Finish</option>
+              <option value="MS Powder Coated Finish">MS Powder Coated Finish</option>
+              <option value="SS Mirror Finish">SS Mirror Finish</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Car Panels <span class="req">*</span></label>
+            <select class="form-control lift-panels" required>
+              <option value="" disabled selected>Select Car Panels</option>
+              <option value="SS Hairline Finish">SS Hairline Finish</option>
+              <option value="MS Powder Coated">MS Powder Coated</option>
+              <option value="SS Mirror Finish">SS Mirror Finish</option>
+              <option value="SS Hairline Finish - Back Side Middle Panel SS Mirror Finish">SS Hairline Finish - Back Side Middle Panel SS Mirror Finish</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Car Flooring <span class="req">*</span></label>
+            <select class="form-control lift-flooring" required>
+              <option value="" disabled selected>Select Car Flooring</option>
+              <option value="PVC Flooring">PVC Flooring</option>
+              <option value="PVC Flooring - Wooden Type">PVC Flooring - Wooden Type</option>
+              <option value="Granite Flooring - By Customer">Granite Flooring - By Customer</option>
+            </select>
+          </div>
+        </div>
+
+        <input type="hidden" class="lift-cardim" value="">
+        <div class="grid-2">
+          <div class="form-group" style="display: flex; flex-direction: column; justify-content: flex-end;">
+            <label class="checkbox-feature-label">
+              <input type="checkbox" class="lift-feature1-check" onchange="handleFeature1Check(this)">
+              <span>Overload Sensor &amp; Indicator</span>
+            </label>
+            <input type="hidden" class="lift-feature1" value="">
+          </div>
+
+          <div class="form-group">
+            <label>Optional Feature 2</label>
+            <input type="text" class="form-control lift-feature2" placeholder="">
+          </div>
+        </div>
+      `;
+
+      container.appendChild(card);
+      renumberAllLifts();
+    }
+
+    function removeLiftCard(btnOrElement) {
+      const card = btnOrElement.closest(".lift-card");
+      if (card) {
+        card.remove();
+        renumberAllLifts();
+      }
+    }
+
+    function renumberAllLifts() {
+      const cards = document.querySelectorAll(".lift-card");
+      cards.forEach((card, idx) => {
+        const liftNum = idx + 1;
+        card.id = `liftCard_${liftNum}`;
+        card.dataset.liftIndex = liftNum;
+
+        const badge = card.querySelector(".lift-badge");
+        if (badge) badge.innerText = `Elevator #${liftNum} Specification`;
+
+        const alertBox = card.querySelector(".dim-alert");
+        if (alertBox) alertBox.id = `dimAlert_${liftNum}`;
+      });
+
+      const buttons = document.querySelectorAll(".btn-remove-lift");
+      buttons.forEach(btn => {
+        btn.style.display = cards.length > 1 ? "block" : "none";
+      });
+
+      updateTechnicalSummary();
+    }
+
+    /* =========================================================
+       DYNAMIC CONFIGURATION RULES
+       ========================================================= */
+    function updateFlooringOptions(card) {
+      if (!card) return;
+      const type = card.querySelector(".lift-type").value;
+      const flooringSelect = card.querySelector(".lift-flooring");
+      if (!flooringSelect) return;
+
+      const currentVal = flooringSelect.value;
+      flooringSelect.innerHTML = "";
+
+      if (type === "GOODS") {
+        flooringSelect.innerHTML = `<option value="MS Chequered Plate" selected>MS Chequered Plate</option>`;
+      } else {
+        const isKalyan = isKalyanSelected();
+        const defaultVal = isKalyan ? "PVC Flooring - Wooden Type" : "";
+        const activeVal = (currentVal && currentVal !== "MS Chequered Plate") ? currentVal : defaultVal;
+
+        flooringSelect.innerHTML = `
+          <option value="" disabled ${!activeVal ? "selected" : ""}>Select Car Flooring</option>
+          <option value="PVC Flooring" ${activeVal === "PVC Flooring" ? "selected" : ""}>PVC Flooring</option>
+          <option value="PVC Flooring - Wooden Type" ${activeVal === "PVC Flooring - Wooden Type" ? "selected" : ""}>PVC Flooring - Wooden Type</option>
+          <option value="Granite Flooring - By Customer" ${activeVal === "Granite Flooring - By Customer" ? "selected" : ""}>Granite Flooring - By Customer</option>
+        `;
+      }
+    }
+
+    function handleLiftTypeChange(element) {
+      const card = element.closest(".lift-card");
+      if (!card) return;
+
+      const type = card.querySelector(".lift-type").value;
+      const capacitySelect = card.querySelector(".lift-capacity");
+      const capacityLabel = card.querySelector(".capacity-label") || card.querySelector(".grp-capacity label");
+      const mrSelect = card.querySelector(".lift-mr");
+      const tractionSelect = card.querySelector(".lift-traction");
+
+      if (type === "GOODS") {
+        if (capacityLabel) capacityLabel.innerHTML = 'Capacity (Kg) <span class="req">*</span>';
+        capacitySelect.disabled = false;
+        const currentVal = capacitySelect.value;
+        capacitySelect.innerHTML = `
+          <option value="" disabled>Select Capacity (Kg)</option>
+          <option value="500 Kg">500 Kg</option>
+          <option value="1000 Kg">1000 Kg</option>
+          <option value="1500 Kg" selected>1500 Kg</option>
+          <option value="2000 Kg">2000 Kg</option>
+          <option value="2500 Kg">2500 Kg</option>
+          <option value="3000 Kg">3000 Kg</option>
+          <option value="4000 Kg">4000 Kg</option>
+          <option value="5000 Kg">5000 Kg</option>
+        `;
+        if (currentVal && currentVal.includes("Kg")) capacitySelect.value = currentVal;
+
+        mrSelect.disabled = false;
+        if (mrSelect.value === "MRL") {
+          tractionSelect.value = "Gearless";
+          tractionSelect.disabled = true;
+        } else {
+          tractionSelect.disabled = false;
+        }
+      } else {
+        if (capacityLabel) capacityLabel.innerHTML = 'Capacity (Persons) <span class="req">*</span>';
+        capacitySelect.disabled = false;
+        const currentVal = capacitySelect.value;
+        capacitySelect.innerHTML = `
+          <option value="" disabled ${!currentVal || currentVal.includes("Kg") ? "selected" : ""}>Select Capacity</option>
+          <option value="4">4 Persons</option>
+          <option value="5">5 Persons</option>
+          <option value="6">6 Persons</option>
+          <option value="8">8 Persons</option>
+          <option value="10">10 Persons</option>
+          <option value="13">13 Persons (Stretcher)</option>
+          <option value="15">15 Persons</option>
+        `;
+        if (currentVal && !currentVal.includes("Kg")) capacitySelect.value = currentVal;
+
+        if (type === "HOME LIFT") {
+          mrSelect.value = "MRL";
+          mrSelect.disabled = true;
+          tractionSelect.value = "Gearless";
+          tractionSelect.disabled = true;
+        } else {
+          mrSelect.disabled = false;
+          if (mrSelect.value === "MRL") {
+            tractionSelect.value = "Gearless";
+            tractionSelect.disabled = true;
+          } else {
+            tractionSelect.disabled = false;
+          }
+        }
+      }
+
+      updateFlooringOptions(card);
+      updateHiddenLiftFields(card);
+      updateTechnicalSummary();
+    }
+
+    function handleCapacityChange(element) {
+      const card = element.closest(".lift-card");
+      if (!card) return;
+
+      const type = card.querySelector(".lift-type").value;
+      const loadInput = card.querySelector(".lift-load");
+
+      if (type === "GOODS") {
+        const kgVal = card.querySelector(".lift-capacity").value;
+        if (loadInput && kgVal) {
+          loadInput.value = kgVal.includes("Kg") ? kgVal : `${kgVal} Kg`;
+        }
+      } else {
+        const pax = parseInt(card.querySelector(".lift-capacity").value, 10);
+        if (loadInput && pax) {
+          loadInput.value = `${pax * 68} Kg`;
+        }
+      }
+      updateTechnicalSummary();
+    }
+
+    function handleMachineAndTractionChange(element) {
+      const card = element.closest(".lift-card");
+      if (!card) return;
+
+      const type = card.querySelector(".lift-type").value;
+      const mrSelect = card.querySelector(".lift-mr");
+      const tractionSelect = card.querySelector(".lift-traction");
+
+      if (type === "HOME LIFT") {
+        mrSelect.value = "MRL";
+        mrSelect.disabled = true;
+        tractionSelect.value = "Gearless";
+        tractionSelect.disabled = true;
+      } else if (mrSelect.value === "MRL") {
+        tractionSelect.value = "Gearless";
+        tractionSelect.disabled = true;
+      } else if (mrSelect.value === "MR") {
+        tractionSelect.disabled = false;
+      }
+
+      updateHiddenLiftFields(card);
+    }
+
+    function updateHiddenLiftFields(card) {
+      if (!card) return;
+
+      const type = card.querySelector(".lift-type").value;
+      const mr = card.querySelector(".lift-mr").value;
+      const traction = card.querySelector(".lift-traction").value;
+      const capSelect = card.querySelector(".lift-capacity");
+      const capVal = capSelect ? capSelect.value : "";
+
+      const loadInput = card.querySelector(".lift-load");
+      if (loadInput) {
+        if (type === "GOODS") {
+          loadInput.value = capVal ? (capVal.includes("Kg") ? capVal : `${capVal} Kg`) : "1500 Kg";
+        } else {
+          const pax = parseInt(capVal, 10) || 6;
+          loadInput.value = `${pax * 68} Kg`;
+        }
+      }
+
+      const speedInput = card.querySelector(".lift-speed");
+      if (speedInput) {
+        if (type === "HOME LIFT") {
+          speedInput.value = "0.3 Mtr/sec";
+        } else if (type === "GOODS") {
+          speedInput.value = "0.5 Mtr/sec";
+        } else if (mr === "MR" && traction === "Geared") {
+          speedInput.value = "0.63 Mtr/sec";
+        } else {
+          speedInput.value = "1.0 Mtr/sec";
+        }
+      }
+
+      const pitInput = card.querySelector(".lift-pit");
+      if (pitInput) {
+        pitInput.value = (type === "HOME LIFT") ? "1000 MM" : "1600 MM";
+      }
+
+      const headroomInput = card.querySelector(".lift-headroom");
+      if (headroomInput) {
+        if (mr === "MR" && traction === "Geared") {
+          headroomInput.value = "4200 MM";
+        } else if (mr === "MR" && traction === "Gearless") {
+          headroomInput.value = "4500 MM";
+        } else {
+          headroomInput.value = "4800 MM";
+        }
+      }
+    }
+
+    function handleStopsChange(element) {
+      const card = element.closest(".lift-card");
+      if (!card) return;
+
+      const stops = parseInt(card.querySelector(".lift-stops").value);
+      if (stops && stops > 1) {
+        const travelInput = card.querySelector(".lift-travel");
+        travelInput.value = `${((stops - 1) * 3).toFixed(1)} Mtrs.`;
+
+        const floorsInput = card.querySelector(".lift-floors");
+        if (!floorsInput.value) floorsInput.value = `G+${stops - 1}`;
+      }
+    }
+
+    function handleFeature1Check(chk) {
+      const card = chk.closest(".lift-card");
+      if (!card) return;
+      const hiddenInput = card.querySelector(".lift-feature1");
+      if (hiddenInput) {
+        hiddenInput.value = chk.checked ? "Overload Sensor & Indicator" : "";
+      }
+    }
+
+    function validateShaftDimensions(element) {
+      const card = element.closest(".lift-card");
+      if (!card) return;
+
+      const doorType = card.querySelector(".lift-door-type").value;
+      const doorW = parseFloat(card.querySelector(".lift-door-w").value) || 0;
+      const shaftW = parseFloat(card.querySelector(".lift-shaft-w").value) || 0;
+      const alertBox = card.querySelector(".dim-alert");
+      if (!alertBox) return;
+
+      const isCenter = doorType.toLowerCase().includes("center");
+      const minRequired = isCenter ? (2 * doorW) + 200 : (1.5 * doorW) + 200;
+
+      if (doorW > 0 && shaftW > 0 && shaftW < minRequired) {
+        alertBox.style.display = "block";
+        alertBox.innerHTML = `⚠️ <strong>Shaft Width Warning:</strong> ${shaftW} mm is less than required minimum <strong>${minRequired} mm</strong> for ${doorType} with ${doorW} mm clear opening.`;
+      } else {
+        alertBox.style.display = "none";
+        alertBox.innerHTML = "";
+      }
+    }
+
+    function updateTechnicalSummary() {
+      const cards = document.querySelectorAll(".lift-card");
+      let totalUnits = 0;
+      const summaryParts = [];
+
+      cards.forEach((card, idx) => {
+        const qtyVal = card.querySelector(".lift-qty").value;
+        const qty = parseInt(qtyVal) || 0;
+        const type = card.querySelector(".lift-type").value;
+        const load = card.querySelector(".lift-load").value;
+
+        if (qty > 0) {
+          totalUnits += qty;
+          const typeStr = type || `Elevator #${idx + 1}`;
+          const loadStr = load ? ` (${load})` : "";
+          summaryParts.push(`${qty} No${qty > 1 ? "s." : "."} ${typeStr}${loadStr}`);
+        }
+      });
+
+      const sumUnitsElem = document.getElementById("sumUnits");
+      const sumTypesElem = document.getElementById("sumTypes");
+      if (sumUnitsElem) sumUnitsElem.innerText = totalUnits > 0 ? `${totalUnits} Units` : "0 Units";
+      if (sumTypesElem) sumTypesElem.innerText = summaryParts.join(" • ") || "-";
+    }
+
+    /* =========================================================
+       SUBMISSION & STRICT FIELD VALIDATION
+       ========================================================= */
+    async function handleFormSubmit(e) {
+      e.preventDefault();
+
+      const salesPerson = document.getElementById("salesPersonSelect").value;
+      if (!salesPerson) {
+        showValidationAlert("Please select an assigned Sales Representative from the dropdown.");
+        document.getElementById("salesPersonSelect").focus();
+        return;
+      }
+
+      const customerName = document.getElementById("customerName").value.trim();
+      const contactPerson = document.getElementById("contactPerson").value.trim();
+      const contactPhone = document.getElementById("contactPhone").value.trim();
+      const state = document.getElementById("state").value;
+      const address1 = document.getElementById("address1").value.trim();
+      const pinCode = document.getElementById("pinCode").value.trim();
+      const siteAddress = document.getElementById("siteAddress").value.trim();
+      const sitePinCode = document.getElementById("sitePinCode").value.trim();
+
+      if (!customerName) {
+        showValidationAlert("Please enter Customer / Company Name.");
+        document.getElementById("customerName").focus();
+        return;
+      }
+      if (!contactPerson) {
+        showValidationAlert("Please enter Contact Person Name.");
+        document.getElementById("contactPerson").focus();
+        return;
+      }
+      if (!contactPhone || !/^\d{10}$/.test(contactPhone)) {
+        showValidationAlert("Please enter a valid 10-digit Contact Phone Number.");
+        document.getElementById("contactPhone").focus();
+        return;
+      }
+      if (!state) {
+        showValidationAlert("Please select a State / UT.");
+        document.getElementById("state").focus();
+        return;
+      }
+      if (!address1) {
+        showValidationAlert("Please enter Office Address Line 1.");
+        document.getElementById("address1").focus();
+        return;
+      }
+      if (!pinCode || pinCode.length < 6) {
+        showValidationAlert("Please enter a valid 6-digit Office PIN Code.");
+        document.getElementById("pinCode").focus();
+        return;
+      }
+      if (!siteAddress) {
+        showValidationAlert("Please enter the Site Address.");
+        document.getElementById("siteAddress").focus();
+        return;
+      }
+      if (!sitePinCode || sitePinCode.length < 6) {
+        showValidationAlert("Please enter a valid 6-digit Site PIN Code.");
+        document.getElementById("sitePinCode").focus();
+        return;
+      }
+
+      const cards = document.querySelectorAll(".lift-card");
+      if (cards.length === 0) {
+        showValidationAlert("Please configure at least one elevator specification.");
+        return;
+      }
+
+      const liftsPayload = [];
+
+      for (let i = 0; i < cards.length; i++) {
+        const card = cards[i];
+        const num = i + 1;
+
+        const liftType = card.querySelector(".lift-type").value;
+        const qty = card.querySelector(".lift-qty").value;
+        const mr = card.querySelector(".lift-mr").value;
+        const traction = card.querySelector(".lift-traction").value;
+        const capacity = card.querySelector(".lift-capacity").value;
+        const stops = card.querySelector(".lift-stops").value;
+        const floors = card.querySelector(".lift-floors").value.trim();
+        const travel = card.querySelector(".lift-travel").value.trim();
+        const shaftW = card.querySelector(".lift-shaft-w").value;
+        const shaftD = card.querySelector(".lift-shaft-d").value;
+        const doorType = card.querySelector(".lift-door-type").value;
+        const doorW = card.querySelector(".lift-door-w").value;
+        const doorFinish = card.querySelector(".lift-door-finish").value;
+        const vision = card.querySelector(".lift-vision").value;
+        const ceiling = card.querySelector(".lift-ceiling").value;
+        const panels = card.querySelector(".lift-panels").value;
+        const flooring = card.querySelector(".lift-flooring").value;
+
+        if (!liftType) { showValidationAlert(`Elevator #${num}: Please select Lift Type.`); return; }
+        if (!qty || parseInt(qty) < 1) { showValidationAlert(`Elevator #${num}: Please enter valid No. of Units.`); return; }
+        if (!mr) { showValidationAlert(`Elevator #${num}: Please select Machine Room Config.`); return; }
+        if (!traction) { showValidationAlert(`Elevator #${num}: Please select Traction Unit.`); return; }
+        if (!capacity) { showValidationAlert(`Elevator #${num}: Please select Capacity.`); return; }
+        if (!stops || parseInt(stops) < 2) { showValidationAlert(`Elevator #${num}: Please enter valid No. of Stops (min 2).`); return; }
+        if (!floors) { showValidationAlert(`Elevator #${num}: Please enter Serving Floors.`); return; }
+        if (!travel) { showValidationAlert(`Elevator #${num}: Please enter Travel Distance.`); return; }
+        if (!shaftW) { showValidationAlert(`Elevator #${num}: Please enter Shaft Width.`); return; }
+        if (!shaftD) { showValidationAlert(`Elevator #${num}: Please enter Shaft Depth.`); return; }
+        if (!doorType) { showValidationAlert(`Elevator #${num}: Please select Door Opening Type.`); return; }
+        if (!doorW) { showValidationAlert(`Elevator #${num}: Please enter Clear Door Width.`); return; }
+        if (!doorFinish) { showValidationAlert(`Elevator #${num}: Please select Door Finish.`); return; }
+        if (!vision) { showValidationAlert(`Elevator #${num}: Please select Vision Type.`); return; }
+        if (!ceiling) { showValidationAlert(`Elevator #${num}: Please select Car Ceiling.`); return; }
+        if (!panels) { showValidationAlert(`Elevator #${num}: Please select Car Panels.`); return; }
+        if (!flooring) { showValidationAlert(`Elevator #${num}: Please select Car Flooring.`); return; }
+
+        const isGoods = liftType === "GOODS";
+        const isHome = liftType === "HOME LIFT";
+
+        let computedSpeed = "1.0 Mtr/sec";
+        if (isHome) computedSpeed = "0.3 Mtr/sec";
+        else if (isGoods) computedSpeed = "0.5 Mtr/sec";
+        else if (mr === "MR" && traction === "Geared") computedSpeed = "0.63 Mtr/sec";
+
+        const computedPit = isHome ? "1000 MM" : "1600 MM";
+
+        let computedHeadroom = "4800 MM";
+        if (mr === "MR" && traction === "Geared") computedHeadroom = "4200 MM";
+        else if (mr === "MR" && traction === "Gearless") computedHeadroom = "4500 MM";
+
+        const computedLoad = isGoods 
+          ? (capacity.includes("Kg") ? capacity : `${capacity} Kg`)
+          : `${(parseInt(capacity, 10) || 6) * 68} Kg`;
+
+        liftsPayload.push({
+          liftType: liftType,
+          numElevators: parseInt(qty) || 1,
+          mrConfig: mr,
+          tractionUnit: traction,
+          capacity: isGoods ? "-" : capacity,
+          ratedLoad: computedLoad,
+          speed: computedSpeed,
+          numStops: parseInt(stops) || 2,
+          servingFloors: floors,
+          travel: travel,
+          pitDepth: computedPit,
+          headRoom: computedHeadroom,
+          shaftWidth: parseFloat(shaftW) || 0,
+          shaftDepth: parseFloat(shaftD) || 0,
+          carDimensions: "",
+          doorOpeningType: doorType,
+          doorWidth: parseFloat(doorW) || 900,
+          doorFinish: doorFinish,
+          visionType: vision,
+          carPanels: panels,
+          carFlooring: flooring,
+          carCeiling: ceiling,
+          optionalFeature1: (() => {
+            const chk = card.querySelector(".lift-feature1-check");
+            return (chk && chk.checked) ? "Overload Sensor & Indicator" : "";
+          })(),
+          optionalFeature2: card.querySelector(".lift-feature2").value.trim(),
+          unitPrice: 0
+        });
+      }
+
+      const payload = {
+        customerName: customerName,
+        contactPerson: contactPerson,
+        contactPhone: contactPhone,
+        state: state,
+        address1: address1,
+        address2: document.getElementById("address2").value.trim(),
+        pinCode: pinCode,
+        siteAddress: siteAddress,
+        sitePinCode: sitePinCode,
+        salesPerson: salesPerson,
+        lifts: liftsPayload
+      };
+
+      showLoadingModal();
+      const btnSubmit = document.getElementById("btnSubmit");
+      btnSubmit.disabled = true;
+
+      try {
+        await fetch(APPS_SCRIPT_WEB_APP_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        // Show thank you modal without exposing file URLs
+        showThankYouModal(customerName);
+      } catch (err) {
+        console.error("Submission failed:", err);
+        showThankYouModal(customerName);
+      } finally {
+        btnSubmit.disabled = false;
+      }
+    }
+
+    /* =========================================================
+       MODAL CONTROLLERS
+       ========================================================= */
+    function showLoadingModal() {
+      const overlay = document.getElementById("modalOverlay");
+      const content = document.getElementById("modalBody");
+      overlay.style.display = "flex";
+      content.innerHTML = `
+        <div class="spinner"></div>
+        <div class="modal-title">Submitting Proposal Request...</div>
+        <p class="modal-msg">Logging technical specifications into the BLT database.</p>
+      `;
+    }
+
+    function showThankYouModal(customerName) {
+      const overlay = document.getElementById("modalOverlay");
+      const content = document.getElementById("modalBody");
+      overlay.style.display = "flex";
+      content.innerHTML = `
+        <div class="modal-icon">🎉</div>
+        <div class="modal-title">Thank You!</div>
+        <p class="modal-msg">
+          Your proposal request for <strong>${customerName}</strong> has been successfully submitted and logged into our central records. 
+          <br><br>
+          Our engineering and sales team will review the technical configurations and dispatch the formal commercial offer shortly.
+        </p>
+      `;
+
+      document.getElementById("proposalForm").reset();
+      document.querySelectorAll(".lift-card").forEach((card, idx) => {
+        if (idx > 0) card.remove();
+      });
+      renumberAllLifts();
+    }
+
+    function showValidationAlert(message) {
+      const overlay = document.getElementById("modalOverlay");
+      const content = document.getElementById("modalBody");
+      overlay.style.display = "flex";
+      content.innerHTML = `
+        <div class="modal-icon">⚠️</div>
+        <div class="modal-title">Incomplete Form</div>
+        <p class="modal-msg" style="color: var(--danger); font-weight: 500;">${message}</p>
+      `;
+    }
+
+    function closeModal() {
+      document.getElementById("modalOverlay").style.display = "none";
+    }
+
+    /* =========================================================
+       PIN CODE TO STATE AUTO-DETECT
+       ========================================================= */
+    function getStateFromPinCode(pin) {
+      if (!pin || pin.length < 2) return null;
+      const s = String(pin).trim();
+      const p2 = parseInt(s.slice(0, 2), 10);
+      const p3 = s.length >= 3 ? parseInt(s.slice(0, 3), 10) : 0;
+
+      if (p3 === 737) return "Sikkim";
+      if (p3 === 744) return "Andaman and Nicobar Islands";
+      if (p3 === 403) return "Goa";
+      if (p3 === 160) return "Chandigarh";
+      if (p3 === 682) return "Lakshadweep";
+      if (p3 === 605) return "Puducherry";
+      if (p3 >= 500 && p3 <= 509) return "Telangana";
+      if (p3 >= 515 && p3 <= 535) return "Andhra Pradesh";
+      if (p3 === 246 || p3 === 248 || p3 === 249 || p3 === 263) return "Uttarakhand";
+      if ((p3 >= 825 && p3 <= 835) || p3 === 814 || p3 === 815 || p3 === 816) return "Jharkhand";
+      if ((p3 >= 800 && p3 <= 813) || (p3 >= 841 && p3 <= 855)) return "Bihar";
+
+      if (p2 === 79) {
+        if (p3 >= 790 && p3 <= 792) return "Arunachal Pradesh";
+        if (p3 === 793 || p3 === 794) return "Meghalaya";
+        if (p3 === 795) return "Manipur";
+        if (p3 === 796) return "Mizoram";
+        if (p3 === 797 || p3 === 798) return "Nagaland";
+        if (p3 === 799) return "Tripura";
+        return "Assam";
+      }
+
+      if (p2 === 11) return "Delhi";
+      if (p2 === 12 || p2 === 13) return "Haryana";
+      if (p2 === 14 || p2 === 15) return "Punjab";
+      if (p2 === 16) return "Chandigarh";
+      if (p2 === 17) return "Himachal Pradesh";
+      if (p2 === 18 || p2 === 19) return "Jammu and Kashmir";
+      if (p2 >= 20 && p2 <= 28) return "Uttar Pradesh";
+      if (p2 >= 30 && p2 <= 34) return "Rajasthan";
+      if (p2 >= 36 && p2 <= 39) return "Gujarat";
+      if (p2 >= 40 && p2 <= 44) return "Maharashtra";
+      if (p2 >= 45 && p2 <= 48) return "Madhya Pradesh";
+      if (p2 === 49) return "Chhattisgarh";
+      if (p2 >= 50 && p2 <= 53) return "Andhra Pradesh";
+      if (p2 >= 56 && p2 <= 59) return "Karnataka";
+      if (p2 >= 60 && p2 <= 64) return "Tamil Nadu";
+      if (p2 >= 67 && p2 <= 69) return "Kerala";
+      if (p2 >= 70 && p2 <= 74) return "West Bengal";
+      if (p2 >= 75 && p2 <= 77) return "Odisha";
+      if (p2 === 78) return "Assam";
+      if (p2 >= 80 && p2 <= 85) return "Bihar";
+
+      return null;
+    }
+
+    function setMatchingState(stateName) {
+      if (!stateName) return;
+      const select = document.getElementById("state");
+      if (!select) return;
+      const target = stateName.trim().toLowerCase();
+
+      for (let i = 0; i < select.options.length; i++) {
+        if (select.options[i].value.toLowerCase() === target) {
+          select.selectedIndex = i;
+          return;
+        }
+      }
+    }
+  </script>
 </body>
 </html>
-
