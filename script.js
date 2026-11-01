@@ -1,12 +1,9 @@
 /**
  * BLT Brilliant Lifts & Escalators - Proposal Generator Frontend Engine
-
  */
 
-// Replace this with your Google Apps Script Web App Deployment URL
 const APPS_SCRIPT_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxhzFCEKqeoNM82wCQJvcDNjxgOypCXSeZqVX1AipCQ15DJx_Q_rgxvPE6VtOMaFRDX/exec";
 
-// Comprehensive list of sales team members from the database sheet
 let salesTeamData = [
   { name: "SANJEEV KUMAR SINGH", designation: "ASST. MANAGER – SALES & SERVICE", phone: "+91 70015 64906", email: "sales@bltbrilliant.com" },
   { name: "KALYAN CHATTERJEE", designation: "MANAGER – SALES", phone: "+91 99030 71732", email: "kalyan@bltbrilliant.com" },
@@ -20,20 +17,15 @@ let salesTeamData = [
 ];
 
 document.addEventListener("DOMContentLoaded", () => {
-  // 1. Initialize Sales Team Profile
   initSalesTeamProfile();
-
-  // 2. Setup Checkpoints & Phone Number Restrictions
   setupFormCheckpointsAndValidation();
 
-  // 3. Add first lift card on page load if not already in HTML
   if (document.querySelectorAll(".lift-card").length === 0) {
     addLiftCard();
   } else {
     renumberAllLifts();
   }
 
-  // 4. Attach button listeners
   document.getElementById("btnAddLift").addEventListener("click", () => {
     addLiftCard();
   });
@@ -42,9 +34,6 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("btnModalClose").addEventListener("click", closeModal);
 });
 
-/**
- * Initializes and populates the Sales Person profile section in the upper right
- */
 async function initSalesTeamProfile() {
   populateSalesDropdown(salesTeamData);
 
@@ -54,7 +43,6 @@ async function initSalesTeamProfile() {
       const response = await fetch(url);
       const resData = await response.json();
       if (resData.status === "success" && Array.isArray(resData.salesTeam) && resData.salesTeam.length > 0) {
-        // Merge incoming list with salesTeamData so members like CHAYAN MUKHERJEE are never dropped
         const map = new Map();
         resData.salesTeam.forEach(rep => {
           if (rep && rep.name) map.set(rep.name.trim().toUpperCase(), rep);
@@ -96,10 +84,12 @@ function populateSalesDropdown(team) {
   handleSalesPersonChange();
 }
 
-/**
- * Requirement 1: State dropdown where default is Odisha for Bikash & Bijaya,
- * and West Bengal for others.
- */
+function isKalyanSelected() {
+  const select = document.getElementById("salesPersonSelect");
+  const selectedName = (select && select.value ? select.value : "").toUpperCase();
+  return selectedName.includes("KALYAN");
+}
+
 function handleSalesPersonChange() {
   const select = document.getElementById("salesPersonSelect");
   const selectedName = (select.value || "").toUpperCase();
@@ -111,7 +101,6 @@ function handleSalesPersonChange() {
     document.getElementById("salesEmail").innerText = rep.email || "sales@bltbrilliant.com";
   }
 
-  // Set default state based on sales person territory
   const stateSelect = document.getElementById("state");
   if (stateSelect) {
     if (selectedName.includes("BIKASH") || selectedName.includes("BIJAYA")) {
@@ -122,12 +111,20 @@ function handleSalesPersonChange() {
       stateSelect.value = "West Bengal";
     }
   }
+
+  if (selectedName.includes("KALYAN")) {
+    document.querySelectorAll(".lift-card").forEach(card => {
+      const type = card.querySelector(".lift-type").value;
+      if (type !== "GOODS") {
+        const fl = card.querySelector(".lift-flooring");
+        if (fl) {
+          fl.value = "PVC Flooring - Wooden Type";
+        }
+      }
+    });
+  }
 }
 
-/**
- * Requirement 2: Checkpoints for Customer/Contact and Office/Site Address auto-syncing
- * with Site PIN Code placed after Site Address.
- */
 function setupFormCheckpointsAndValidation() {
   const customerName = document.getElementById("customerName");
   const contactPerson = document.getElementById("contactPerson");
@@ -142,7 +139,6 @@ function setupFormCheckpointsAndValidation() {
 
   const contactPhone = document.getElementById("contactPhone");
 
-  // --- Checkpoint 1: Same as Customer Name ---
   chkSameCustomer.addEventListener("change", () => {
     if (chkSameCustomer.checked) {
       contactPerson.value = customerName.value.trim();
@@ -158,7 +154,6 @@ function setupFormCheckpointsAndValidation() {
     }
   });
 
-  // --- Checkpoint 2: Same as Office Address & PIN ---
   function syncSiteAddressAndPin() {
     if (chkSameAddress.checked) {
       const parts = [address1.value.trim(), address2.value.trim()].filter(Boolean);
@@ -176,6 +171,7 @@ function setupFormCheckpointsAndValidation() {
   chkSameAddress.addEventListener("change", syncSiteAddressAndPin);
   address1.addEventListener("input", syncSiteAddressAndPin);
   address2.addEventListener("input", syncSiteAddressAndPin);
+
   function handlePinAutoState(inputElem) {
     const cleanPin = inputElem.value.replace(/\D/g, "").slice(0, 6);
     inputElem.value = cleanPin;
@@ -202,7 +198,6 @@ function setupFormCheckpointsAndValidation() {
     handlePinAutoState(this);
   });
 
-  // --- Phone Number: 10 Digits Only ---
   contactPhone.addEventListener("input", function() {
     this.value = this.value.replace(/\D/g, "").slice(0, 10);
   });
@@ -214,249 +209,29 @@ function setupFormCheckpointsAndValidation() {
   });
 }
 
-/**
- * Requirement 3: All technical specifications remain completely EMPTY initially.
- * Requirement 4: Removed Glass / Frameless from Door Finish.
- * Requirement 5: Removed Marble Stone Flooring from Car Flooring.
- * Requirement 6: Continuous sequential numbering (1, 2, 3...) without skipping.
- */
-function addLiftCard() {
-  const container = document.getElementById("liftsContainer");
-  const card = document.createElement("div");
-  card.className = "lift-card";
+function updateFlooringOptions(card) {
+  if (!card) return;
+  const type = card.querySelector(".lift-type").value;
+  const flooringSelect = card.querySelector(".lift-flooring");
+  if (!flooringSelect) return;
 
-  card.innerHTML = `
-    <div class="lift-card-header">
-      <div class="lift-badge">Elevator Specification</div>
-      <button type="button" class="btn-remove-lift" onclick="removeLiftCard(this)">✕ Remove Elevator</button>
-    </div>
+  const currentVal = flooringSelect.value;
+  flooringSelect.innerHTML = "";
 
-    <!-- Basic Configuration -->
-    <div class="grid-4">
-      <div class="form-group">
-        <label>Lift Type <span class="req">*</span></label>
-        <select class="form-control lift-type" required onchange="handleLiftTypeChange(this)">
-          <option value="" disabled selected>-- Select Lift Type --</option>
-          <option value="PASSENGER">Passenger Elevator</option>
-          <option value="HOME LIFT">Home Lift / Villa</option>
-          <option value="STRETCHER">Stretcher / Hospital Lift</option>
-          <option value="GOODS">Goods / Freight Lift</option>
-        </select>
-      </div>
+  if (type === "GOODS") {
+    flooringSelect.innerHTML = `<option value="MS Chequered Plate" selected>MS Chequered Plate</option>`;
+  } else {
+    const isKalyan = isKalyanSelected();
+    const defaultVal = isKalyan ? "PVC Flooring - Wooden Type" : "";
+    const activeVal = (currentVal && currentVal !== "MS Chequered Plate") ? currentVal : defaultVal;
 
-      <div class="form-group">
-        <label>No. of Units <span class="req">*</span></label>
-        <input type="number" class="form-control lift-qty" value="" placeholder="e.g. 1" min="1" max="50" inputmode="numeric" required oninput="updateTechnicalSummary()">
-      </div>
-
-      <div class="form-group">
-        <label>Machine Room Config <span class="req">*</span></label>
-        <select class="form-control lift-mr" required onchange="handleMachineAndTractionChange(this)">
-          <option value="" disabled selected>-- Select MR / MRL --</option>
-          <option value="MRL">MRL (Machine Room Less)</option>
-          <option value="MR">MR (Machine Room)</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label>Traction Unit <span class="req">*</span></label>
-        <select class="form-control lift-traction" required onchange="handleMachineAndTractionChange(this)">
-          <option value="" disabled selected>-- Select Traction --</option>
-          <option value="Gearless">Gearless</option>
-          <option value="Geared">Geared</option>
-        </select>
-      </div>
-    </div>
-
-    <!-- Capacity, Stops, Floors, Travel -->
-    <div class="grid-4">
-      <div class="form-group grp-capacity">
-        <label>Capacity (Persons) <span class="req">*</span></label>
-        <select class="form-control lift-capacity" required onchange="handleCapacityChange(this)">
-          <option value="" disabled selected>-- Select Capacity --</option>
-          <option value="4">4 Persons</option>
-          <option value="5">5 Persons</option>
-          <option value="6">6 Persons</option>
-          <option value="8">8 Persons</option>
-          <option value="10">10 Persons</option>
-          <option value="13">13 Persons (Stretcher)</option>
-          <option value="15">15 Persons</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label>No. of Stops <span class="req">*</span></label>
-        <input type="number" class="form-control lift-stops" value="" placeholder="e.g. 6" min="2" max="60" inputmode="numeric" required oninput="handleStopsChange(this)">
-      </div>
-
-      <div class="form-group">
-        <label>Serving Floors <span class="req">*</span></label>
-        <input type="text" class="form-control lift-floors" value="" placeholder="e.g. G+5 or B+G+4" required>
-      </div>
-
-      <div class="form-group">
-        <label>Travel Distance (Mtrs) <span class="req">*</span></label>
-        <input type="text" class="form-control lift-travel" value="" placeholder="e.g. 15.0 Mtrs." required>
-      </div>
-    </div>
-
-    <!-- Hidden Technical Parameters (Auto-Calculated by Engine) -->
-    <input type="hidden" class="lift-load" value="408 Kg">
-    <input type="hidden" class="lift-speed" value="1.0 Mtr/sec">
-    <input type="hidden" class="lift-pit" value="1600 MM">
-    <input type="hidden" class="lift-headroom" value="4800 MM">
-
-    <!-- Shaft Dimensions & Door Specs -->
-    <div class="grid-4">
-      <div class="form-group">
-        <label>Shaft Width (W in MM) <span class="req">*</span></label>
-        <input type="number" class="form-control lift-shaft-w" value="" placeholder="e.g. 2050" inputmode="numeric" required oninput="validateShaftDimensions(this)">
-      </div>
-
-      <div class="form-group">
-        <label>Shaft Depth (D in MM) <span class="req">*</span></label>
-        <input type="number" class="form-control lift-shaft-d" value="" placeholder="e.g. 2050" inputmode="numeric" required>
-      </div>
-
-      <div class="form-group">
-        <label>Door Opening Type <span class="req">*</span></label>
-        <select class="form-control lift-door-type" required onchange="validateShaftDimensions(this)">
-          <option value="" disabled selected>-- Select Door Opening --</option>
-          <option value="Automatic Center Opening Door">Center Opening Door</option>
-          <option value="Automatic Telescopic Opening Door">Telescopic Opening Door</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label>Clear Door Width (MM) <span class="req">*</span></label>
-        <input type="number" class="form-control lift-door-w" value="" placeholder="e.g. 900" inputmode="numeric" required oninput="validateShaftDimensions(this)">
-      </div>
-    </div>
-
-    <!-- Live Dimension Warning Alert -->
-    <div class="dim-alert"></div>
-
-    <!-- Door Finishes & Vision -->
-    <div class="grid-2">
-      <div class="form-group">
-        <label>Door Finish <span class="req">*</span></label>
-        <select class="form-control lift-door-finish" required>
-          <option value="" disabled selected>-- Select Door Finish --</option>
-          <option value="SS Hairline Finish">SS Hairline Finish</option>
-          <option value="MS Powder Coated">MS Powder Coated</option>
-          <option value="SS Mirror Finish">SS Mirror Finish</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label>Vision Type</label>
-        <select class="form-control lift-vision">
-          <option value="" disabled selected>-- Select Vision Type --</option>
-          <option value="No Vision">No Vision</option>
-          <option value="Small Glass Vision">Small Glass Vision</option>
-          <option value="Half Glass Vision">Half Glass Vision</option>
-          <option value="Full Glass Vision">Full Glass Vision</option>
-        </select>
-      </div>
-    </div>
-
-      <div class="form-group">
-        <label>Car Panels <span class="req">*</span></label>
-        <select class="form-control lift-panels" required>
-          <option value="" disabled selected>-- Select Car Panels --</option>
-          <option value="SS Hairline Finish">SS Hairline Finish</option>
-          <option value="MS Powder Coated">MS Powder Coated</option>
-          <option value="SS Mirror Gold">SS Mirror Gold</option>
-        </select>
-      </div>
-    <!-- Cabin Finishes & Design -->
-    <div class="grid-3">
-      <div class="form-group">
-        <label>Car Ceiling <span class="req">*</span></label>
-        <select class="form-control lift-ceiling" required>
-          <option value="" disabled selected>-- Select Car Ceiling --</option>
-          <option value="SS Hairline Finish">SS Hairline Finish</option>
-          <option value="MS Powder Coated Finish">MS Powder Coated Finish</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label>Car Flooring <span class="req">*</span></label>
-        <select class="form-control lift-flooring" required>
-          <option value="" disabled selected>-- Select Car Flooring --</option>
-          <option value="PVC Flooring">PVC Flooring</option>
-          <option value="MS Chequered Plate">MS Chequered Plate</option>
-          <option value="Granite Stone Flooring">Granite Stone Flooring</option>
-        </select>
-      </div>
-      </div>
-    </div>
-
-    <!-- Car Dimensions & Optional Features -->
-    <div class="grid-3">
-      <div class="form-group">
-        <label>Car Dimension (W x D) MM</label>
-        <input type="text" class="form-control lift-cardim" placeholder="e.g. 1580 x 1300 or as per GA Drawing">
-      </div>
-
-      <div class="form-group">
-        <label>Optional Feature 1</label>
-        <input type="text" class="form-control lift-feature1" placeholder="e.g. Voice Announcement System">
-      </div>
-
-      <div class="form-group">
-        <label>Optional Feature 2</label>
-        <input type="text" class="form-control lift-feature2" placeholder="e.g. Overload Sensor & Indicator">
-      </div>
-    </div>
-  `;
-
-  container.appendChild(card);
-  renumberAllLifts();
-}
-
-/**
- * Removes a lift card and renumbers remaining cards continuously (1, 2, 3...)
- */
-function removeLiftCard(btnOrElement) {
-  const card = btnOrElement.closest(".lift-card");
-  if (card) {
-    card.remove();
-    renumberAllLifts();
+    flooringSelect.innerHTML = `
+      <option value="" disabled ${!activeVal ? "selected" : ""}>-- Select Car Flooring --</option>
+      <option value="PVC Flooring" ${activeVal === "PVC Flooring" ? "selected" : ""}>PVC Flooring</option>
+      <option value="PVC Flooring - Wooden Type" ${activeVal === "PVC Flooring - Wooden Type" ? "selected" : ""}>PVC Flooring - Wooden Type</option>
+      <option value="Granite Flooring - By Customer" ${activeVal === "Granite Flooring - By Customer" || activeVal.includes("Granite") ? "selected" : ""}>Granite Flooring - By Customer</option>
+    `;
   }
-}
-
-/**
- * Requirement 6: Renumber all elevator cards sequentially without any gaps or skips.
- */
-function renumberAllLifts() {
-  const cards = document.querySelectorAll(".lift-card");
-  cards.forEach((card, idx) => {
-    const liftNum = idx + 1;
-    card.id = `liftCard_${liftNum}`;
-    card.dataset.liftIndex = liftNum;
-
-    const badge = card.querySelector(".lift-badge");
-    if (badge) {
-      badge.innerText = `Elevator #${liftNum} Specification`;
-    }
-
-    const alertBox = card.querySelector(".dim-alert");
-    if (alertBox) {
-      alertBox.id = `dimAlert_${liftNum}`;
-    }
-  });
-
-  updateRemoveButtonsVisibility();
-  updateTechnicalSummary();
-}
-
-function updateRemoveButtonsVisibility() {
-  const cards = document.querySelectorAll(".lift-card");
-  const buttons = document.querySelectorAll(".btn-remove-lift");
-  buttons.forEach(btn => {
-    btn.style.display = cards.length > 1 ? "block" : "none";
-  });
 }
 
 function handleLiftTypeChange(element) {
@@ -465,20 +240,31 @@ function handleLiftTypeChange(element) {
 
   const type = card.querySelector(".lift-type").value;
   const capacitySelect = card.querySelector(".lift-capacity");
+  const capacityLabel = card.querySelector(".capacity-label") || card.querySelector(".grp-capacity label");
   const mrSelect = card.querySelector(".lift-mr");
   const tractionSelect = card.querySelector(".lift-traction");
 
-  if (type === "HOME LIFT") {
-    // For Home Lift it always should be MRL, Gearless and speed 0.3 Mtr/sec
-    mrSelect.value = "MRL";
-    mrSelect.disabled = true;
-    tractionSelect.value = "Gearless";
-    tractionSelect.disabled = true;
+  if (type === "GOODS") {
+    if (capacityLabel) {
+      capacityLabel.innerHTML = 'Capacity (Kg) <span class="req">*</span>';
+    }
     capacitySelect.disabled = false;
-  } else if (type === "GOODS") {
-    // Goods Lift: no passenger capacity, speed always 0.5 Mtr/sec
-    capacitySelect.disabled = true;
-    capacitySelect.value = "";
+    const currentVal = capacitySelect.value;
+    capacitySelect.innerHTML = `
+      <option value="" disabled>-- Select Capacity (Kg) --</option>
+      <option value="500 Kg">500 Kg</option>
+      <option value="1000 Kg">1000 Kg</option>
+      <option value="1500 Kg" selected>1500 Kg</option>
+      <option value="2000 Kg">2000 Kg</option>
+      <option value="2500 Kg">2500 Kg</option>
+      <option value="3000 Kg">3000 Kg</option>
+      <option value="4000 Kg">4000 Kg</option>
+      <option value="5000 Kg">5000 Kg</option>
+    `;
+    if (currentVal && currentVal.includes("Kg")) {
+      capacitySelect.value = currentVal;
+    }
+
     mrSelect.disabled = false;
     if (mrSelect.value === "MRL") {
       tractionSelect.value = "Gearless";
@@ -487,18 +273,64 @@ function handleLiftTypeChange(element) {
       tractionSelect.disabled = false;
     }
   } else {
-    // PASSENGER or STRETCHER
+    if (capacityLabel) {
+      capacityLabel.innerHTML = 'Capacity (Persons) <span class="req">*</span>';
+    }
     capacitySelect.disabled = false;
-    mrSelect.disabled = false;
-    if (mrSelect.value === "MRL") {
+    const currentVal = capacitySelect.value;
+    capacitySelect.innerHTML = `
+      <option value="" disabled ${!currentVal || currentVal.includes("Kg") ? "selected" : ""}>-- Select Capacity --</option>
+      <option value="4">4 Persons</option>
+      <option value="5">5 Persons</option>
+      <option value="6">6 Persons</option>
+      <option value="8">8 Persons</option>
+      <option value="10">10 Persons</option>
+      <option value="13">13 Persons (Stretcher)</option>
+      <option value="15">15 Persons</option>
+    `;
+    if (currentVal && !currentVal.includes("Kg")) {
+      capacitySelect.value = currentVal;
+    }
+
+    if (type === "HOME LIFT") {
+      mrSelect.value = "MRL";
+      mrSelect.disabled = true;
       tractionSelect.value = "Gearless";
       tractionSelect.disabled = true;
     } else {
-      tractionSelect.disabled = false;
+      mrSelect.disabled = false;
+      if (mrSelect.value === "MRL") {
+        tractionSelect.value = "Gearless";
+        tractionSelect.disabled = true;
+      } else {
+        tractionSelect.disabled = false;
+      }
     }
   }
 
+  updateFlooringOptions(card);
   updateHiddenLiftFields(card);
+  updateTechnicalSummary();
+}
+
+function handleCapacityChange(element) {
+  const card = element.closest(".lift-card");
+  if (!card) return;
+
+  const type = card.querySelector(".lift-type").value;
+  const loadInput = card.querySelector(".lift-load");
+
+  if (type === "GOODS") {
+    const kgVal = card.querySelector(".lift-capacity").value;
+    if (loadInput && kgVal) {
+      loadInput.value = kgVal.includes("Kg") ? kgVal : `${kgVal} Kg`;
+    }
+  } else {
+    const pax = parseInt(card.querySelector(".lift-capacity").value, 10);
+    if (loadInput && pax) {
+      loadInput.value = `${pax * 68} Kg`;
+    }
+  }
   updateTechnicalSummary();
 }
 
@@ -532,19 +364,18 @@ function updateHiddenLiftFields(card) {
   const mr = card.querySelector(".lift-mr").value;
   const traction = card.querySelector(".lift-traction").value;
   const capacitySelect = card.querySelector(".lift-capacity");
-  const pax = parseInt(capacitySelect ? capacitySelect.value : "") || 6;
+  const capVal = capacitySelect ? capacitySelect.value : "";
 
-  // 1. Rated Load
   const loadInput = card.querySelector(".lift-load");
   if (loadInput) {
-    loadInput.value = (type === "GOODS") ? "1500 Kg" : `${pax * 68} Kg`;
+    if (type === "GOODS") {
+      loadInput.value = capVal ? (capVal.includes("Kg") ? capVal : `${capVal} Kg`) : "1500 Kg";
+    } else {
+      const pax = parseInt(capVal, 10) || 6;
+      loadInput.value = `${pax * 68} Kg`;
+    }
   }
 
-  // 2. Speed Rules:
-  // - Home Lift: always 0.3 Mtr/sec
-  // - Goods Lift: always 0.5 Mtr/sec
-  // - Passenger/Stretcher MR Geared: 0.63 Mtr/sec
-  // - Passenger/Stretcher MR Gearless or MRL Gearless: 1.0 Mtr/sec
   const speedInput = card.querySelector(".lift-speed");
   if (speedInput) {
     if (type === "HOME LIFT") {
@@ -558,18 +389,11 @@ function updateHiddenLiftFields(card) {
     }
   }
 
-  // 3. Pit Depth Rules:
-  // - Home Lift: default 1000 MM
-  // - Standard (Passenger/Stretcher/Goods): 1600 MM
   const pitInput = card.querySelector(".lift-pit");
   if (pitInput) {
     pitInput.value = (type === "HOME LIFT") ? "1000 MM" : "1600 MM";
   }
 
-  // 4. Headroom Rules:
-  // - MR Geared: 4200 MM
-  // - MR Gearless: 4500 MM
-  // - MRL: 4800 MM
   const headroomInput = card.querySelector(".lift-headroom");
   if (headroomInput) {
     if (mr === "MR" && traction === "Geared") {
@@ -582,24 +406,6 @@ function updateHiddenLiftFields(card) {
   }
 }
 
-/**
- * Rated load calculation (Pax * 68 Kg)
- */
-function handleCapacityChange(element) {
-  const card = element.closest(".lift-card");
-  if (!card) return;
-
-  const pax = parseInt(card.querySelector(".lift-capacity").value);
-  if (pax) {
-    const loadInput = card.querySelector(".lift-load");
-    loadInput.value = `${pax * 68} Kg`;
-  }
-  updateTechnicalSummary();
-}
-
-/**
- * Auto-calculate Travel Height and Serving Floors from stops
- */
 function handleStopsChange(element) {
   const card = element.closest(".lift-card");
   if (!card) return;
@@ -616,9 +422,15 @@ function handleStopsChange(element) {
   }
 }
 
-/**
- * Real-time Shaft Dimension Formula Check
- */
+function handleFeature1Check(chk) {
+  const card = chk.closest(".lift-card");
+  if (!card) return;
+  const hiddenInput = card.querySelector(".lift-feature1");
+  if (hiddenInput) {
+    hiddenInput.value = chk.checked ? "Overload Sensor & Indicator" : "";
+  }
+}
+
 function validateShaftDimensions(element) {
   const card = element.closest(".lift-card");
   if (!card) return;
@@ -643,9 +455,235 @@ function validateShaftDimensions(element) {
   }
 }
 
-/**
- * Updates Technical Configuration Summary (Non-Priced)
- */
+function addLiftCard() {
+  const container = document.getElementById("liftsContainer");
+  const card = document.createElement("div");
+  card.className = "lift-card";
+
+  card.innerHTML = `
+    <div class="lift-card-header">
+      <div class="lift-badge">Elevator Specification</div>
+      <button type="button" class="btn-remove-lift" onclick="removeLiftCard(this)">✕ Remove Elevator</button>
+    </div>
+
+    <div class="grid-4">
+      <div class="form-group">
+        <label>Lift Type <span class="req">*</span></label>
+        <select class="form-control lift-type" required onchange="handleLiftTypeChange(this)">
+          <option value="" disabled selected>-- Select Lift Type --</option>
+          <option value="PASSENGER">Passenger</option>
+          <option value="HOME LIFT">Home</option>
+          <option value="STRETCHER">Stretcher</option>
+          <option value="GOODS">Goods</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>No. of Units <span class="req">*</span></label>
+        <input type="number" class="form-control lift-qty" value="" placeholder="1" min="1" max="50" inputmode="numeric" required oninput="updateTechnicalSummary()">
+      </div>
+
+      <div class="form-group">
+        <label>Machine Room Config <span class="req">*</span></label>
+        <select class="form-control lift-mr" required onchange="handleMachineAndTractionChange(this)">
+          <option value="" disabled selected>-- Select MR / MRL --</option>
+          <option value="MRL">MRL (Machine Room Less)</option>
+          <option value="MR">MR (Machine Room)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Traction Unit <span class="req">*</span></label>
+        <select class="form-control lift-traction" required onchange="handleMachineAndTractionChange(this)">
+          <option value="" disabled selected>-- Select Traction --</option>
+          <option value="Gearless">Gearless</option>
+          <option value="Geared">Geared</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="grid-4">
+      <div class="form-group grp-capacity">
+        <label class="capacity-label">Capacity (Persons) <span class="req">*</span></label>
+        <select class="form-control lift-capacity" required onchange="handleCapacityChange(this)">
+          <option value="" disabled selected>-- Select Capacity --</option>
+          <option value="4">4 Persons</option>
+          <option value="5">5 Persons</option>
+          <option value="6">6 Persons</option>
+          <option value="8">8 Persons</option>
+          <option value="10">10 Persons</option>
+          <option value="13">13 Persons (Stretcher)</option>
+          <option value="15">15 Persons</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>No. of Stops <span class="req">*</span></label>
+        <input type="number" class="form-control lift-stops" value="" placeholder="6" min="2" max="60" inputmode="numeric" required oninput="handleStopsChange(this)">
+      </div>
+
+      <div class="form-group">
+        <label>Serving Floors <span class="req">*</span></label>
+        <input type="text" class="form-control lift-floors" value="" placeholder="G+5 or B+G+4" required>
+      </div>
+
+      <div class="form-group">
+        <label>Travel Distance (Mtrs) <span class="req">*</span></label>
+        <input type="text" class="form-control lift-travel" value="" placeholder="15.0 Mtrs." required>
+      </div>
+    </div>
+
+    <input type="hidden" class="lift-load" value="408 Kg">
+    <input type="hidden" class="lift-speed" value="1.0 Mtr/sec">
+    <input type="hidden" class="lift-pit" value="1600 MM">
+    <input type="hidden" class="lift-headroom" value="4800 MM">
+
+    <div class="grid-4">
+      <div class="form-group">
+        <label>Shaft Width (W in MM) <span class="req">*</span></label>
+        <input type="number" class="form-control lift-shaft-w" value="" placeholder="2050" inputmode="numeric" required oninput="validateShaftDimensions(this)">
+      </div>
+
+      <div class="form-group">
+        <label>Shaft Depth (D in MM) <span class="req">*</span></label>
+        <input type="number" class="form-control lift-shaft-d" value="" placeholder="2050" inputmode="numeric" required>
+      </div>
+
+      <div class="form-group">
+        <label>Door Opening Type <span class="req">*</span></label>
+        <select class="form-control lift-door-type" required onchange="validateShaftDimensions(this)">
+          <option value="" disabled selected>-- Select Door Opening --</option>
+          <option value="Automatic Center Opening Door">Center Opening Door</option>
+          <option value="Automatic Telescopic Opening Door">Telescopic Opening Door</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Clear Door Width (MM) <span class="req">*</span></label>
+        <input type="number" class="form-control lift-door-w" value="" placeholder="900" inputmode="numeric" required oninput="validateShaftDimensions(this)">
+      </div>
+    </div>
+
+    <div class="dim-alert"></div>
+
+    <div class="grid-2">
+      <div class="form-group">
+        <label>Door Finish <span class="req">*</span></label>
+        <select class="form-control lift-door-finish" required>
+          <option value="" disabled selected>-- Select Door Finish --</option>
+          <option value="SS Hairline Finish">SS Hairline Finish</option>
+          <option value="MS Powder Coated">MS Powder Coated</option>
+          <option value="SS Mirror Finish">SS Mirror Finish</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Vision Type <span class="req">*</span></label>
+        <select class="form-control lift-vision" required>
+          <option value="" disabled selected>-- Select Vision Type --</option>
+          <option value="No Vision">No Vision</option>
+          <option value="Small Vision">Small Vision</option>
+          <option value="Half Glass">Half Glass</option>
+          <option value="Full Glass">Full Glass</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="grid-3">
+      <div class="form-group">
+        <label>Car Ceiling <span class="req">*</span></label>
+        <select class="form-control lift-ceiling" required>
+          <option value="" disabled selected>-- Select Car Ceiling --</option>
+          <option value="SS Hairline Finish">SS Hairline Finish</option>
+          <option value="MS Powder Coated Finish">MS Powder Coated Finish</option>
+          <option value="SS Mirror Finish">SS Mirror Finish</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Car Panels <span class="req">*</span></label>
+        <select class="form-control lift-panels" required>
+          <option value="" disabled selected>-- Select Car Panels --</option>
+          <option value="SS Hairline Finish">SS Hairline Finish</option>
+          <option value="MS Powder Coated">MS Powder Coated</option>
+          <option value="SS Mirror Finish">SS Mirror Finish</option>
+          <option value="SS Hairline Finish - Back Side Middle Panel SS Mirror Finish">SS Hairline Finish - Back Side Middle Panel SS Mirror Finish</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Car Flooring <span class="req">*</span></label>
+        <select class="form-control lift-flooring" required>
+          <option value="" disabled selected>-- Select Car Flooring --</option>
+          <option value="PVC Flooring">PVC Flooring</option>
+          <option value="PVC Flooring - Wooden Type">PVC Flooring - Wooden Type</option>
+          <option value="Granite Flooring - By Customer">Granite Flooring - By Customer</option>
+        </select>
+      </div>
+    </div>
+
+    <input type="hidden" class="lift-cardim" value="">
+    <div class="grid-2">
+      <div class="form-group" style="display: flex; flex-direction: column; justify-content: flex-end;">
+        <label class="checkbox-feature-label" title="Tick to include Overload Sensor & Indicator in Optional Feature 1">
+          <input type="checkbox" class="lift-feature1-check" onchange="handleFeature1Check(this)">
+          <span>Overload Sensor &amp; Indicator</span>
+        </label>
+        <input type="hidden" class="lift-feature1" value="">
+      </div>
+
+      <div class="form-group">
+        <label>Optional Feature 2</label>
+        <input type="text" class="form-control lift-feature2" placeholder="Voice Announcement System">
+      </div>
+    </div>
+  `;
+
+  if (isKalyanSelected()) {
+    updateFlooringOptions(card);
+  }
+  container.appendChild(card);
+  renumberAllLifts();
+}
+
+function removeLiftCard(btnOrElement) {
+  const card = btnOrElement.closest(".lift-card");
+  if (card) {
+    card.remove();
+    renumberAllLifts();
+  }
+}
+
+function renumberAllLifts() {
+  const cards = document.querySelectorAll(".lift-card");
+  cards.forEach((card, idx) => {
+    const liftNum = idx + 1;
+    card.id = `liftCard_${liftNum}`;
+    card.dataset.liftIndex = liftNum;
+
+    const badge = card.querySelector(".lift-badge");
+    if (badge) {
+      badge.innerText = `Elevator #${liftNum} Specification`;
+    }
+
+    const alertBox = card.querySelector(".dim-alert");
+    if (alertBox) {
+      alertBox.id = `dimAlert_${liftNum}`;
+    }
+  });
+
+  updateRemoveButtonsVisibility();
+  updateTechnicalSummary();
+}
+
+function updateRemoveButtonsVisibility() {
+  const cards = document.querySelectorAll(".lift-card");
+  const buttons = document.querySelectorAll(".btn-remove-lift");
+  buttons.forEach(btn => {
+    btn.style.display = cards.length > 1 ? "block" : "none";
+  });
+}
+
 function updateTechnicalSummary() {
   const cards = document.querySelectorAll(".lift-card");
   let totalUnits = 0;
@@ -672,16 +710,12 @@ function updateTechnicalSummary() {
   if (sumTypesElem) sumTypesElem.innerText = summaryParts.join(" • ") || "-";
 }
 
-/**
- * Handles Form Submission and sends payload to Apps Script Web App
- */
 async function handleFormSubmit(e) {
   e.preventDefault();
 
   const phoneInput = document.getElementById("contactPhone");
   const phoneVal = phoneInput.value.trim();
 
-  // Strict Phone Validation (exactly 10 numeric digits)
   if (!/^\d{10}$/.test(phoneVal)) {
     alert("Please enter a valid 10-digit phone number without alphabets or special characters.");
     phoneInput.focus();
@@ -701,13 +735,13 @@ async function handleFormSubmit(e) {
     return;
   }
 
-  // Validate that user filled basic required technical blocks
   for (let idx = 0; idx < cards.length; idx++) {
     const card = cards[idx];
     const liftNum = idx + 1;
     const typeVal = card.querySelector(".lift-type").value;
     const qtyVal = card.querySelector(".lift-qty").value;
     const mrVal = card.querySelector(".lift-mr").value;
+
     if (!typeVal) {
       alert(`Please select the Lift Type for Elevator #${liftNum}.`);
       card.querySelector(".lift-type").focus();
@@ -730,6 +764,13 @@ async function handleFormSubmit(e) {
       ceilingSelect.focus();
       return;
     }
+
+    const visionSelect = card.querySelector(".lift-vision");
+    if (!visionSelect || !visionSelect.value) {
+      alert(`Please select the Vision Type for Elevator #${liftNum}.`);
+      if (visionSelect) visionSelect.focus();
+      return;
+    }
   }
 
   if (!APPS_SCRIPT_WEB_APP_URL || APPS_SCRIPT_WEB_APP_URL.includes("YOUR_APPS_SCRIPT")) {
@@ -740,7 +781,6 @@ async function handleFormSubmit(e) {
   const selectedSalesPerson = document.getElementById("salesPersonSelect").value;
   const stateVal = document.getElementById("state").value;
 
-  // 1. Gather Client Information
   const payload = {
     customerName: customerNameVal,
     address1: document.getElementById("address1").value.trim(),
@@ -755,7 +795,6 @@ async function handleFormSubmit(e) {
     lifts: []
   };
 
-  // 2. Gather All Lift Cards
   let hasDimensionError = false;
   let errorMsg = "";
 
@@ -775,12 +814,10 @@ async function handleFormSubmit(e) {
 
     const typeVal = card.querySelector(".lift-type").value || "PASSENGER";
     const isGoods = typeVal === "GOODS";
-
     const isHome = typeVal === "HOME LIFT";
-    const mrVal = card.querySelector(".lift-mr").value || (isHome ? "MRL" : "MRL");
-    const tractionVal = card.querySelector(".lift-traction").value || (mrVal === "MRL" ? "Gearless" : "Gearless");
-    const paxVal = card.querySelector(".lift-capacity").value;
-    const pax = parseInt(paxVal) || 6;
+    const mrVal = card.querySelector(".lift-mr").value || "MRL";
+    const tractionVal = card.querySelector(".lift-traction").value || "Gearless";
+    const capVal = card.querySelector(".lift-capacity").value;
 
     let computedSpeed = "1.0 Mtr/sec";
     if (isHome) {
@@ -804,14 +841,16 @@ async function handleFormSubmit(e) {
       computedHeadroom = "4800 MM";
     }
 
-    const computedLoad = isGoods ? "1500 Kg" : `${pax * 68} Kg`;
+    const computedLoad = isGoods 
+      ? (capVal ? (capVal.includes("Kg") ? capVal : `${capVal} Kg`) : "1500 Kg")
+      : `${(parseInt(capVal, 10) || 6) * 68} Kg`;
 
     const liftObj = {
       liftType: typeVal,
       numElevators: parseInt(card.querySelector(".lift-qty").value) || 1,
       mrConfig: mrVal,
       tractionUnit: tractionVal,
-      capacity: isGoods ? "-" : (paxVal || "6"),
+      capacity: isGoods ? "-" : (capVal || "6"),
       ratedLoad: computedLoad,
       speed: computedSpeed,
       numStops: parseInt(card.querySelector(".lift-stops").value) || 2,
@@ -829,9 +868,14 @@ async function handleFormSubmit(e) {
       carPanels: card.querySelector(".lift-panels").value || "SS Hairline Finish",
       carFlooring: card.querySelector(".lift-flooring").value || "PVC Flooring",
       carCeiling: (card.querySelector(".lift-ceiling") && card.querySelector(".lift-ceiling").value) ? card.querySelector(".lift-ceiling").value : "SS Hairline Finish",
-      optionalFeature1: card.querySelector(".lift-feature1").value.trim(),
+      optionalFeature1: (() => {
+        const chk = card.querySelector(".lift-feature1-check");
+        if (chk && chk.checked) return "Overload Sensor & Indicator";
+        const hid = card.querySelector(".lift-feature1");
+        return (hid && hid.value) ? hid.value.trim() : "";
+      })(),
       optionalFeature2: card.querySelector(".lift-feature2").value.trim(),
-      unitPrice: 0 // Non-priced edition
+      unitPrice: 0
     };
 
     payload.lifts.push(liftObj);
@@ -842,7 +886,6 @@ async function handleFormSubmit(e) {
     if (!proceed) return;
   }
 
-  // 3. UI Loading Feedback
   showLoadingModal();
   const btnSubmit = document.getElementById("btnSubmit");
   btnSubmit.disabled = true;
@@ -864,7 +907,6 @@ async function handleFormSubmit(e) {
   }
 }
 
-// Modal Display Functions
 function showLoadingModal() {
   const overlay = document.getElementById("modalOverlay");
   const content = document.getElementById("modalBody");
@@ -904,9 +946,7 @@ function showErrorModal(error) {
 function closeModal() {
   document.getElementById("modalOverlay").style.display = "none";
 }
-/**
- * Auto-detects Indian State / Union Territory from 6-digit PIN code prefixes
- */
+
 function getStateFromPinCode(pin) {
   if (!pin) return null;
   const s = String(pin).trim();
@@ -915,7 +955,6 @@ function getStateFromPinCode(pin) {
   const p2 = parseInt(s.slice(0, 2), 10);
   const p3 = s.length >= 3 ? parseInt(s.slice(0, 3), 10) : 0;
 
-  // Specific 3-digit prefixes
   if (p3 === 737) return "Sikkim";
   if (p3 === 744) return "Andaman and Nicobar Islands";
   if (p3 === 403) return "Goa";
@@ -923,18 +962,14 @@ function getStateFromPinCode(pin) {
   if (p3 === 682) return "Lakshadweep";
   if (p3 === 605) return "Puducherry";
 
-  // Telangana vs Andhra Pradesh (500-509: Telangana, 515-535: Andhra Pradesh)
   if (p3 >= 500 && p3 <= 509) return "Telangana";
   if (p3 >= 515 && p3 <= 535) return "Andhra Pradesh";
 
-  // Uttarakhand vs UP (246, 248, 249, 263 are Uttarakhand)
   if (p3 === 246 || p3 === 248 || p3 === 249 || p3 === 263) return "Uttarakhand";
 
-  // Jharkhand vs Bihar (814-816, 825-835 are Jharkhand)
   if ((p3 >= 825 && p3 <= 835) || p3 === 814 || p3 === 815 || p3 === 816) return "Jharkhand";
   if ((p3 >= 800 && p3 <= 813) || (p3 >= 841 && p3 <= 855)) return "Bihar";
 
-  // North East (79x)
   if (p2 === 79) {
     if (p3 >= 790 && p3 <= 792) return "Arunachal Pradesh";
     if (p3 === 793 || p3 === 794) return "Meghalaya";
@@ -945,7 +980,6 @@ function getStateFromPinCode(pin) {
     return "Assam";
   }
 
-  // 2-digit major postal circles
   if (p2 === 11) return "Delhi";
   if (p2 === 12 || p2 === 13) return "Haryana";
   if (p2 === 14 || p2 === 15) return "Punjab";
@@ -976,9 +1010,6 @@ function getStateFromPinCode(pin) {
   return null;
 }
 
-/**
- * Sets the matching state in the state dropdown
- */
 function setMatchingState(stateName) {
   if (!stateName) return;
   const stateSelect = document.getElementById("state");
@@ -993,7 +1024,6 @@ function setMatchingState(stateName) {
     }
   }
 
-  // Substring fallback
   for (let i = 0; i < stateSelect.options.length; i++) {
     const opt = stateSelect.options[i];
     if (opt.value && (opt.value.toLowerCase().includes(target) || target.includes(opt.value.toLowerCase()))) {
@@ -1003,9 +1033,6 @@ function setMatchingState(stateName) {
   }
 }
 
-/**
- * Asynchronously verifies exact state from India Post PIN code API
- */
 async function fetchStateFromPinApi(pin) {
   if (!pin || pin.length !== 6) return null;
   try {
@@ -1016,57 +1043,7 @@ async function fetchStateFromPinApi(pin) {
       if (apiState) return apiState;
     }
   } catch (e) {
-    // Fallback to offline lookup
+    // Fallback
   }
   return null;
 }
-
-/**
- * Headroom click-to-edit logic: grey until clicked, then becomes editable
- */
-function unlockHeadroom(input) {
-  input.readOnly = false;
-  input.classList.remove("field-readonly-grey");
-  input.dataset.manualEdited = "true";
-  input.focus();
-}
-
-function handleHeadroomBlur(input) {
-  let val = input.value.trim();
-  if (val && !val.toUpperCase().includes("MM")) {
-    input.value = `${val} MM`;
-  }
-}
-
-/**
- * Home Elevator Pit validation: cannot be less than 500 MM
- */
-function validateHomePit(input) {
-  const card = input.closest(".lift-card");
-  if (!card) return;
-  const type = card.querySelector(".lift-type").value;
-  const alertBox = card.querySelector(".dim-alert");
-
-  if (type === "HOME LIFT") {
-    const num = parseInt(input.value.replace(/\D/g, ""), 10);
-    if (!isNaN(num) && num < 500 && num > 0) {
-      if (alertBox) {
-        alertBox.style.display = "block";
-        alertBox.innerHTML = `⚠️ <strong>Pit Depth Warning:</strong> Home elevator pit depth cannot be less than <strong>500 MM</strong> (Entered: ${num} MM).`;
-      }
-    } else {
-      if (alertBox && alertBox.innerHTML.includes("Pit Depth Warning")) {
-        alertBox.style.display = "none";
-        alertBox.innerHTML = "";
-      }
-    }
-  }
-}
-
-function handlePitBlur(input) {
-  let val = input.value.trim();
-  if (val && !val.toUpperCase().includes("MM")) {
-    input.value = `${val} MM`;
-  }
-}
-
