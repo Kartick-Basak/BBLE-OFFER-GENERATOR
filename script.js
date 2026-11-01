@@ -288,7 +288,6 @@ function addLiftCard() {
           <option value="10">10 Persons</option>
           <option value="13">13 Persons (Stretcher)</option>
           <option value="15">15 Persons</option>
-          <option value="20">20 Persons</option>
         </select>
       </div>
 
