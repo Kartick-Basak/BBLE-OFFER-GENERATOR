@@ -11,19 +11,19 @@
  */
 
 // Replace this with your Google Apps Script Web App Deployment URL
-const APPS_SCRIPT_WEB_APP_URL = "YOUR_APPS_SCRIPT_WEB_APP_URL_HERE";
+const APPS_SCRIPT_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxhzFCEKqeoNM82wCQJvcDNjxgOypCXSeZqVX1AipCQ15DJx_Q_rgxvPE6VtOMaFRDX/exec";
 
 // Comprehensive list of sales team members from the database sheet
 let salesTeamData = [
-  { name: "KANCHAN DASGUPTA", designation: "ENGINEER – SALES", phone: "+91 98321 40598", email: "sales@bltbrilliant.com" },
-  { name: "SOURAV BASAK", designation: "SR. EXECUTIVE – SALES", phone: "+91 81005 76967", email: "sales@bltbrilliant.com" },
   { name: "SANJEEV KUMAR SINGH", designation: "ASST. MANAGER – SALES & SERVICE", phone: "+91 70015 64906", email: "sales@bltbrilliant.com" },
+  { name: "KALYAN CHATTERJEE", designation: "MANAGER – SALES", phone: "+91 99030 71732", email: "kalyan@bltbrilliant.com" },
+  { name: "KANCHAN DASGUPTA", designation: "ENGINEER – SALES", phone: "+91 98321 40598", email: "sales@bltbrilliant.com" },
   { name: "ARNAB DUTTA", designation: "ENGINEER – SALES", phone: "+91 90077 70329", email: "sales@bltbrilliant.com" },
   { name: "BIKASH NAYAK", designation: "ENGINEER – SALES & SERVICE", phone: "+91 63620 09323", email: "bikash@bltbrilliant.com" },
   { name: "BIJAYA KUMAR PRADHAN", designation: "BRANCH MANAGER – ODISHA", phone: "+91 96925 80228", email: "bijaya@bltbrilliant.com" },
-  { name: "KALYAN CHATTERJEE", designation: "MANAGER – SALES", phone: "+91 99030 71732", email: "kalyan@bltbrilliant.com" },
   { name: "JOY MUKHERJEE", designation: "MANAGER – SALES", phone: "+91 97694 35113", email: "joy@bltbrilliant.com" },
-  { name: "KARTICK BASAK", designation: "ASST. MANAGER – SALES & SERVICE", phone: "+91 70015 64906", email: "sales@bltbrilliant.com" }
+  { name: "SOURAV BASAK", designation: "SR. EXECUTIVE – SALES", phone: "+91 81005 76967", email: "sales@bltbrilliant.com" },
+  { name: "CHAYAN MUKHERJEE", designation: "BRANCH MANAGER – NORTH EAST", phone: "+91 96357 55205", email: "chayan@bltbrilliant.com" }
 ];
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -112,6 +112,8 @@ function handleSalesPersonChange() {
   if (stateSelect) {
     if (selectedName.includes("BIKASH") || selectedName.includes("BIJAYA")) {
       stateSelect.value = "Odisha";
+    } else if (selectedName.includes("CHAYAN")) {
+      stateSelect.value = "Assam";
     } else {
       stateSelect.value = "West Bengal";
     }
