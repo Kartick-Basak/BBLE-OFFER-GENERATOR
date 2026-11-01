@@ -223,7 +223,7 @@
               </div>
             </div>
 
-            <!-- Capacity, Speed, Stops -->
+            <!-- Capacity, Stops, Floors, Travel -->
             <div class="grid-4">
               <div class="form-group grp-capacity">
                 <label>Capacity (Persons) <span class="req">*</span></label>
@@ -239,31 +239,12 @@
                 </select>
               </div>
 
-              <div class="form-group">
-                <label>Rated Load (Kg) <span class="req">*</span></label>
-                <input type="text" class="form-control lift-load" value="" placeholder="e.g. 884 Kg" required>
-              </div>
-
-              <div class="form-group">
-                <label>Speed (Mtr/sec) <span class="req">*</span></label>
-                <select class="form-control lift-speed" required>
-                  <option value="" disabled selected>-- Select Speed --</option>
-                  <option value="0.5 Mtr/sec">0.5 Mtr/sec</option>
-                  <option value="0.63 Mtr/sec">0.63 Mtr/sec</option>
-                  <option value="1.0 Mtr/sec">1.0 Mtr/sec</option>
-                  <option value="1.5 Mtr/sec">1.5 Mtr/sec</option>
-                  <option value="1.75 Mtr/sec">1.75 Mtr/sec</option>
+                  <option value="5">5 Persons</option>
                 </select>
               </div>
-
               <div class="form-group">
                 <label>No. of Stops <span class="req">*</span></label>
                 <input type="number" class="form-control lift-stops" value="" placeholder="e.g. 6" min="2" max="60" inputmode="numeric" required oninput="handleStopsChange(this)">
-              </div>
-            </div>
-
-            <!-- Floors, Travel, Pit Depth, Headroom -->
-            <div class="grid-4">
               <div class="form-group">
                 <label>Serving Floors <span class="req">*</span></label>
                 <input type="text" class="form-control lift-floors" value="" placeholder="e.g. G+5 or B+G+4" required>
@@ -273,17 +254,13 @@
                 <label>Travel Distance (Mtrs) <span class="req">*</span></label>
                 <input type="text" class="form-control lift-travel" value="" placeholder="e.g. 15.0 Mtrs." required>
               </div>
-
-              <div class="form-group">
-                <label>Pit Depth (MM) <span class="req">*</span></label>
-                <input type="text" class="form-control lift-pit field-locked" value="1600 MM" placeholder="1600 MM" required readonly oninput="validateHomePit(this)" onblur="handlePitBlur(this)" title="Standard Pit Depth (1600 MM)">
-              </div>
-
-              <div class="form-group">
-                <label>Head Room (MM) <span class="req">*</span></label>
-                <input type="text" class="form-control lift-headroom field-readonly-grey" value="" placeholder="e.g. 4800 MM" required readonly onclick="unlockHeadroom(this)" onblur="handleHeadroomBlur(this)" title="Click to edit Head Room">
-              </div>
             </div>
+
+            <!-- Hidden Technical Parameters (Auto-Calculated by Engine) -->
+            <input type="hidden" class="lift-load" value="408 Kg">
+            <input type="hidden" class="lift-speed" value="1.0 Mtr/sec">
+            <input type="hidden" class="lift-pit" value="1600 MM">
+            <input type="hidden" class="lift-headroom" value="4800 MM">
 
             <!-- Shaft Dimensions & Door Specs -->
             <div class="grid-4">
