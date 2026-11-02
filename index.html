@@ -357,6 +357,75 @@
       cursor: pointer;
     }
 
+    /* Combined Shaft Dimensions Box */
+    .shaft-dim-combined {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .shaft-dim-input-wrap {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0 8px;
+      height: 48px;
+      min-height: 48px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .shaft-dim-input-wrap:focus-within {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(0, 86, 150, 0.18);
+    }
+
+    .shaft-dim-bracket {
+      font-weight: 700;
+      color: var(--text-muted);
+      font-size: 15px;
+      user-select: none;
+    }
+
+    .shaft-dim-input {
+      width: 100%;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      text-align: center;
+      padding: 0 4px;
+    }
+
+    .shaft-dim-sublabel {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-light);
+      margin-left: 4px;
+      user-select: none;
+    }
+
+    .shaft-dim-separator {
+      font-weight: 800;
+      color: var(--blt-orange);
+      font-size: 16px;
+      user-select: none;
+      padding: 0 2px;
+    }
+
+    .shaft-dim-unit {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      user-select: none;
+      margin-left: 2px;
+    }
+
     /* Elevator Specification Cards */
     .lift-card {
       background: var(--surface-card);
@@ -1059,6 +1128,75 @@
       });
     }
 
+    /* Capacity Options Generator based on Lift Type */
+    function renderCapacityDropdown(card, liftType) {
+      const capacitySelect = card.querySelector(".lift-capacity");
+      const capacityLabel = card.querySelector(".capacity-label") || card.querySelector(".grp-capacity label");
+      if (!capacitySelect) return;
+
+      const currentVal = capacitySelect.value;
+      capacitySelect.disabled = false;
+
+      if (liftType === "GOODS") {
+        if (capacityLabel) capacityLabel.innerHTML = 'Capacity (Kg) <span class="req">*</span>';
+        capacitySelect.innerHTML = `
+          <option value="" disabled>Select Capacity (Kg)</option>
+          <option value="500 Kg">500 Kg</option>
+          <option value="1000 Kg">1000 Kg</option>
+          <option value="1500 Kg" selected>1500 Kg</option>
+          <option value="2000 Kg">2000 Kg</option>
+          <option value="2500 Kg">2500 Kg</option>
+          <option value="3000 Kg">3000 Kg</option>
+          <option value="4000 Kg">4000 Kg</option>
+          <option value="5000 Kg">5000 Kg</option>
+        `;
+        if (currentVal && currentVal.includes("Kg")) {
+          capacitySelect.value = currentVal;
+        }
+      } else if (liftType === "HOME LIFT") {
+        // Home lift: Upto 6 Persons (4, 5, 6)
+        if (capacityLabel) capacityLabel.innerHTML = 'Capacity (Persons) <span class="req">*</span>';
+        capacitySelect.innerHTML = `
+          <option value="" disabled ${!["4", "5", "6"].includes(currentVal) ? "selected" : ""}>Select Capacity</option>
+          <option value="4">4 Persons</option>
+          <option value="5">5 Persons</option>
+          <option value="6">6 Persons</option>
+        `;
+        if (["4", "5", "6"].includes(currentVal)) {
+          capacitySelect.value = currentVal;
+        }
+      } else if (liftType === "STRETCHER") {
+        // Stretcher lift: 8 Persons to 15 Persons (8, 10, 13, 15)
+        if (capacityLabel) capacityLabel.innerHTML = 'Capacity (Persons) <span class="req">*</span>';
+        capacitySelect.innerHTML = `
+          <option value="" disabled ${!["8", "10", "13", "15"].includes(currentVal) ? "selected" : ""}>Select Capacity</option>
+          <option value="8">8 Persons</option>
+          <option value="10">10 Persons</option>
+          <option value="13">13 Persons</option>
+          <option value="15">15 Persons</option>
+        `;
+        if (["8", "10", "13", "15"].includes(currentVal)) {
+          capacitySelect.value = currentVal;
+        }
+      } else {
+        // PASSENGER / Default: 4, 5, 6, 8, 10, 13, 15
+        if (capacityLabel) capacityLabel.innerHTML = 'Capacity (Persons) <span class="req">*</span>';
+        capacitySelect.innerHTML = `
+          <option value="" disabled ${!currentVal || currentVal.includes("Kg") ? "selected" : ""}>Select Capacity</option>
+          <option value="4">4 Persons</option>
+          <option value="5">5 Persons</option>
+          <option value="6">6 Persons</option>
+          <option value="8">8 Persons</option>
+          <option value="10">10 Persons</option>
+          <option value="13">13 Persons</option>
+          <option value="15">15 Persons</option>
+        `;
+        if (currentVal && !currentVal.includes("Kg")) {
+          capacitySelect.value = currentVal;
+        }
+      }
+    }
+
     /* Lift Card Builder */
     function addLiftCard() {
       const container = document.getElementById("liftsContainer");
@@ -1117,7 +1255,7 @@
               <option value="6">6 Persons</option>
               <option value="8">8 Persons</option>
               <option value="10">10 Persons</option>
-              <option value="13">13 Persons (Stretcher)</option>
+              <option value="13">13 Persons</option>
               <option value="15">15 Persons</option>
             </select>
           </div>
@@ -1145,15 +1283,22 @@
         <input type="hidden" class="lift-headroom" value="4800 MM">
         <input type="hidden" class="lift-powersupply" value="415 Volt 3 Phase 50 Hz AC">
 
-        <div class="grid-4">
+        <div class="grid-3">
+          <!-- Combined Shaft Dimensions Input: Shaft [Width] (W) x [Depth] (D) MM -->
           <div class="form-group">
-            <label>Shaft Width (W in MM) <span class="req">*</span></label>
-            <input type="number" class="form-control lift-shaft-w" placeholder="" inputmode="numeric" required oninput="validateShaftDimensions(this)">
-          </div>
-
-          <div class="form-group">
-            <label>Shaft Depth (D in MM) <span class="req">*</span></label>
-            <input type="number" class="form-control lift-shaft-d" placeholder="" inputmode="numeric" required>
+            <label>Shaft Dimensions <span class="req">*</span></label>
+            <div class="shaft-dim-combined">
+              <div class="shaft-dim-input-wrap">
+                <input type="number" class="shaft-dim-input lift-shaft-w" placeholder="Width" inputmode="numeric" required oninput="validateShaftDimensions(this)">
+                <span class="shaft-dim-sublabel">(W)</span>
+              </div>
+              <span class="shaft-dim-separator">×</span>
+              <div class="shaft-dim-input-wrap">
+                <input type="number" class="shaft-dim-input lift-shaft-d" placeholder="Depth" inputmode="numeric" required>
+                <span class="shaft-dim-sublabel">(D)</span>
+              </div>
+              <span class="shaft-dim-unit">MM</span>
+            </div>
           </div>
 
           <div class="form-group">
@@ -1311,28 +1456,13 @@
       if (!card) return;
 
       const type = card.querySelector(".lift-type").value;
-      const capacitySelect = card.querySelector(".lift-capacity");
-      const capacityLabel = card.querySelector(".capacity-label") || card.querySelector(".grp-capacity label");
       const mrSelect = card.querySelector(".lift-mr");
       const tractionSelect = card.querySelector(".lift-traction");
 
-      if (type === "GOODS") {
-        if (capacityLabel) capacityLabel.innerHTML = 'Capacity (Kg) <span class="req">*</span>';
-        capacitySelect.disabled = false;
-        const currentVal = capacitySelect.value;
-        capacitySelect.innerHTML = `
-          <option value="" disabled>Select Capacity (Kg)</option>
-          <option value="500 Kg">500 Kg</option>
-          <option value="1000 Kg">1000 Kg</option>
-          <option value="1500 Kg" selected>1500 Kg</option>
-          <option value="2000 Kg">2000 Kg</option>
-          <option value="2500 Kg">2500 Kg</option>
-          <option value="3000 Kg">3000 Kg</option>
-          <option value="4000 Kg">4000 Kg</option>
-          <option value="5000 Kg">5000 Kg</option>
-        `;
-        if (currentVal && currentVal.includes("Kg")) capacitySelect.value = currentVal;
+      // Dynamic Capacity Options based on lift type
+      renderCapacityDropdown(card, type);
 
+      if (type === "GOODS") {
         mrSelect.disabled = false;
         if (mrSelect.value === "MRL") {
           tractionSelect.value = "Gearless";
@@ -1340,35 +1470,18 @@
         } else {
           tractionSelect.disabled = false;
         }
+      } else if (type === "HOME LIFT") {
+        mrSelect.value = "MRL";
+        mrSelect.disabled = true;
+        tractionSelect.value = "Gearless";
+        tractionSelect.disabled = true;
       } else {
-        if (capacityLabel) capacityLabel.innerHTML = 'Capacity (Persons) <span class="req">*</span>';
-        capacitySelect.disabled = false;
-        const currentVal = capacitySelect.value;
-        capacitySelect.innerHTML = `
-          <option value="" disabled ${!currentVal || currentVal.includes("Kg") ? "selected" : ""}>Select Capacity</option>
-          <option value="4">4 Persons</option>
-          <option value="5">5 Persons</option>
-          <option value="6">6 Persons</option>
-          <option value="8">8 Persons</option>
-          <option value="10">10 Persons</option>
-          <option value="13">13 Persons (Stretcher)</option>
-          <option value="15">15 Persons</option>
-        `;
-        if (currentVal && !currentVal.includes("Kg")) capacitySelect.value = currentVal;
-
-        if (type === "HOME LIFT") {
-          mrSelect.value = "MRL";
-          mrSelect.disabled = true;
+        mrSelect.disabled = false;
+        if (mrSelect.value === "MRL") {
           tractionSelect.value = "Gearless";
           tractionSelect.disabled = true;
         } else {
-          mrSelect.disabled = false;
-          if (mrSelect.value === "MRL") {
-            tractionSelect.value = "Gearless";
-            tractionSelect.disabled = true;
-          } else {
-            tractionSelect.disabled = false;
-          }
+          tractionSelect.disabled = false;
         }
       }
 
@@ -1647,8 +1760,8 @@
         if (!stops || parseInt(stops) < 2) { showValidationAlert(`Elevator #${num}: Please enter valid No. of Stops (min 2).`); return; }
         if (!floors) { showValidationAlert(`Elevator #${num}: Please enter Serving Floors.`); return; }
         if (!travel) { showValidationAlert(`Elevator #${num}: Please enter Travel Distance.`); return; }
-        if (!shaftW) { showValidationAlert(`Elevator #${num}: Please enter Shaft Width.`); return; }
-        if (!shaftD) { showValidationAlert(`Elevator #${num}: Please enter Shaft Depth.`); return; }
+        if (!shaftW) { showValidationAlert(`Elevator #${num}: Please enter Shaft Width [W].`); return; }
+        if (!shaftD) { showValidationAlert(`Elevator #${num}: Please enter Shaft Depth [D].`); return; }
         if (!doorType) { showValidationAlert(`Elevator #${num}: Please select Door Opening Type.`); return; }
         if (!doorW) { showValidationAlert(`Elevator #${num}: Please enter Clear Door Width.`); return; }
         if (!doorFinish) { showValidationAlert(`Elevator #${num}: Please select Door Finish.`); return; }
