@@ -92,9 +92,7 @@
       margin: 0 auto;
     }
 
-    /* =========================================================
-       TOP NAVBAR & BRANDING
-       ========================================================= */
+    /* Top Navbar & Branding */
     .top-navbar {
       display: flex;
       justify-content: space-between;
@@ -132,7 +130,6 @@
       rx: 6;
     }
 
-    /* Theme Toggle Button */
     .theme-toggle-btn {
       background: var(--surface-subtle);
       border: 1px solid var(--border);
@@ -166,9 +163,7 @@
       transition: transform 0.3s ease;
     }
 
-    /* =========================================================
-       SALES REPRESENTATIVE STRIP
-       ========================================================= */
+    /* Sales Representative Bar */
     .sales-strip {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -228,9 +223,7 @@
       box-shadow: 0 0 0 3px rgba(0, 86, 150, 0.2);
     }
 
-    /* =========================================================
-       FORM CARDS & GRIDS
-       ========================================================= */
+    /* Form Cards & Grids */
     .form-card {
       background: var(--surface-card);
       border: 1px solid var(--border);
@@ -290,9 +283,6 @@
       }
     }
 
-    /* =========================================================
-       FORM CONTROLS & LABELS
-       ========================================================= */
     .form-group {
       display: flex;
       flex-direction: column;
@@ -367,9 +357,7 @@
       cursor: pointer;
     }
 
-    /* =========================================================
-       ELEVATOR SPECIFICATION CARDS
-       ========================================================= */
+    /* Elevator Specification Cards */
     .lift-card {
       background: var(--surface-card);
       border: 1px solid var(--border);
@@ -483,9 +471,7 @@
       background-color: var(--surface-subtle);
     }
 
-    /* =========================================================
-       SUMMARY & SUBMIT BUTTON
-       ========================================================= */
+    /* Technical Summary & Submit */
     .tech-summary-card {
       background: linear-gradient(135deg, var(--blt-blue-dark) 0%, var(--blt-blue) 100%);
       color: #ffffff;
@@ -562,9 +548,7 @@
       transform: none;
     }
 
-    /* =========================================================
-       FEEDBACK MODALS
-       ========================================================= */
+    /* Modal Overlays */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -656,32 +640,25 @@
     <!-- Top Corporate Branding Bar with Theme Switcher -->
     <header class="top-navbar">
       <div class="brand-container">
-        <!-- High-fidelity Vector SVG Logo -->
         <svg class="company-logo-svg" viewBox="0 0 520 120" xmlns="http://www.w3.org/2000/svg">
           <rect class="logo-bg-panel" x="0" y="0" width="520" height="120" fill="transparent" />
-          <!-- Blue Slanted Emblem Badge -->
           <polygon points="50,15 235,15 200,90 15,90" fill="#005696" />
-          <!-- White BLT Lettering inside badge -->
           <text x="45" y="74" fill="#ffffff" font-family="'Inter', sans-serif" font-weight="900" font-style="italic" font-size="58" letter-spacing="-1">BLT</text>
-          <!-- BRILLIAN text in Deep Navy / Charcoal -->
           <text x="238" y="74" fill="#1e293b" font-family="'Inter', sans-serif" font-weight="900" font-style="italic" font-size="52" letter-spacing="1">BRILLIAN</text>
-          <!-- Accent T in Brilliant Orange -->
           <text x="472" y="74" fill="#f58220" font-family="'Inter', sans-serif" font-weight="900" font-style="italic" font-size="52">T</text>
-          <!-- Trademark indicator -->
           <text x="502" y="38" fill="#475569" font-family="'Inter', sans-serif" font-weight="700" font-size="14">TM</text>
-          <!-- Slogan Line -->
           <text x="18" y="109" fill="#334155" font-family="'Inter', sans-serif" font-weight="800" font-size="13" letter-spacing="1.5">TECHNOLOGY LEADS MARKET ♦ SERVICE CREATES VALUE</text>
         </svg>
       </div>
 
-      <!-- Light / Dark Mode Toggle Button -->
+      <!-- Theme Switcher -->
       <button type="button" id="btnThemeToggle" class="theme-toggle-btn" aria-label="Toggle Color Theme">
         <span class="theme-icon" id="themeIcon">🌙</span>
         <span id="themeText">Dark Mode</span>
       </button>
     </header>
 
-    <!-- Sales Representative Bar: Clean Minimal Dropdown (Only Name Visible) -->
+    <!-- Sales Representative Bar: Only Name Visible -->
     <div class="sales-strip">
       <div class="sales-strip-label">
         <span>👤 Assigned Sales Representative</span>
@@ -694,7 +671,7 @@
     <!-- Main Proposal Form -->
     <form id="proposalForm" novalidate>
 
-      <!-- Customer & Project Information Card (No Example Fillers in Placeholders) -->
+      <!-- Customer & Project Information Card -->
       <section class="form-card">
         <h2 class="card-title">
           <span class="card-title-icon">📋</span> Customer &amp; Project Information
@@ -843,7 +820,7 @@
     </form>
   </div>
 
-  <!-- Thank You Feedback Modal (No Document Links Exposed) -->
+  <!-- Thank You Feedback Modal -->
   <div id="modalOverlay" class="modal-overlay">
     <div class="modal-box">
       <div id="modalBody"></div>
@@ -856,7 +833,6 @@
     const APPS_SCRIPT_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxhzFCEKqeoNM82wCQJvcDNjxgOypCXSeZqVX1AipCQ15DJx_Q_rgxvPE6VtOMaFRDX/exec";
     const SPREADSHEET_ID = "1b2EA4neAIaPhMEoeQV61sAHhVsKN1hOVntvas0uz1j8";
 
-    // Standard complete team from the sheet
     let salesTeamData = [
       { name: "SANJEEV KUMAR SINGH" },
       { name: "KALYAN CHATTERJEE" },
@@ -874,7 +850,6 @@
       initSalesTeamProfile();
       setupFormCheckpointsAndValidation();
 
-      // Render initial elevator card
       addLiftCard();
 
       document.getElementById("btnAddLift").addEventListener("click", () => {
@@ -886,9 +861,7 @@
       document.getElementById("btnThemeToggle").addEventListener("click", toggleTheme);
     });
 
-    /* =========================================================
-       THEME ENGINE
-       ========================================================= */
+    /* Theme Engine */
     function initTheme() {
       const savedTheme = localStorage.getItem("blt_theme") || "light";
       applyTheme(savedTheme);
@@ -915,13 +888,10 @@
       }
     }
 
-    /* =========================================================
-       DYNAMIC SALES TEAM LOADER (AUTO-SYNC FROM GOOGLE SHEETS)
-       ========================================================= */
+    /* Dynamic Sales Team Loader */
     async function initSalesTeamProfile() {
       let teamLoaded = false;
 
-      // 1. Fetch via Apps Script Web App
       if (APPS_SCRIPT_WEB_APP_URL && !APPS_SCRIPT_WEB_APP_URL.includes("YOUR_APPS_SCRIPT")) {
         try {
           const res = await fetch(`${APPS_SCRIPT_WEB_APP_URL}?action=getSalesTeam&spreadsheetId=${SPREADSHEET_ID}`);
@@ -936,7 +906,6 @@
         }
       }
 
-      // 2. Direct Google Sheet Public CSV Fallback
       if (!teamLoaded && SPREADSHEET_ID) {
         try {
           const csvUrl = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent("Sales Team")}`;
@@ -962,7 +931,6 @@
         }
       }
 
-      // 3. Fallback to cached default
       if (!teamLoaded) {
         populateSalesDropdown(salesTeamData);
       }
@@ -1010,7 +978,6 @@
         }
       }
 
-      // Kalyan default flooring rule
       if (selectedName.includes("KALYAN")) {
         document.querySelectorAll(".lift-card").forEach(card => {
           const type = card.querySelector(".lift-type").value;
@@ -1022,9 +989,7 @@
       }
     }
 
-    /* =========================================================
-       FORM VALIDATION & CHECKPOINTS
-       ========================================================= */
+    /* Form Validation & Checkpoints */
     function setupFormCheckpointsAndValidation() {
       const customerName = document.getElementById("customerName");
       const contactPerson = document.getElementById("contactPerson");
@@ -1094,9 +1059,7 @@
       });
     }
 
-    /* =========================================================
-       LIFT CARD BUILDER
-       ========================================================= */
+    /* Lift Card Builder */
     function addLiftCard() {
       const container = document.getElementById("liftsContainer");
       const card = document.createElement("div");
@@ -1180,6 +1143,7 @@
         <input type="hidden" class="lift-speed" value="1.0 Mtr/sec">
         <input type="hidden" class="lift-pit" value="1600 MM">
         <input type="hidden" class="lift-headroom" value="4800 MM">
+        <input type="hidden" class="lift-powersupply" value="415 Volt 3 Phase 50 Hz AC">
 
         <div class="grid-4">
           <div class="form-group">
@@ -1316,9 +1280,7 @@
       updateTechnicalSummary();
     }
 
-    /* =========================================================
-       DYNAMIC CONFIGURATION RULES
-       ========================================================= */
+    /* Dynamic Configuration Rules */
     function updateFlooringOptions(card) {
       if (!card) return;
       const type = card.querySelector(".lift-type").value;
@@ -1506,6 +1468,14 @@
           headroomInput.value = "4800 MM";
         }
       }
+
+      // Main Power Supply: 220 Volt Single Phase 50 Hz AC for Home Lift, 415 Volt 3 Phase 50 Hz AC for others
+      const powerInput = card.querySelector(".lift-powersupply");
+      if (powerInput) {
+        powerInput.value = (type === "HOME LIFT")
+          ? "220 Volt Single Phase 50 Hz AC"
+          : "415 Volt 3 Phase 50 Hz AC";
+      }
     }
 
     function handleStopsChange(element) {
@@ -1578,9 +1548,7 @@
       if (sumTypesElem) sumTypesElem.innerText = summaryParts.join(" • ") || "-";
     }
 
-    /* =========================================================
-       SUBMISSION & STRICT FIELD VALIDATION
-       ========================================================= */
+    /* Submission & Validation */
     async function handleFormSubmit(e) {
       e.preventDefault();
 
@@ -1707,6 +1675,10 @@
           ? (capacity.includes("Kg") ? capacity : `${capacity} Kg`)
           : `${(parseInt(capacity, 10) || 6) * 68} Kg`;
 
+        const computedPowerSupply = isHome
+          ? "220 Volt Single Phase 50 Hz AC"
+          : "415 Volt 3 Phase 50 Hz AC";
+
         liftsPayload.push({
           liftType: liftType,
           numElevators: parseInt(qty) || 1,
@@ -1720,6 +1692,7 @@
           travel: travel,
           pitDepth: computedPit,
           headRoom: computedHeadroom,
+          mainPowerSupply: computedPowerSupply,
           shaftWidth: parseFloat(shaftW) || 0,
           shaftDepth: parseFloat(shaftD) || 0,
           carDimensions: "",
@@ -1765,7 +1738,6 @@
           body: JSON.stringify(payload)
         });
 
-        // Show thank you modal without exposing file URLs
         showThankYouModal(customerName);
       } catch (err) {
         console.error("Submission failed:", err);
@@ -1775,9 +1747,7 @@
       }
     }
 
-    /* =========================================================
-       MODAL CONTROLLERS
-       ========================================================= */
+    /* Modals & Alerts */
     function showLoadingModal() {
       const overlay = document.getElementById("modalOverlay");
       const content = document.getElementById("modalBody");
@@ -1825,9 +1795,7 @@
       document.getElementById("modalOverlay").style.display = "none";
     }
 
-    /* =========================================================
-       PIN CODE TO STATE AUTO-DETECT
-       ========================================================= */
+    /* Postal PIN Circle Auto State Detection */
     function getStateFromPinCode(pin) {
       if (!pin || pin.length < 2) return null;
       const s = String(pin).trim();
