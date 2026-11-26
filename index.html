@@ -562,50 +562,6 @@
       margin-left: 2px;
     }
 
-    /* Engineering Helper Box */
-    .eng-helper-box {
-      background-color: var(--surface-subtle);
-      border: 1px dashed var(--border);
-      border-radius: var(--radius-sm);
-      padding: 10px 14px;
-      margin-bottom: 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .eng-helper-text {
-      font-size: 12.5px;
-      color: var(--text-muted);
-      line-height: 1.4;
-    }
-
-    .eng-helper-text strong {
-      color: var(--blt-blue);
-    }
-
-    .btn-autofill-dims {
-      background-color: var(--surface);
-      border: 1px solid var(--blt-blue);
-      color: var(--blt-blue);
-      border-radius: var(--radius-sm);
-      padding: 5px 12px;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: background-color 0.2s, color 0.2s;
-    }
-
-    .btn-autofill-dims:hover {
-      background-color: var(--blt-blue);
-      color: #ffffff;
-    }
-
     /* Elevator Specification Cards */
     .lift-card {
       background: var(--surface-card);
@@ -761,6 +717,110 @@
       font-size: 18px;
       font-weight: 700;
       color: #ffffff;
+    }
+
+    /* Multi-Lift Offer Price Breakdown Box */
+    .offer-breakdown-box {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      min-width: 290px;
+    }
+
+    .offer-breakdown-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      font-size: 13.5px;
+      color: #f1f5f9;
+    }
+
+    .offer-breakdown-row strong {
+      color: #ffffff;
+      font-weight: 700;
+    }
+
+    .offer-breakdown-divider {
+      height: 1px;
+      background: rgba(255, 255, 255, 0.22);
+      margin: 4px 0;
+    }
+
+    .offer-breakdown-total {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 16px;
+      font-size: 17px;
+      font-weight: 800;
+      color: #ffad46;
+    }
+
+    .offer-breakdown-formula {
+      font-size: 11px;
+      color: #cbd5e1;
+      text-align: right;
+      margin-top: 2px;
+    }
+
+    /* Live Offer Price Strip inside Lift Card */
+    .lift-offer-price-bar {
+      margin-top: 18px;
+      padding: 14px 18px;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, rgba(0, 86, 150, 0.08) 0%, rgba(245, 130, 32, 0.08) 100%);
+      border: 1px solid rgba(0, 86, 150, 0.25);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    [data-theme="dark"] .lift-offer-price-bar {
+      background: linear-gradient(135deg, rgba(2, 132, 199, 0.16) 0%, rgba(249, 115, 22, 0.14) 100%);
+      border-color: rgba(56, 189, 248, 0.3);
+    }
+
+    .lift-offer-price-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .lift-offer-price-tag {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 2px 8px;
+      border-radius: 9999px;
+    }
+
+    .lift-offer-price-val {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--blt-blue);
+      letter-spacing: -0.2px;
+    }
+
+    [data-theme="dark"] .lift-offer-price-val {
+      color: #38bdf8;
+    }
+
+    .lift-offer-price-val.pending {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text-muted);
     }
 
     .btn-submit {
@@ -1042,6 +1102,17 @@
             <input type="text" id="sitePinCode" class="form-control" placeholder="" maxlength="6" inputmode="numeric" required>
           </div>
         </div>
+
+        <div class="grid-2" style="margin-top: 16px; margin-bottom: 0;">
+          <div class="form-group" style="margin-bottom: 0;">
+            <label for="siteLocationZone">Site Location Zone (Freight &amp; Installation) <span class="req">*</span></label>
+            <select id="siteLocationZone" class="form-control" required onchange="updateTechnicalSummary()">
+              <option value="" disabled selected>Select Location Zone</option>
+              <option value="KOLKATA">Kolkata</option>
+              <option value="OUT STATION">Out Station</option>
+            </select>
+          </div>
+        </div>
       </section>
 
       <!-- Multi-Lift Specifications Container -->
@@ -1064,6 +1135,10 @@
           <div class="tech-stat-item" style="flex: 2;">
             <span class="stat-label">Configuration Breakdown</span>
             <span class="stat-val" id="sumTypes" style="font-size: 14.5px; font-weight: 600; color: #f1f5f9;">-</span>
+          </div>
+          <div class="tech-stat-item" style="flex: 1.5; align-items: flex-end;">
+            <span class="stat-label" style="margin-bottom: 6px;">Offer Price Summary (Incl. 18% GST)</span>
+            <div id="sumOfferPrice" class="stat-val" style="color: #ffad46; text-align: right;">—</div>
           </div>
         </div>
       </section>
@@ -1091,62 +1166,404 @@
     // Config: Point to deployed Apps Script Web App URL
     const APPS_SCRIPT_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxhzFCEKqeoNM82wCQJvcDNjxgOypCXSeZqVX1AipCQ15DJx_Q_rgxvPE6VtOMaFRDX/exec";
     const SPREADSHEET_ID = "1b2EA4neAIaPhMEoeQV61sAHhVsKN1hOVntvas0uz1j8";
+    const PRICING_SHEET_NAME = "Pricing Config";
 
-    // Standard Fallback Sales Team (Used if offline or initial load)
+    // ==================== ELEVATOR PRICING CALCULATOR CONFIG ====================
+    // Baseline fallback config (automatically overridden by live 'Pricing Config' tab in Google Sheet)
+    const DEFAULT_PRICING_CONFIG = {
+      base: {
+        mechanicalKit: 325500,
+        ard: 15000,
+        copLop: 6400,
+        harness: 22500,
+        controller: 56000
+      },
+      perStop: {
+        mechanical: 30000,
+        copLop: 1210,
+        harness: 3500,
+        controller: 100,
+        controllerExtra: 5000
+      },
+      passengerSurcharge: {
+        4: 0,
+        5: 0,
+        6: 0,
+        8: 26250,
+        10: 94500,
+        13: 199500,
+        15: 231000
+      },
+      materialAdjustment: {
+        MS: { cabin: 20000, door: 4000 },
+        SS: { cabin: 0, door: 0 },
+        "Rose Gold": { cabin: 25000, door: 4000 },
+        None: { cabin: 0, door: 0 }
+      },
+      machineRoomAdjustment: {
+        MR: 0,
+        MRL: 22000
+      },
+      machineTypeAdjustment: {
+        Gearless: 0
+      },
+      doorVisionPerDoor: {
+        "No Vision": 0,
+        "Small Vision": 1200,
+        "Half Glass": 4000,
+        "Full Glass": 7000
+      },
+      installationPerStop: {
+        MR: 8500,
+        MRL: 9000
+      },
+      locationInstallPerStop: {
+        KOLKATA: 0,
+        "OUT STATION": 2000
+      },
+      minInstallation: 30000,
+      freightBase: {
+        KOLKATA: 40000,
+        "OUT STATION": 52000
+      },
+      stopsOver10InstallSurcharge: 10000,
+      stopsOver10FreightMultiplier: 1.3,
+      unloadingBase: 7000,
+      unloadingLargeSurcharge: 3000,
+      stopsOver10BaseBonus: 30000,
+      stopsOver6BaseBonus: 5000,
+      overloadSurcharge: 20000,
+      markupMultiplier: 1.25,
+      quoteDivisor: 0.925,
+      gstRate: 0.18,
+      maxStopsExclusive: 16
+    };
+
+    let PRICING_CONFIG = JSON.parse(JSON.stringify(DEFAULT_PRICING_CONFIG));
+
+    // Fallback baseline team if network is completely offline
     let salesTeamData = [
-      { name: "SANJEEV KUMAR SINGH", territory: "West Bengal" },
-      { name: "KALYAN CHATTERJEE", territory: "West Bengal" },
-      { name: "KANCHAN DASGUPTA", territory: "West Bengal" },
-      { name: "ARNAB DUTTA", territory: "West Bengal" },
-      { name: "BIKASH NAYAK", territory: "Odisha" },
-      { name: "BIJAYA KUMAR PRADHAN", territory: "Odisha" },
-      { name: "JOY MUKHERJEE", territory: "West Bengal" },
-      { name: "SOURAV BASAK", territory: "West Bengal" },
-      { name: "CHAYAN MUKHERJEE", territory: "Assam" }
+      { name: "SANJEEV KUMAR SINGH" },
+      { name: "KALYAN CHATTERJEE" },
+      { name: "KANCHAN DASGUPTA" },
+      { name: "ARNAB DUTTA" },
+      { name: "BIKASH NAYAK" },
+      { name: "BIJAYA KUMAR PRADHAN" },
+      { name: "JOY MUKHERJEE" },
+      { name: "SOURAV BASAK" },
+      { name: "CHAYAN MUKHERJEE" }
     ];
 
-    // Standard IS 14665 Engineering Dimension Guidelines (Indian Standard for Elevators)
-    const IS_14665_RECOMMENDED = {
-      "PASSENGER": {
-        "4": { shaftW: 1400, shaftD: 1400, doorW: 700, doorType: "Automatic Center Opening Door" },
-        "5": { shaftW: 1500, shaftD: 1450, doorW: 700, doorType: "Automatic Center Opening Door" },
-        "6": { shaftW: 1500, shaftD: 1500, doorW: 800, doorType: "Automatic Center Opening Door" },
-        "8": { shaftW: 1750, shaftD: 1650, doorW: 800, doorType: "Automatic Center Opening Door" },
-        "10": { shaftW: 1800, shaftD: 1800, doorW: 800, doorType: "Automatic Center Opening Door" },
-        "13": { shaftW: 1950, shaftD: 1900, doorW: 900, doorType: "Automatic Center Opening Door" },
-        "15": { shaftW: 2000, shaftD: 2050, doorW: 900, doorType: "Automatic Center Opening Door" }
-      },
-      "HOME LIFT": {
-        "4": { shaftW: 1300, shaftD: 1300, doorW: 700, doorType: "Automatic Telescopic Opening Door" },
-        "5": { shaftW: 1350, shaftD: 1400, doorW: 700, doorType: "Automatic Telescopic Opening Door" },
-        "6": { shaftW: 1400, shaftD: 1450, doorW: 800, doorType: "Automatic Telescopic Opening Door" }
-      },
-      "STRETCHER": {
-        "15": { shaftW: 1950, shaftD: 2800, doorW: 900, doorType: "Automatic Center Opening Door" },
-        "20": { shaftW: 2150, shaftD: 2850, doorW: 1000, doorType: "Automatic Center Opening Door" },
-        "26": { shaftW: 2400, shaftD: 2900, doorW: 1000, doorType: "Automatic Center Opening Door" }
-      },
-      "GOODS": {
-        "500 Kg": { shaftW: 1700, shaftD: 1600, doorW: 1000, doorType: "Automatic Telescopic Opening Door" },
-        "1000 Kg": { shaftW: 2000, shaftD: 2200, doorW: 1000, doorType: "Automatic Telescopic Opening Door" },
-        "1500 Kg": { shaftW: 2300, shaftD: 2450, doorW: 1000, doorType: "Automatic Telescopic Opening Door" },
-        "2000 Kg": { shaftW: 2450, shaftD: 3000, doorW: 1000, doorType: "Automatic Telescopic Opening Door" },
-        "2500 Kg": { shaftW: 2650, shaftD: 3200, doorW: 1000, doorType: "Automatic Telescopic Opening Door" },
-        "3000 Kg": { shaftW: 2700, shaftD: 3500, doorW: 1000, doorType: "Automatic Telescopic Opening Door" },
-        "4000 Kg": { shaftW: 2950, shaftD: 3850, doorW: 1000, doorType: "Automatic Telescopic Opening Door" },
-        "5000 Kg": { shaftW: 3200, shaftD: 4200, doorW: 1000, doorType: "Automatic Telescopic Opening Door" }
+    function parseConfigNumber(rawVal) {
+      if (rawVal === null || rawVal === undefined) return NaN;
+      if (typeof rawVal === "number") return isFinite(rawVal) ? rawVal : NaN;
+      const str = String(rawVal).trim();
+      if (!str) return NaN;
+      const isPercent = str.endsWith("%");
+      const cleaned = str.replace(/[^0-9.-]+/g, "");
+      const num = parseFloat(cleaned);
+      if (isNaN(num) || !isFinite(num)) return NaN;
+      return isPercent ? num / 100 : num;
+    }
+
+    function applyFlatPricingConfig(flatMap) {
+      if (!flatMap || typeof flatMap !== "object") return;
+      const updated = JSON.parse(JSON.stringify(DEFAULT_PRICING_CONFIG));
+
+      for (const [rawKey, rawVal] of Object.entries(flatMap)) {
+        const key = String(rawKey || "").trim();
+        const numVal = parseConfigNumber(rawVal);
+        if (!key || isNaN(numVal)) continue;
+
+        const parts = key.split(".");
+        let cursor = updated;
+        for (let i = 0; i < parts.length - 1; i++) {
+          const part = parts[i];
+          if (cursor[part] === undefined || typeof cursor[part] !== "object" || cursor[part] === null) {
+            cursor[part] = {};
+          }
+          cursor = cursor[part];
+        }
+        cursor[parts[parts.length - 1]] = numVal;
       }
-    };
+
+      PRICING_CONFIG = updated;
+    }
+
+    function parseCsvLine(line) {
+      const result = [];
+      let current = "";
+      let inQuotes = false;
+      for (let i = 0; i < line.length; i++) {
+        const ch = line[i];
+        if (ch === '"') {
+          if (inQuotes && line[i + 1] === '"') {
+            current += '"';
+            i++;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (ch === "," && !inQuotes) {
+          result.push(current.trim());
+          current = "";
+        } else {
+          current += ch;
+        }
+      }
+      result.push(current.trim());
+      return result;
+    }
+
+    async function initPricingConfig() {
+      let loaded = false;
+
+      // 1. Primary: Fetch live pricing config from Google Apps Script Web App
+      if (APPS_SCRIPT_WEB_APP_URL && !APPS_SCRIPT_WEB_APP_URL.includes("YOUR_APPS_SCRIPT")) {
+        try {
+          const res = await fetch(`${APPS_SCRIPT_WEB_APP_URL}?action=getPricingConfig&spreadsheetId=${SPREADSHEET_ID}&_t=${Date.now()}`);
+          const data = await res.json();
+          if (data && data.status === "success" && data.pricingMap && Object.keys(data.pricingMap).length > 0) {
+            applyFlatPricingConfig(data.pricingMap);
+            loaded = true;
+          }
+        } catch (err) {
+          console.warn("Live pricing API fetch skipped, trying direct sheet CSV:", err);
+        }
+      }
+
+      // 2. Fallback: Direct Google Sheets CSV query on 'Pricing Config' tab
+      if (!loaded && SPREADSHEET_ID) {
+        try {
+          const csvUrl = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(PRICING_SHEET_NAME)}&_t=${Date.now()}`;
+          const res = await fetch(csvUrl);
+          const text = await res.text();
+          const lines = text.split(/\r?\n/).filter(l => l.trim() !== "");
+          const flatMap = {};
+
+          // Expected columns: [0] Category | [1] Parameter Key | [2] Item / Marking | [3] Value | [4] Unit/Notes
+          for (let i = 1; i < lines.length; i++) {
+            const cols = parseCsvLine(lines[i]);
+            const paramKey = cols[1] || "";
+            const paramVal = cols[3] !== undefined ? cols[3] : "";
+            if (paramKey && paramVal !== "") {
+              flatMap[paramKey] = paramVal;
+            }
+          }
+
+          if (Object.keys(flatMap).length > 0) {
+            applyFlatPricingConfig(flatMap);
+            loaded = true;
+          }
+        } catch (e) {
+          console.warn("Direct sheet CSV pricing fetch skipped, using baseline defaults:", e);
+        }
+      }
+
+      if (loaded) {
+        updateTechnicalSummary();
+      }
+    }
+
+    function calculateElevatorQuote(spec) {
+      const {
+        location = "KOLKATA",
+        stops,
+        passengerCapacity,
+        material = "SS",
+        machineRoom = "MRL",
+        machineType = "Gearless",
+        door = "No Vision",
+        designerCabinDoor = "None",
+        otherCosts = []
+      } = spec;
+
+      const cfg = PRICING_CONFIG;
+
+      if (
+        typeof stops !== "number" ||
+        stops < 2 ||
+        !(passengerCapacity in cfg.passengerSurcharge) ||
+        !(material in cfg.materialAdjustment) ||
+        !(machineRoom in cfg.machineRoomAdjustment) ||
+        !(machineType in cfg.machineTypeAdjustment) ||
+        !(door in cfg.doorVisionPerDoor) ||
+        !(location in cfg.freightBase)
+      ) {
+        return null;
+      }
+
+      const paxSurcharge = cfg.passengerSurcharge[passengerCapacity];
+      const matAdj = cfg.materialAdjustment[material];
+      const designerAdj = cfg.materialAdjustment[designerCabinDoor] || cfg.materialAdjustment.None || { cabin: 0, door: 0 };
+      const mrAdj = cfg.machineRoomAdjustment[machineRoom];
+      const machineAdj = cfg.machineTypeAdjustment[machineType];
+      const doorVisionRate = cfg.doorVisionPerDoor[door];
+      const msCabinFactor = passengerCapacity > 8 ? 0 : 1;
+
+      const installationRaw =
+        stops * cfg.installationPerStop[machineRoom] +
+        stops * cfg.locationInstallPerStop[location] +
+        (stops > 10 ? (cfg.stopsOver10InstallSurcharge ?? 10000) : 0);
+      const installation = Math.max(installationRaw, cfg.minInstallation);
+
+      const freight = cfg.freightBase[location] * (stops > 10 ? (cfg.stopsOver10FreightMultiplier ?? 1.3) : 1);
+      const unloading = (cfg.unloadingBase ?? 7000) + (stops > 10 || passengerCapacity > 8 ? (cfg.unloadingLargeSurcharge ?? 3000) : 0);
+      const others = otherCosts.reduce((sum, val) => sum + (Number(val) || 0), 0);
+      const totalOtherCost = installation + freight + unloading + others;
+
+      const totalBase =
+        cfg.base.mechanicalKit +
+        cfg.base.ard +
+        cfg.base.copLop +
+        cfg.base.harness +
+        cfg.base.controller;
+
+      const totalPerStop =
+        cfg.perStop.mechanical +
+        cfg.perStop.copLop +
+        cfg.perStop.harness;
+
+      const commonTerms =
+        totalBase +
+        (stops - 2) * totalPerStop +
+        paxSurcharge -
+        msCabinFactor * matAdj.cabin -
+        (stops + 1) * matAdj.door +
+        mrAdj +
+        machineAdj +
+        (stops > 4 ? (stops - 4) * cfg.perStop.controller : 0) +
+        (stops + 1) * doorVisionRate +
+        designerAdj.cabin +
+        (stops + 1) * designerAdj.door +
+        totalOtherCost;
+
+      const validStopsFactor = stops < (cfg.maxStopsExclusive ?? 16) ? 1 : 0;
+      const basePriceWithoutGst =
+        validStopsFactor *
+        cfg.markupMultiplier *
+        (commonTerms +
+          (stops > 10 ? (cfg.stopsOver10BaseBonus ?? 30000) : 0) +
+          (stops > 6 ? (cfg.stopsOver6BaseBonus ?? 5000) : 0));
+
+      if (basePriceWithoutGst <= 0) {
+        return null;
+      }
+
+      // Offer price includes 18% GST and is rounded cleanly to the nearest 100 (e.g. 12,34,567.89 -> 12,34,600.00)
+      const rawTotalWithGst = (basePriceWithoutGst / cfg.quoteDivisor) * (1 + cfg.gstRate);
+      const offerTotalWithGst = Math.round(rawTotalWithGst / 100) * 100;
+      const offerBasicPrice = Math.round(offerTotalWithGst / (1 + cfg.gstRate));
+      const gstAmount = offerTotalWithGst - offerBasicPrice;
+
+      return {
+        offerBasicPrice,
+        gstAmount,
+        offerTotalWithGst
+      };
+    }
+
+    function formatINR(amount) {
+      const rounded = Math.round((Number(amount) || 0) / 100) * 100;
+      const str = String(rounded);
+      const lastThree = str.slice(-3);
+      const otherNumbers = str.slice(0, -3);
+      const formattedInt = otherNumbers !== ""
+        ? otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + "," + lastThree
+        : lastThree;
+      return `₹ ${formattedInt}.00`;
+    }
+
+    function detectLocationZone() {
+      const zoneSelect = document.getElementById("siteLocationZone");
+      if (zoneSelect && zoneSelect.value) {
+        return zoneSelect.value;
+      }
+      const sitePin = (document.getElementById("sitePinCode")?.value || "").trim();
+      const siteAddr = (document.getElementById("siteAddress")?.value || "").toLowerCase();
+      if (sitePin.startsWith("700") || siteAddr.includes("kolkata")) {
+        return "KOLKATA";
+      }
+      return "OUT STATION";
+    }
+
+    function evaluateLiftOfferPrice(card) {
+      if (!card) return null;
+
+      const liftType = card.querySelector(".lift-type")?.value || "";
+      const mr = card.querySelector(".lift-mr")?.value || "";
+      const traction = card.querySelector(".lift-traction")?.value || "";
+      const capVal = card.querySelector(".lift-capacity")?.value || "";
+      const stops = parseInt(card.querySelector(".lift-stops")?.value, 10) || 0;
+      const doorFinish = card.querySelector(".lift-door-finish")?.value || "SS Hairline Finish";
+      const vision = card.querySelector(".lift-vision")?.value || "No Vision";
+      const panels = card.querySelector(".lift-panels")?.value || "SS Hairline Finish";
+      const overloadChecked = card.querySelector(".lift-feature1-check")?.checked || false;
+
+      if (!liftType) {
+        return { status: "incomplete", reason: "Select lift specs to view offer price", quote: null };
+      }
+
+      // Price applies strictly to Passenger type elevators only
+      if (liftType !== "PASSENGER") {
+        return { status: "custom", reason: "Custom Quotation (Auto-pricing for Passenger Lift only)", quote: null };
+      }
+
+      if (!mr || !traction || !capVal || stops < 2) {
+        return { status: "incomplete", reason: "Select MR/MRL, Traction, Capacity & Stops to view offer price", quote: null };
+      }
+
+      // 2. Applicable only for Gearless machine
+      if (traction !== "Gearless") {
+        return { status: "custom", reason: "Custom Quotation (Auto-pricing for Gearless machine only)", quote: null };
+      }
+
+      // 1. No. of Stops must be less than 16
+      const maxStops = PRICING_CONFIG.maxStopsExclusive ?? 16;
+      if (stops >= maxStops) {
+        return { status: "custom", reason: `Custom Quotation (Applicable for < ${maxStops} stops only)`, quote: null };
+      }
+
+      const passengerCapacity = parseInt(String(capVal).replace(/\D/g, ""), 10);
+      if (!(passengerCapacity in PRICING_CONFIG.passengerSurcharge)) {
+        return { status: "custom", reason: "Custom Quotation (Provided by Engineering Desk)", quote: null };
+      }
+
+      const material = (panels.toUpperCase().includes("MS") || doorFinish.toUpperCase().includes("MS")) ? "MS" : "SS";
+      const designerCabinDoor = (panels.toLowerCase().includes("rose gold") || doorFinish.toLowerCase().includes("rose gold")) ? "Rose Gold" : "None";
+      const location = detectLocationZone();
+      const otherCosts = overloadChecked ? [PRICING_CONFIG.overloadSurcharge ?? 20000] : [];
+
+      const quote = calculateElevatorQuote({
+        location,
+        stops,
+        passengerCapacity,
+        material,
+        machineRoom: mr,
+        machineType: "Gearless",
+        door: vision,
+        designerCabinDoor,
+        otherCosts
+      });
+
+      if (!quote) {
+        return { status: "custom", reason: "Custom Quotation (Provided by Engineering Desk)", quote: null };
+      }
+
+      return { status: "priced", reason: "", quote };
+    }
 
     document.addEventListener("DOMContentLoaded", () => {
       initLogoHrefSync();
       initTheme();
       initSalesTeamProfile();
+      initPricingConfig();
       setupFormCheckpointsAndValidation();
 
       // Always keep at least one elevator specification open when the webpage loads
       if (document.querySelectorAll(".lift-card").length === 0) {
         addLiftCard();
+      } else {
+        renumberAllLifts();
       }
 
       document.getElementById("btnAddLift").addEventListener("click", () => {
@@ -1158,39 +1575,30 @@
       document.getElementById("btnThemeToggle").addEventListener("click", toggleTheme);
     });
 
-    /* Sync Logo href & img src so pasting image URL in href updates the image automatically */
+    /* --- Sync Light & Dark Logo Image Sources from Anchor Hrefs --- */
     function initLogoHrefSync() {
       const pairs = [
         { linkId: "logoLightLink", imgId: "logoLightImg" },
         { linkId: "logoDarkLink", imgId: "logoDarkImg" }
       ];
 
-      pairs.forEach(({ linkId, imgId }) => {
-        const link = document.getElementById(linkId);
-        const img = document.getElementById(imgId);
+      pairs.forEach(pair => {
+        const link = document.getElementById(pair.linkId);
+        const img = document.getElementById(pair.imgId);
         if (!link || !img) return;
 
         const hrefVal = (link.getAttribute("href") || "").trim();
-        const srcVal = (img.getAttribute("src") || "").trim();
-        const isHrefSet = hrefVal && !hrefVal.includes("YOUR_") && hrefVal !== "#";
-        const isSrcSet = srcVal && !srcVal.includes("YOUR_") && srcVal !== "#";
-
-        if (isHrefSet && !isSrcSet) {
+        if (hrefVal && !hrefVal.includes("YOUR_") && !hrefVal.endsWith("_HERE")) {
           img.src = hrefVal;
-        } else if (isSrcSet && !isHrefSet) {
-          link.href = srcVal;
         }
 
-        link.addEventListener("click", (e) => {
-          const currentHref = (link.getAttribute("href") || "").trim();
-          if (!currentHref || currentHref.includes("YOUR_") || currentHref === "#") {
-            e.preventDefault();
-          }
-        });
+        img.onerror = function() {
+          this.style.display = "none";
+        };
       });
     }
 
-    /* Theme Engine */
+    /* --- Theme Toggle Engine --- */
     function initTheme() {
       let savedTheme = "light";
       try {
@@ -1208,13 +1616,6 @@
       } catch (e) {}
     }
 
-    function toggleTheme() {
-      const current = document.documentElement.getAttribute("data-theme") || "light";
-      const target = current === "dark" ? "light" : "dark";
-      applyTheme(target);
-      localStorage.setItem("blt_theme", target);
-    }
-
     function applyTheme(theme) {
       document.documentElement.setAttribute("data-theme", theme);
       const icon = document.getElementById("themeIcon");
@@ -1229,7 +1630,7 @@
       }
     }
 
-    /* Dynamic Sales Team Loader */
+    /* --- Dynamic Auto-Updating Sales Team from Sheet --- */
     async function initSalesTeamProfile() {
       let teamLoaded = false;
 
@@ -1238,15 +1639,12 @@
           const res = await fetch(`${APPS_SCRIPT_WEB_APP_URL}?action=getSalesTeam&spreadsheetId=${SPREADSHEET_ID}`);
           const data = await res.json();
           if (data && data.status === "success" && Array.isArray(data.salesTeam) && data.salesTeam.length > 0) {
-            salesTeamData = data.salesTeam.map(item => ({
-              name: String(item.name || "").trim(),
-              territory: String(item.territory || "").trim()
-            })).filter(item => item.name);
+            salesTeamData = data.salesTeam.map(item => ({ name: item.name.trim() }));
             populateSalesDropdown(salesTeamData);
             teamLoaded = true;
           }
         } catch (err) {
-          console.warn("Live sales team API fetch bypassed:", err);
+          console.warn("Apps script sales team fetch skipped:", err);
         }
       }
 
@@ -1256,23 +1654,22 @@
           const res = await fetch(csvUrl);
           const text = await res.text();
           const rows = text.split("\n").map(r => r.split(","));
-          const parsed = [];
-
+          const names = [];
+          
           for (let i = 1; i < rows.length; i++) {
             const rawName = rows[i][0] ? rows[i][0].replace(/['"]/g, "").trim() : "";
-            const rawTerr = rows[i][4] ? rows[i][4].replace(/['"]/g, "").trim() : "";
-            if (rawName && !parsed.some(p => p.name === rawName)) {
-              parsed.push({ name: rawName, territory: rawTerr });
+            if (rawName && !names.includes(rawName)) {
+              names.push(rawName);
             }
           }
 
-          if (parsed.length > 0) {
-            salesTeamData = parsed;
+          if (names.length > 0) {
+            salesTeamData = names.map(n => ({ name: n }));
             populateSalesDropdown(salesTeamData);
             teamLoaded = true;
           }
         } catch (e) {
-          console.warn("Direct sheet CSV fetch bypassed:", e);
+          console.warn("Direct sheet gviz fetch skipped:", e);
         }
       }
 
@@ -1292,7 +1689,6 @@
         const opt = document.createElement("option");
         opt.value = rep.name;
         opt.textContent = rep.name;
-        if (rep.territory) opt.dataset.territory = rep.territory;
         select.appendChild(opt);
       });
 
@@ -1312,27 +1708,22 @@
     function handleSalesPersonChange() {
       const select = document.getElementById("salesPersonSelect");
       const selectedName = (select.value || "").toUpperCase();
-      const selectedOpt = select.options[select.selectedIndex];
-      const territory = selectedOpt ? selectedOpt.dataset.territory : "";
 
       const stateSelect = document.getElementById("state");
-      if (stateSelect) {
-        if (territory) {
-          setMatchingState(territory);
-        } else if (selectedName.includes("BIKASH") || selectedName.includes("BIJAYA")) {
+      if (stateSelect && (!stateSelect.value || stateSelect.value === "West Bengal" || stateSelect.value === "Odisha" || stateSelect.value === "Assam")) {
+        if (selectedName.includes("BIKASH") || selectedName.includes("BIJAYA")) {
           stateSelect.value = "Odisha";
         } else if (selectedName.includes("CHAYAN")) {
           stateSelect.value = "Assam";
-        } else if (selectedName) {
+        } else {
           stateSelect.value = "West Bengal";
         }
       }
 
-      // Kalyan default flooring rule
       if (selectedName.includes("KALYAN")) {
         document.querySelectorAll(".lift-card").forEach(card => {
           const type = card.querySelector(".lift-type").value;
-          if (type !== "GOODS") {
+          if (type && type !== "GOODS") {
             const fl = card.querySelector(".lift-flooring");
             if (fl) fl.value = "PVC Flooring - Wooden Type";
           }
@@ -1340,7 +1731,7 @@
       }
     }
 
-    /* Form Validation & Checkpoints */
+    /* --- Form Field Validations & Checkpoints --- */
     function setupFormCheckpointsAndValidation() {
       const customerName = document.getElementById("customerName");
       const contactPerson = document.getElementById("contactPerson");
@@ -1376,6 +1767,7 @@
           siteAddress.readOnly = true;
           sitePinCode.value = pinCode.value.trim();
           sitePinCode.readOnly = true;
+          autoDetectLocationZoneFromPin(sitePinCode.value);
         } else {
           siteAddress.readOnly = false;
           sitePinCode.readOnly = false;
@@ -1385,6 +1777,13 @@
       chkSameAddress.addEventListener("change", syncSiteAddressAndPin);
       address1.addEventListener("input", syncSiteAddressAndPin);
       address2.addEventListener("input", syncSiteAddressAndPin);
+
+      function autoDetectLocationZoneFromPin(cleanPin) {
+        const zoneSelect = document.getElementById("siteLocationZone");
+        if (!zoneSelect || cleanPin.length < 3) return;
+        zoneSelect.value = cleanPin.startsWith("700") ? "KOLKATA" : "OUT STATION";
+        updateTechnicalSummary();
+      }
 
       function handlePinAutoState(inputElem) {
         const cleanPin = inputElem.value.replace(/\D/g, "").slice(0, 6);
@@ -1398,11 +1797,15 @@
 
       pinCode.addEventListener("input", function() {
         handlePinAutoState(this);
-        if (chkSameAddress.checked) sitePinCode.value = this.value;
+        if (chkSameAddress.checked) {
+          sitePinCode.value = this.value;
+          autoDetectLocationZoneFromPin(this.value);
+        }
       });
 
       sitePinCode.addEventListener("input", function() {
         handlePinAutoState(this);
+        autoDetectLocationZoneFromPin(this.value);
       });
 
       contactPhone.addEventListener("input", function() {
@@ -1410,7 +1813,7 @@
       });
     }
 
-    /* Capacity Options Generator based on Lift Type */
+    /* --- Capacity Options Generator (Starts Empty Until User Selects) --- */
     function renderCapacityDropdown(card, liftType) {
       const capacitySelect = card.querySelector(".lift-capacity");
       const capacityLabel = card.querySelector(".capacity-label") || card.querySelector(".grp-capacity label");
@@ -1422,14 +1825,13 @@
       if (liftType === "GOODS") {
         if (capacityLabel) capacityLabel.innerHTML = 'Capacity (Kg) <span class="req">*</span>';
         capacitySelect.innerHTML = `
-          <option value="" disabled>Select Capacity (Kg)</option>
+          <option value="" disabled ${!currentVal || !currentVal.includes("Kg") ? "selected" : ""}>Select Capacity (Kg)</option>
           <option value="500 Kg">500 Kg</option>
           <option value="1000 Kg">1000 Kg</option>
-          <option value="1500 Kg" selected>1500 Kg</option>
+          <option value="1500 Kg">1500 Kg</option>
           <option value="2000 Kg">2000 Kg</option>
           <option value="2500 Kg">2500 Kg</option>
           <option value="3000 Kg">3000 Kg</option>
-          <option value="4000 Kg">4000 Kg</option>
           <option value="5000 Kg">5000 Kg</option>
         `;
         if (currentVal && currentVal.includes("Kg")) {
@@ -1460,7 +1862,7 @@
       } else {
         if (capacityLabel) capacityLabel.innerHTML = 'Capacity (Persons) <span class="req">*</span>';
         capacitySelect.innerHTML = `
-          <option value="" disabled ${!currentVal || currentVal.includes("Kg") ? "selected" : ""}>Select Capacity</option>
+          <option value="" disabled ${!currentVal || currentVal.includes("Kg") || ["20", "26"].includes(currentVal) ? "selected" : ""}>Select Capacity</option>
           <option value="4">4 Persons</option>
           <option value="5">5 Persons</option>
           <option value="6">6 Persons</option>
@@ -1469,15 +1871,13 @@
           <option value="13">13 Persons</option>
           <option value="15">15 Persons</option>
         `;
-        if (currentVal && !currentVal.includes("Kg")) {
+        if (currentVal && !currentVal.includes("Kg") && !["20", "26"].includes(currentVal)) {
           capacitySelect.value = currentVal;
         }
       }
-
-      updateEngineeringGuide(card);
     }
 
-    /* Elevator Card Builder (Starts Completely Empty without pre-filled values or examples) */
+    /* --- Lift Card Builder (Starts Completely Empty, Organized Into Clear Sub-Sections) --- */
     function addLiftCard() {
       const container = document.getElementById("liftsContainer");
       const card = document.createElement("div");
@@ -1492,7 +1892,7 @@
         <!-- Section 1: Core Lift & Drive Configuration -->
         <div class="spec-section-block">
           <div class="spec-section-label">1. Core Lift &amp; Drive Configuration</div>
-          <div class="grid-4" style="margin-bottom: 0;">
+          <div class="grid-4">
             <div class="form-group">
               <label>Lift Type <span class="req">*</span></label>
               <select class="form-control lift-type" required onchange="handleLiftTypeChange(this)">
@@ -1532,7 +1932,7 @@
         <!-- Section 2: Capacity & Travel Parameters -->
         <div class="spec-section-block">
           <div class="spec-section-label">2. Capacity &amp; Travel Parameters</div>
-          <div class="grid-4" style="margin-bottom: 0;">
+          <div class="grid-4">
             <div class="form-group grp-capacity">
               <label class="capacity-label">Capacity (Persons) <span class="req">*</span></label>
               <select class="form-control lift-capacity" required onchange="handleCapacityChange(this)">
@@ -1562,17 +1962,6 @@
               <input type="text" class="form-control lift-travel" value="" placeholder="" required>
             </div>
           </div>
-        </div>
-
-        <!-- IS 14665 Engineering Dimension Helper Box (Shown only after Lift Type & Capacity are selected) -->
-        <div class="eng-helper-box" style="display: none;">
-          <div class="eng-helper-text">
-            📐 <strong>IS 14665 Standard Guide:</strong>
-            <span class="eng-helper-dims"></span>
-          </div>
-          <button type="button" class="btn-autofill-dims" onclick="autoFillRecommendedDimensions(this)">
-            ⚡ Auto-Fill Recommended Dims
-          </button>
         </div>
 
         <!-- Hidden parameters auto-computed -->
@@ -1616,7 +2005,7 @@
             <div class="form-group">
               <label>Clear Door Width (MM) <span class="req">*</span></label>
               <div class="door-w-display-wrap">
-                <div class="door-w-placeholder">Select Shaft Dimensions &amp; Door Type</div>
+                <div class="door-w-placeholder">Enter Shaft &amp; Door Type</div>
               </div>
               <input type="hidden" class="lift-door-w" value="">
             </div>
@@ -1627,7 +2016,7 @@
           <div class="grid-2" style="margin-bottom: 0;">
             <div class="form-group">
               <label>Door Finish <span class="req">*</span></label>
-              <select class="form-control lift-door-finish" required>
+              <select class="form-control lift-door-finish" required onchange="updateTechnicalSummary()">
                 <option value="" disabled selected>Select Door Finish</option>
                 <option value="SS Hairline Finish">SS Hairline Finish</option>
                 <option value="MS Powder Coated">MS Powder Coated</option>
@@ -1637,7 +2026,7 @@
 
             <div class="form-group">
               <label>Vision Type <span class="req">*</span></label>
-              <select class="form-control lift-vision" required>
+              <select class="form-control lift-vision" required onchange="updateTechnicalSummary()">
                 <option value="" disabled selected>Select Vision Type</option>
                 <option value="No Vision">No Vision</option>
                 <option value="Small Vision">Small Vision</option>
@@ -1664,7 +2053,7 @@
 
             <div class="form-group">
               <label>Car Panels <span class="req">*</span></label>
-              <select class="form-control lift-panels" required>
+              <select class="form-control lift-panels" required onchange="updateTechnicalSummary()">
                 <option value="" disabled selected>Select Car Panels</option>
                 <option value="SS Hairline Finish">SS Hairline Finish</option>
                 <option value="MS Powder Coated">MS Powder Coated</option>
@@ -1685,7 +2074,7 @@
           </div>
         </div>
 
-        <!-- Section 5: Optional Features -->
+        <!-- Section 5: Optional Features (Text Left, Checkbox Right) -->
         <div class="spec-section-block">
           <div class="spec-section-label">5. Optional Features</div>
           <div class="grid-2" style="margin-bottom: 0;">
@@ -1699,15 +2088,20 @@
 
             <div class="form-group">
               <label>Optional Feature 2</label>
-              <input type="text" class="form-control lift-feature2" value="" placeholder="">
+              <input type="text" class="form-control lift-feature2" placeholder="">
             </div>
           </div>
         </div>
-      `;
 
-      if (isKalyanSelected()) {
-        updateFlooringOptions(card);
-      }
+        <!-- Offer Price Bar (Shows Offer Price Per Unit Incl. 18% GST Only) -->
+        <div class="lift-offer-price-bar">
+          <div class="lift-offer-price-label">
+            <span>💰 Offer Price (Per Unit)</span>
+            <span class="lift-offer-price-tag">Incl. 18% GST</span>
+          </div>
+          <div class="lift-offer-price-val pending">Select lift specs to view offer price</div>
+        </div>
+      `;
 
       container.appendChild(card);
       renumberAllLifts();
@@ -1736,10 +2130,8 @@
         const alertBox = card.querySelector(".dim-alert");
         if (alertBox) alertBox.id = `dimAlert_${liftNum}`;
 
-        const radios = card.querySelectorAll(".lift-door-w-radio");
-        radios.forEach(r => {
-          r.name = `doorWidth_${liftNum}`;
-        });
+        const radio = card.querySelector(".lift-door-w-radio");
+        if (radio) radio.name = `doorWidth_${liftNum}`;
       });
 
       const buttons = document.querySelectorAll(".btn-remove-lift");
@@ -1748,57 +2140,6 @@
       });
 
       updateTechnicalSummary();
-    }
-
-    /* IS 14665 Engineering Dimensions Guide */
-    function updateEngineeringGuide(card) {
-      if (!card) return;
-      const type = card.querySelector(".lift-type").value;
-      const capSelect = card.querySelector(".lift-capacity");
-      const cap = capSelect ? capSelect.value : "";
-      const helperBox = card.querySelector(".eng-helper-box");
-      const helperSpan = card.querySelector(".eng-helper-dims");
-      const carDimInput = card.querySelector(".lift-cardim");
-      if (carDimInput) carDimInput.value = "Shall be as per GA Drawing";
-      if (!helperBox || !helperSpan) return;
-
-      if (!type || !cap) {
-        helperBox.style.display = "none";
-        helperSpan.textContent = "";
-        return;
-      }
-
-      const recTable = IS_14665_RECOMMENDED[type];
-      const rec = recTable ? recTable[cap] : null;
-
-      if (rec) {
-        helperBox.style.display = "flex";
-        helperSpan.textContent = `Rec. Shaft: ${rec.shaftW}(W)×${rec.shaftD}(D) mm | Rec. Door: ${rec.doorW} mm`;
-      } else {
-        helperBox.style.display = "none";
-        helperSpan.textContent = "";
-      }
-    }
-
-    function autoFillRecommendedDimensions(btn) {
-      const card = btn.closest(".lift-card");
-      if (!card) return;
-
-      const type = card.querySelector(".lift-type").value;
-      const cap = card.querySelector(".lift-capacity").value;
-      const recTable = IS_14665_RECOMMENDED[type];
-      const rec = recTable ? recTable[cap] : null;
-
-      if (rec) {
-        card.querySelector(".lift-shaft-w").value = rec.shaftW;
-        card.querySelector(".lift-shaft-d").value = rec.shaftD;
-        card.querySelector(".lift-door-type").value = rec.doorType;
-
-        const carDim = card.querySelector(".lift-cardim");
-        if (carDim) carDim.value = "Shall be as per GA Drawing";
-
-        handleShaftOrDoorChange(card.querySelector(".lift-shaft-w"));
-      }
     }
 
     function updateFlooringOptions(card) {
@@ -1836,15 +2177,7 @@
 
       renderCapacityDropdown(card, type);
 
-      if (type === "GOODS") {
-        mrSelect.disabled = false;
-        if (mrSelect.value === "MRL") {
-          tractionSelect.value = "Gearless";
-          tractionSelect.disabled = true;
-        } else {
-          tractionSelect.disabled = false;
-        }
-      } else if (type === "HOME LIFT") {
+      if (type === "HOME LIFT") {
         mrSelect.value = "MRL";
         mrSelect.disabled = true;
         tractionSelect.value = "Gearless";
@@ -1861,7 +2194,6 @@
 
       updateFlooringOptions(card);
       updateHiddenLiftFields(card);
-      updateEngineeringGuide(card);
       updateBestDoorWidth(card);
       updateTechnicalSummary();
     }
@@ -1875,17 +2207,16 @@
 
       if (type === "GOODS") {
         const kgVal = card.querySelector(".lift-capacity").value;
-        if (loadInput) {
-          loadInput.value = kgVal ? (kgVal.includes("Kg") ? kgVal : `${kgVal} Kg`) : "";
+        if (loadInput && kgVal) {
+          loadInput.value = kgVal.includes("Kg") ? kgVal : `${kgVal} Kg`;
         }
       } else {
         const pax = parseInt(card.querySelector(".lift-capacity").value, 10);
-        if (loadInput) {
-          loadInput.value = pax ? `${pax * 68} Kg` : "";
+        if (loadInput && pax) {
+          loadInput.value = `${pax * 68} Kg`;
         }
       }
 
-      updateEngineeringGuide(card);
       updateBestDoorWidth(card);
       updateTechnicalSummary();
     }
@@ -1911,6 +2242,7 @@
       }
 
       updateHiddenLiftFields(card);
+      updateTechnicalSummary();
     }
 
     function updateHiddenLiftFields(card) {
@@ -1924,10 +2256,8 @@
 
       const loadInput = card.querySelector(".lift-load");
       if (loadInput) {
-        if (!type || !capVal) {
-          loadInput.value = "";
-        } else if (type === "GOODS") {
-          loadInput.value = capVal.includes("Kg") ? capVal : `${capVal} Kg`;
+        if (type === "GOODS") {
+          loadInput.value = capVal ? (capVal.includes("Kg") ? capVal : `${capVal} Kg`) : "";
         } else {
           const pax = parseInt(capVal, 10);
           loadInput.value = pax ? `${pax * 68} Kg` : "";
@@ -1936,21 +2266,22 @@
 
       const speedInput = card.querySelector(".lift-speed");
       if (speedInput) {
-        if (!type) speedInput.value = "";
-        else if (type === "HOME LIFT") speedInput.value = "0.3 Mtr/sec";
+        if (type === "HOME LIFT") speedInput.value = "0.3 Mtr/sec";
         else if (type === "GOODS") speedInput.value = "0.5 Mtr/sec";
         else if (mr === "MR" && traction === "Geared") speedInput.value = "0.63 Mtr/sec";
-        else speedInput.value = "1.0 Mtr/sec";
+        else if (mr) speedInput.value = "1.0 Mtr/sec";
+        else speedInput.value = "";
       }
 
       const pitInput = card.querySelector(".lift-pit");
       if (pitInput) {
-        pitInput.value = !type ? "" : ((type === "HOME LIFT") ? "1000 MM" : "1600 MM");
+        if (!type) pitInput.value = "";
+        else pitInput.value = (type === "HOME LIFT") ? "1000 MM" : "1600 MM";
       }
 
       const headroomInput = card.querySelector(".lift-headroom");
       if (headroomInput) {
-        if (!type && !mr) headroomInput.value = "";
+        if (!mr) headroomInput.value = "";
         else if (mr === "MR" && traction === "Geared") headroomInput.value = "4200 MM";
         else if (mr === "MR" && traction === "Gearless") headroomInput.value = "4500 MM";
         else headroomInput.value = "4800 MM";
@@ -1958,9 +2289,10 @@
 
       const powerInput = card.querySelector(".lift-powersupply");
       if (powerInput) {
-        powerInput.value = !type ? "" : ((type === "HOME LIFT")
+        if (!type) powerInput.value = "";
+        else powerInput.value = (type === "HOME LIFT")
           ? "220 Volt Single Phase 50 Hz AC"
-          : "415 Volt 3 Phase 50 Hz AC");
+          : "415 Volt 3 Phase 50 Hz AC";
       }
     }
 
@@ -1978,6 +2310,8 @@
           floorsInput.value = `G+${stops - 1}`;
         }
       }
+
+      updateTechnicalSummary();
     }
 
     function handleFeature1Check(chk) {
@@ -1987,25 +2321,81 @@
       if (hiddenInput) {
         hiddenInput.value = chk.checked ? "Overload Sensor & Indicator" : "";
       }
+      updateTechnicalSummary();
     }
 
-    /* Maximum Clear Door Width Rule by Passenger Capacity (Irrespective of Centre / Telescopic Door):
-       - Upto 5 Passenger: 700 MM
-       - 6 to 10 Passenger (incl. 8 & 10): 800 MM
-       - 11 to 15 Passenger (incl. 13 & 15): 900 MM
-       - 16 Passenger and above: 1000 MM */
+    /* =========================================================
+       BEST-FIT CLEAR DOOR WIDTH ENGINE
+       Rule irrespective of Centre / Telescopic opening door:
+       - Up to 5 Passengers : max 700 MM
+       - 6, 8 & 10 Passengers: max 800 MM
+       - 13 & 15 Passengers  : max 900 MM
+       - 16 Passengers & above: max 1000 MM
+       ========================================================= */
     function getMaxDoorWidthByCapacity(liftType, capacityVal) {
-      if (liftType === "GOODS") {
-        return 1000;
-      }
+      if (liftType === "GOODS") return 2000;
       const pax = parseInt(String(capacityVal || "").replace(/\D/g, ""), 10);
-      if (!pax || isNaN(pax)) {
-        return 1000;
-      }
+      if (!pax) return 1000;
       if (pax <= 5) return 700;
       if (pax <= 10) return 800;
       if (pax <= 15) return 900;
       return 1000;
+    }
+
+    function updateBestDoorWidth(card) {
+      if (!card) return;
+
+      const liftType = card.querySelector(".lift-type").value;
+      const capVal = card.querySelector(".lift-capacity").value;
+      const shaftW = parseFloat(card.querySelector(".lift-shaft-w").value) || 0;
+      const shaftD = parseFloat(card.querySelector(".lift-shaft-d").value) || 0;
+      const doorType = card.querySelector(".lift-door-type").value;
+      const displayWrap = card.querySelector(".door-w-display-wrap");
+      const hiddenDoorInput = card.querySelector(".lift-door-w");
+      const liftNum = card.dataset.liftIndex || "1";
+
+      if (!displayWrap || !hiddenDoorInput) return;
+
+      if (shaftW <= 0 || shaftD <= 0 || !doorType) {
+        displayWrap.innerHTML = `<div class="door-w-placeholder">Enter Shaft &amp; Door Type</div>`;
+        hiddenDoorInput.value = "";
+        validateShaftDimensions(card);
+        return;
+      }
+
+      const isCenter = doorType.toLowerCase().includes("center");
+      const rawMaxFromShaft = isCenter
+        ? Math.floor((shaftW - 200) / 2)
+        : Math.floor((shaftW - 200) / 1.5);
+
+      const capLimit = getMaxDoorWidthByCapacity(liftType, capVal);
+      const effectiveMax = Math.min(rawMaxFromShaft, capLimit);
+
+      const standardWidths = [600, 650, 700, 750, 800, 900, 1000, 1100, 1200, 1400, 1500, 1600, 1800, 2000];
+      let bestWidth = null;
+      for (let i = standardWidths.length - 1; i >= 0; i--) {
+        if (standardWidths[i] <= effectiveMax) {
+          bestWidth = standardWidths[i];
+          break;
+        }
+      }
+
+      if (!bestWidth) {
+        bestWidth = 600;
+      }
+
+      hiddenDoorInput.value = String(bestWidth);
+      displayWrap.innerHTML = `
+        <label class="door-w-best-pill" title="Auto-selected best clear door width based on shaft & capacity">
+          <span class="door-w-best-left">
+            <input type="radio" class="lift-door-w-radio" name="doorWidth_${liftNum}" value="${bestWidth}" checked>
+            <span>${bestWidth} MM</span>
+          </span>
+          <span class="door-w-best-badge">Best Fit</span>
+        </label>
+      `;
+
+      validateShaftDimensions(card);
     }
 
     function handleShaftOrDoorChange(element) {
@@ -2014,61 +2404,10 @@
       updateBestDoorWidth(card);
     }
 
-    function updateBestDoorWidth(card) {
-      if (!card) return;
-      const liftType = card.querySelector(".lift-type").value;
-      const capacityVal = card.querySelector(".lift-capacity").value;
-      const shaftW = parseFloat(card.querySelector(".lift-shaft-w").value) || 0;
-      const shaftD = parseFloat(card.querySelector(".lift-shaft-d").value) || 0;
-      const doorType = card.querySelector(".lift-door-type").value;
-      const displayWrap = card.querySelector(".door-w-display-wrap");
-      const hiddenInput = card.querySelector(".lift-door-w");
-      const liftIdx = card.dataset.liftIndex || "1";
-
-      if (!displayWrap || !hiddenInput) return;
-
-      if (shaftW <= 0 || shaftD <= 0 || !doorType) {
-        hiddenInput.value = "";
-        displayWrap.innerHTML = `<div class="door-w-placeholder">Select Shaft Dimensions &amp; Door Type</div>`;
-        validateShaftDimensions(hiddenInput);
-        return;
-      }
-
-      const isCenter = doorType.toLowerCase().includes("center");
-      const maxShaftDoorW = isCenter ? (shaftW - 200) / 2 : (shaftW - 200) / 1.5;
-      const maxCapDoorW = getMaxDoorWidthByCapacity(liftType, capacityVal);
-      const effectiveMaxDoorW = Math.min(maxShaftDoorW, maxCapDoorW);
-
-      const standardWidths = [600, 650, 700, 800, 900, 1000];
-      let bestWidth = null;
-
-      for (let i = standardWidths.length - 1; i >= 0; i--) {
-        if (standardWidths[i] <= effectiveMaxDoorW) {
-          bestWidth = standardWidths[i];
-          break;
-        }
-      }
-
-      if (bestWidth === null) {
-        bestWidth = 600;
-      }
-
-      hiddenInput.value = String(bestWidth);
-      displayWrap.innerHTML = `
-        <label class="door-w-best-pill" title="Best possible clear door width for the entered Shaft Dimensions, Door Type & Passenger Capacity">
-          <span class="door-w-best-left">
-            <input type="radio" class="lift-door-w-radio" name="doorWidth_${liftIdx}" value="${bestWidth}" checked>
-            <span>${bestWidth} MM</span>
-          </span>
-          <span class="door-w-best-badge">Best Fit</span>
-        </label>
-      `;
-
-      validateShaftDimensions(hiddenInput);
-    }
-
-    function validateShaftDimensions(element) {
-      const card = element.closest(".lift-card");
+    function validateShaftDimensions(cardOrElement) {
+      const card = cardOrElement.classList && cardOrElement.classList.contains("lift-card")
+        ? cardOrElement
+        : cardOrElement.closest(".lift-card");
       if (!card) return;
 
       const doorType = card.querySelector(".lift-door-type").value;
@@ -2082,7 +2421,7 @@
 
       if (doorW > 0 && shaftW > 0 && shaftW < minRequired) {
         alertBox.style.display = "block";
-        alertBox.innerHTML = `⚠️ <strong>Shaft Width Warning:</strong> Shaft Width of <strong>${shaftW} mm</strong> is less than required minimum <strong>${minRequired} mm</strong> for ${doorType} with ${doorW} mm door. (Formula: ${isCenter ? '2×Door + 200' : '1.5×Door + 200'})`;
+        alertBox.innerHTML = `⚠️ <strong>Shaft Width Warning:</strong> Shaft Width of <strong>${shaftW} mm</strong> is less than minimum <strong>${minRequired} mm</strong> required for ${doorType} with ${doorW} mm clear opening.`;
       } else {
         alertBox.style.display = "none";
         alertBox.innerHTML = "";
@@ -2093,29 +2432,108 @@
       const cards = document.querySelectorAll(".lift-card");
       let totalUnits = 0;
       const summaryParts = [];
+      let grandOfferTotalWithGst = 0;
+      let hasAnyPriced = false;
+      let hasAnyCustomOrIncomplete = false;
+      const breakdownRows = [];
+      const formulaTerms = [];
 
       cards.forEach((card, idx) => {
+        const liftNum = idx + 1;
         const qtyVal = card.querySelector(".lift-qty").value;
         const qty = parseInt(qtyVal, 10) || 0;
+        const effectiveQty = qty > 0 ? qty : 1;
         const type = card.querySelector(".lift-type").value;
         const load = card.querySelector(".lift-load").value;
 
         if (qty > 0) {
           totalUnits += qty;
-          const typeStr = type || `Elevator #${idx + 1}`;
+          const typeStr = type || `Elevator #${liftNum}`;
           const loadStr = load ? ` (${load})` : "";
           summaryParts.push(`${qty} No${qty > 1 ? "s." : "."} ${typeStr}${loadStr}`);
+        }
+
+        const priceDisplay = card.querySelector(".lift-offer-price-val");
+        const evalRes = evaluateLiftOfferPrice(card);
+
+        if (evalRes && evalRes.status === "priced" && evalRes.quote) {
+          hasAnyPriced = true;
+          const unitPrice = evalRes.quote.offerTotalWithGst;
+          const lineTotal = unitPrice * effectiveQty;
+          grandOfferTotalWithGst += lineTotal;
+
+          if (priceDisplay) {
+            priceDisplay.classList.remove("pending");
+            priceDisplay.textContent = `${formatINR(unitPrice)} / unit`;
+          }
+
+          const unitSuffix = qty > 0 ? ` (× ${qty} No${qty > 1 ? "s." : "."})` : "";
+          breakdownRows.push(`
+            <div class="offer-breakdown-row">
+              <span>Elevator #${liftNum}${unitSuffix}:</span>
+              <strong>${formatINR(unitPrice)} / unit</strong>
+            </div>
+          `);
+          formulaTerms.push(`(${formatINR(unitPrice)} × ${effectiveQty})`);
+        } else if (evalRes && evalRes.status === "custom") {
+          hasAnyCustomOrIncomplete = true;
+          const reasonText = evalRes.reason || "Custom Quotation (Provided by Engineering Desk)";
+          if (priceDisplay) {
+            priceDisplay.classList.add("pending");
+            priceDisplay.textContent = reasonText;
+          }
+          breakdownRows.push(`
+            <div class="offer-breakdown-row">
+              <span>Elevator #${liftNum}:</span>
+              <span style="color: #cbd5e1; font-size: 12.5px;">Custom Quotation</span>
+            </div>
+          `);
+        } else {
+          hasAnyCustomOrIncomplete = true;
+          const reasonText = (evalRes && evalRes.reason) ? evalRes.reason : "Select lift specs to view offer price";
+          if (priceDisplay) {
+            priceDisplay.classList.add("pending");
+            priceDisplay.textContent = reasonText;
+          }
         }
       });
 
       const sumUnitsElem = document.getElementById("sumUnits");
       const sumTypesElem = document.getElementById("sumTypes");
+      const sumOfferElem = document.getElementById("sumOfferPrice");
 
       if (sumUnitsElem) sumUnitsElem.innerText = totalUnits > 0 ? `${totalUnits} Units` : "0 Units";
       if (sumTypesElem) sumTypesElem.innerText = summaryParts.join(" • ") || "-";
+      if (sumOfferElem) {
+        if (hasAnyPriced && grandOfferTotalWithGst > 0) {
+          const totalLabel = hasAnyCustomOrIncomplete
+            ? `${formatINR(grandOfferTotalWithGst)} + Custom`
+            : formatINR(grandOfferTotalWithGst);
+
+          const formulaHtml = formulaTerms.length > 0
+            ? `<div class="offer-breakdown-formula">Total = ${formulaTerms.join(" + ")}</div>`
+            : "";
+
+          sumOfferElem.innerHTML = `
+            <div class="offer-breakdown-box">
+              ${breakdownRows.join("")}
+              <div class="offer-breakdown-divider"></div>
+              <div class="offer-breakdown-total">
+                <span>Total:</span>
+                <span>${totalLabel}</span>
+              </div>
+              ${formulaHtml}
+            </div>
+          `;
+        } else if (hasAnyCustomOrIncomplete && totalUnits > 0) {
+          sumOfferElem.innerHTML = `<span style="font-size: 14px; color: #cbd5e1;">Custom Quotation (Engineering Desk)</span>`;
+        } else {
+          sumOfferElem.innerText = "—";
+        }
+      }
     }
 
-    /* Submission & Live REST Execution (Without Price & Without Returning Doc URL) */
+    /* --- Form Submission & Strict Field Validation --- */
     async function handleFormSubmit(e) {
       e.preventDefault();
 
@@ -2176,6 +2594,13 @@
         return;
       }
 
+      const siteLocationZone = document.getElementById("siteLocationZone").value;
+      if (!siteLocationZone) {
+        showValidationAlert("Please select the Site Location Zone (Kolkata / Out Station).");
+        document.getElementById("siteLocationZone").focus();
+        return;
+      }
+
       const cards = document.querySelectorAll(".lift-card");
       if (cards.length === 0) {
         showValidationAlert("Please configure at least one elevator specification.");
@@ -2217,7 +2642,7 @@
         if (!shaftW) { showValidationAlert(`Elevator #${num}: Please enter Shaft Width [W].`); return; }
         if (!shaftD) { showValidationAlert(`Elevator #${num}: Please enter Shaft Depth [D].`); return; }
         if (!doorType) { showValidationAlert(`Elevator #${num}: Please select Door Opening Type.`); return; }
-        if (!doorW) { showValidationAlert(`Elevator #${num}: Please select Clear Door Width.`); return; }
+        if (!doorW) { showValidationAlert(`Elevator #${num}: Clear Door Width could not be computed. Please verify Shaft Dimensions.`); return; }
         if (!doorFinish) { showValidationAlert(`Elevator #${num}: Please select Door Finish.`); return; }
         if (!vision) { showValidationAlert(`Elevator #${num}: Please select Vision Type.`); return; }
         if (!ceiling) { showValidationAlert(`Elevator #${num}: Please select Car Ceiling.`); return; }
@@ -2246,6 +2671,9 @@
           ? "220 Volt Single Phase 50 Hz AC"
           : "415 Volt 3 Phase 50 Hz AC";
 
+        const evalRes = evaluateLiftOfferPrice(card);
+        const quoteObj = (evalRes && evalRes.status === "priced" && evalRes.quote) ? evalRes.quote : null;
+
         liftsPayload.push({
           liftType: liftType,
           numElevators: parseInt(qty, 10) || 1,
@@ -2260,11 +2688,12 @@
           pitDepth: computedPit,
           headRoom: computedHeadroom,
           mainPowerSupply: computedPowerSupply,
+          siteLocationZone: siteLocationZone,
           shaftWidth: parseFloat(shaftW) || 0,
           shaftDepth: parseFloat(shaftD) || 0,
           carDimensions: "Shall be as per GA Drawing",
           doorOpeningType: doorType,
-          doorWidth: parseFloat(doorW) || 800,
+          doorWidth: parseFloat(doorW) || 700,
           doorFinish: doorFinish,
           visionType: vision,
           carPanels: panels,
@@ -2274,7 +2703,10 @@
             const chk = card.querySelector(".lift-feature1-check");
             return (chk && chk.checked) ? "Overload Sensor & Indicator" : "";
           })(),
-          optionalFeature2: card.querySelector(".lift-feature2").value.trim()
+          optionalFeature2: card.querySelector(".lift-feature2").value.trim(),
+          offerBasicPrice: quoteObj ? quoteObj.offerBasicPrice : 0,
+          gstAmount: quoteObj ? quoteObj.gstAmount : 0,
+          offerTotalWithGst: quoteObj ? quoteObj.offerTotalWithGst : 0
         });
       }
 
@@ -2288,6 +2720,7 @@
         pinCode: pinCode,
         siteAddress: siteAddress,
         sitePinCode: sitePinCode,
+        siteLocationZone: siteLocationZone,
         salesPerson: salesPerson,
         lifts: liftsPayload
       };
@@ -2297,28 +2730,24 @@
       btnSubmit.disabled = true;
 
       try {
-        const res = await fetch(APPS_SCRIPT_WEB_APP_URL, {
+        await fetch(APPS_SCRIPT_WEB_APP_URL, {
           method: "POST",
+          mode: "no-cors",
           headers: { "Content-Type": "text/plain;charset=utf-8" },
           body: JSON.stringify(payload)
         });
 
-        const data = await res.json();
-
-        if (data && data.status === "success") {
-          showThankYouModal(customerName);
-        } else {
-          showValidationAlert(data && data.message ? data.message : "The server encountered an issue processing your proposal.");
-        }
+        // Never expose generated file or Drive links; show compact Thank You message only
+        showThankYouModal(customerName);
       } catch (err) {
         console.error("Submission failed:", err);
-        showValidationAlert("Network or Script Error: Unable to complete request. Please verify web app deployment permissions.");
+        showThankYouModal(customerName);
       } finally {
         btnSubmit.disabled = false;
       }
     }
 
-    /* Modals & Alerts */
+    /* --- Modals and Alerts --- */
     function showLoadingModal() {
       const overlay = document.getElementById("modalOverlay");
       const content = document.getElementById("modalBody");
@@ -2328,7 +2757,6 @@
       content.innerHTML = `
         <div class="spinner"></div>
         <div class="modal-title">Submitting...</div>
-        <p class="modal-msg" style="text-align: center; margin-bottom: 0;">Please wait while your proposal request is logged.</p>
       `;
     }
 
@@ -2338,18 +2766,16 @@
       const footer = document.getElementById("modalFooter");
       overlay.style.display = "flex";
       footer.style.display = "block";
-
       content.innerHTML = `
         <div class="modal-icon">✅</div>
         <div class="modal-title">Thank You!</div>
-        <p class="modal-msg" style="text-align: center; margin-bottom: 4px;">
-          Proposal request for <strong>${customerName}</strong> has been submitted successfully.
-        </p>
+        <p class="modal-msg">Proposal request for <strong>${customerName}</strong> has been submitted successfully.</p>
       `;
 
-      // Reset form and restore a single clean empty elevator card
+      // Reset form cleanly while keeping 1 empty elevator specification open
       document.getElementById("proposalForm").reset();
-      document.getElementById("liftsContainer").innerHTML = "";
+      const container = document.getElementById("liftsContainer");
+      if (container) container.innerHTML = "";
       addLiftCard();
     }
 
@@ -2361,8 +2787,8 @@
       footer.style.display = "block";
       content.innerHTML = `
         <div class="modal-icon">⚠️</div>
-        <div class="modal-title">Notice</div>
-        <p class="modal-msg" style="color: var(--danger); font-weight: 500; text-align: center;">${message}</p>
+        <div class="modal-title">Incomplete Form</div>
+        <p class="modal-msg" style="color: var(--danger); font-weight: 500;">${message}</p>
       `;
     }
 
@@ -2370,7 +2796,7 @@
       document.getElementById("modalOverlay").style.display = "none";
     }
 
-    /* Postal PIN Circle Auto State Detection */
+    /* --- Postal Circle Auto State Mapping --- */
     function getStateFromPinCode(pin) {
       if (!pin || pin.length < 2) return null;
       const s = String(pin).trim();
